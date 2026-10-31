@@ -12,7 +12,7 @@ website:
   site-url: https://sillsdev.github.io/ai-research/
   repo-url: https://github.com/sillsdev/ai-research
   page-footer:
-    center: "© 2026 SIL Global · Text and data [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · Code [MIT](https://github.com/sillsdev/ai-research/blob/main/LICENSE)"
+    center: "Â© 2026 SIL Global Â· Text and data [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) Â· Code [MIT](https://github.com/sillsdev/ai-research/blob/main/LICENSE)"
   navbar:
     logo: assets/sil-logo-white.svg
     logo-alt: SIL logo
