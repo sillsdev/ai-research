@@ -54,6 +54,6 @@ Every pull request runs `rs-validate` and renders the site; merging to `main` de
 
 CI can't see a harness's private project codes or corpus, so it backs up the harness skill's anonymization pass rather than replacing it. A reviewer approves every study before it goes public.
 
-## Licence
+## License
 
 Code is under the [MIT License](LICENSE). Studies, their data and the site's text are under [CC BY 4.0](LICENSE-CONTENT.md). The SIL logo is a trademark of SIL Global and isn't covered by either.
