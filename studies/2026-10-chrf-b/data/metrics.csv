@@ -1,0 +1,78 @@
+system,group,measure,value,lower,upper,n,source,file
+chrF3,"Field tests, independent references",Agrees with the team's preferred draft,0.59375,0.5078125,0.6796875,128,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, independent references",Agrees with the team's preferred draft,0.6171875,0.53125,0.703125,128,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, all references",Agrees with the team's preferred draft,0.5423728813559322,0.4963680387409201,0.5907990314769975,413,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, all references",Agrees with the team's preferred draft,0.5956416464891041,0.5472154963680388,0.6440677966101694,413,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, independent references",Model comparisons won,0.6,,,5,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, independent references",Model comparisons won,1.0,,,5,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, all references",Model comparisons won,0.5714285714285714,,,14,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, all references",Model comparisons won,0.6428571428571429,,,14,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, independent references",Agrees with usability ratings,0.5742115027829313,,,,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, independent references",Agrees with usability ratings,0.6335807050092764,,,,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, all references",Agrees with usability ratings,0.6013986013986014,,,,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, all references",Agrees with usability ratings,0.6323292092522862,,,,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, independent references","Agrees with ""would this draft help""",0.5048543689320388,,,,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, independent references","Agrees with ""would this draft help""",0.5485436893203883,,,,bt-metric,results/field_test_agreement.tsv
+chrF3,"Field tests, all references","Agrees with ""would this draft help""",0.43717277486910994,,,,bt-metric,results/field_test_agreement.tsv
+chrF-B,"Field tests, all references","Agrees with ""would this draft help""",0.4816753926701571,,,,bt-metric,results/field_test_agreement.tsv
+chrF3,Added words,Error noticed,0.4858972140508738,,,11558,bt-metric,results/challenge_set.tsv
+chrF3,Wrong key term,Error noticed,0.9559834938101788,,,2181,bt-metric,results/challenge_set.tsv
+chrF3,Negation removed,Error noticed,0.8944099378881988,,,483,bt-metric,results/challenge_set.tsv
+chrF3,Omitted words,Error noticed,0.9830420487973698,,,11558,bt-metric,results/challenge_set.tsv
+chrF3,Repeated text,Error noticed,0.6150718117321335,,,11558,bt-metric,results/challenge_set.tsv
+chrF3,Source copied,Error noticed,0.9773163496771942,,,5731,bt-metric,results/challenge_set.tsv
+chrF3,Truncated,Error noticed,0.9951548710849628,,,11558,bt-metric,results/challenge_set.tsv
+chrF3,Word order,Error noticed,0.930544523872562,,,11331,bt-metric,results/challenge_set.tsv
+chrF3,Wrong verse,Error noticed,0.9752552344696316,,,5779,bt-metric,results/challenge_set.tsv
+chrF-B,Added words,Error noticed,0.9086347118878699,,,11558,bt-metric,results/challenge_set.tsv
+chrF-B,Wrong key term,Error noticed,0.9830353049060064,,,2181,bt-metric,results/challenge_set.tsv
+chrF-B,Negation removed,Error noticed,0.8343685300207039,,,483,bt-metric,results/challenge_set.tsv
+chrF-B,Omitted words,Error noticed,0.9357155217165599,,,11558,bt-metric,results/challenge_set.tsv
+chrF-B,Repeated text,Error noticed,0.9240353002249524,,,11558,bt-metric,results/challenge_set.tsv
+chrF-B,Source copied,Error noticed,0.9710347234339557,,,5731,bt-metric,results/challenge_set.tsv
+chrF-B,Truncated,Error noticed,0.9702370652362,,,11558,bt-metric,results/challenge_set.tsv
+chrF-B,Word order,Error noticed,0.9451945988880064,,,11331,bt-metric,results/challenge_set.tsv
+chrF-B,Wrong verse,Error noticed,0.9906558228067139,,,5779,bt-metric,results/challenge_set.tsv
+chrF3,Silver labels (xCOMET-XL),Same-verse agreement,0.6234066176385251,,,,bt-metric,results/silver_agreement.tsv
+chrF3,Silver labels (xCOMET-XL-QE),Same-verse agreement,0.5704445253721167,,,,bt-metric,results/silver_agreement.tsv
+chrF-B,Silver labels (xCOMET-XL),Same-verse agreement,0.6408462963894295,,,,bt-metric,results/silver_agreement.tsv
+chrF-B,Silver labels (xCOMET-XL-QE),Same-verse agreement,0.5923608582121356,,,,bt-metric,results/silver_agreement.tsv
+chrF3,Silver labels (xCOMET-XL),System-level agreement,0.7432835820895523,0.7201492537313433,0.767910447761194,,bt-metric,results/silver_agreement.tsv
+chrF3,Silver labels (xCOMET-XL-QE),System-level agreement,0.6694029850746268,0.642518656716418,0.6955223880597015,,bt-metric,results/silver_agreement.tsv
+chrF-B,Silver labels (xCOMET-XL),System-level agreement,0.767910447761194,0.746268656716418,0.7895522388059701,,bt-metric,results/silver_agreement.tsv
+chrF-B,Silver labels (xCOMET-XL-QE),System-level agreement,0.7029850746268657,0.6783582089552239,0.7268656716417911,,bt-metric,results/silver_agreement.tsv
+chrF3,Young's Literal,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Literal Standard Version,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,King James Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,New King James Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Revised Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,New Revised Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,English Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,World English Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Berean Standard Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Christian Standard Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,New International Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,NET Bible,Share of MT systems outscored,0.7727272727272727,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,New Living Translation,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Good News Translation,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_summary.tsv
+chrF3,Contemporary English Version,Share of MT systems outscored,0.0,,,,bt-metric,results/human_translations_summary.tsv
+chrF-B,Young's Literal,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Literal Standard Version,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,King James Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,New King James Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Revised Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,New Revised Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,English Standard Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,World English Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Berean Standard Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Christian Standard Bible,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,New International Version,Share of MT systems outscored,1.0,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,NET Bible,Share of MT systems outscored,0.9090909090909091,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,New Living Translation,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Good News Translation,Share of MT systems outscored,0.6363636363636364,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+chrF-B,Contemporary English Version,Share of MT systems outscored,0.18181818181818182,,,,bt-metric,results/human_translations_chrf_b_summary.tsv
+xCOMET-XL agrees,under 0.5 points,Agreement by chrF-B difference,0.545616226917443,0.47245012801813424,0.6271110534592552,251,bt-metric,results/significance_thresholds_bible_bands.tsv
+xCOMET-XL agrees,0.5–1,Agreement by chrF-B difference,0.7374024755596532,0.6473632117028497,0.8228446502140676,211,bt-metric,results/significance_thresholds_bible_bands.tsv
+xCOMET-XL agrees,1–2,Agreement by chrF-B difference,0.8190597969800764,0.7407665866595914,0.8844611854274381,268,bt-metric,results/significance_thresholds_bible_bands.tsv
+xCOMET-XL agrees,2–4,Agreement by chrF-B difference,0.8501805320661372,0.7664652813845235,0.9244479422673056,197,bt-metric,results/significance_thresholds_bible_bands.tsv
+xCOMET-XL agrees,over 4,Agreement by chrF-B difference,0.8627348826625295,0.7656385493886153,0.9389935404862108,413,bt-metric,results/significance_thresholds_bible_bands.tsv

@@ -1,0 +1,15 @@
+---
+title: "Studies"
+listing:
+  contents: studies
+  type: table
+  sort: "date desc"
+  fields: [date, title, description, categories]
+  categories: true
+  filter-ui: true
+  sort-ui: true
+toc: false
+page-layout: full
+---
+
+Research results from SIL AI Engineering on machine translation, translation checking and evaluation for Bible translation, especially in minority languages. Each study links to the code and the exact commit its numbers came from.

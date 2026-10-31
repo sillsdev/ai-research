@@ -1,0 +1,45 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - about.qmd
+    - studies/*/index.qmd
+
+website:
+  title: "SIL AI Engineering Research"
+  description: "Studies from SIL AI Engineering on AI for Bible translation."
+  site-url: https://sillsdev.github.io/ai-research/
+  repo-url: https://github.com/sillsdev/ai-research
+  page-footer:
+    center: "© 2026 SIL Global · Text and data [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) · Code [MIT](https://github.com/sillsdev/ai-research/blob/main/LICENSE)"
+  navbar:
+    logo: assets/sil-logo-white.svg
+    logo-alt: SIL logo
+    left:
+      - href: index.qmd
+        text: Studies
+      - href: about.qmd
+        text: About
+    right:
+      - icon: github
+        href: https://github.com/sillsdev/ai-research
+
+format:
+  html:
+    theme:
+      light: [theme-sil.scss, theme-light.scss]
+      dark: [theme-sil.scss, theme-dark.scss]
+    css: styles.css
+    # The SIL typefaces, from Google Fonts.
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Source+Sans+3:wght@400..700&display=swap">
+    respect-user-color-scheme: true
+    toc: true
+
+execute:
+  echo: false
+  warning: false

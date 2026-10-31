@@ -1,0 +1,142 @@
+---
+title: "chrF-B: a metric for comparing Bible translation drafts"
+description: "chrF3 misses added and repeated text and can't tell when a draft keeps the standard rendering of a Biblical term. chrF-B adds two terms for these and agrees better with translation teams, synthetic errors and a strong reference metric."
+date: 2026-10-30
+author: Damien Daspit
+harness: bt-metric
+categories: [evaluation, machine translation, bt-metric]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+FIELD = ["Field tests, independent references", "Field tests, all references"]
+SYSTEMS = ["chrF3", "chrF-B"]
+```
+
+## Summary
+
+- **chrF-B = chrF3 + 60 × coverage + 20 × key terms**, in chrF3 points. It is meant for one job: comparing machine translation systems on held-out Bible books in minority languages, where the only data is usually one parallel Bible.
+- Where translation teams judged real drafts in their own languages, chrF-B picked the team's preferred system in **all 5** comparisons that had an independent reference, against 3 of 5 for chrF3.
+- On synthetic errors it notices **added words and repeated text about 9 times in 10**, where chrF3 notices them about half the time, at a small cost on omissions and removed negations.
+- It agrees slightly better than chrF3 with xCOMET-XL, a strong reference-based metric, on 1,340 pairs of past systems.
+- Differences under about half a point are a coin flip. Treat them as a tie.
+
+## Why chrF3 isn't enough
+
+Our machine translation research has reported chrF3, a character n-gram F-score that weights recall three times as heavily as precision. It works across scripts and rich morphology without a tokenizer, but it has blind spots that matter for Bible drafts:
+
+- It barely notices **added text**. A draft that repeats a phrase, or loops, keeps most of its character n-grams in common with the reference.
+- It has **one reference**, so a valid rendering that differs from the reference's wording loses points, and a draft that keeps the standard rendering of a key Biblical term gets no credit for it.
+- A given difference has no clear meaning: how large a gap is real?
+
+The research here asked whether a few cheap features, all computable from a project's own Bible text, could fix the first two without losing what chrF3 does well, and how to read a difference in the result.
+
+## The metric
+
+> **chrF-B = chrF3 + 60 × coverage + 20 × key terms**
+
+- **Coverage** is the share of the draft's words that a word aligner links to the source, minus the same share for the reference. Added or repeated text has nothing in the source to align to, so it lowers coverage. The aligner (eflomal) is trained on the project's own Bible text with the scored verses left out.
+- **Key terms** is the share of the reference's key Biblical term renderings that the draft also uses. Renderings are inferred by aligning an English Bible with the project's text, since most projects have no curated list.
+- A verse with nothing to score for a part (no aligned text, or no key terms in its reference) adds 0 for that part, the same for every system, so it can't change a comparison.
+
+The weights were fitted on the field-test comparisons (below), with key terms held at a fixed share of 20%, then turned into fixed coefficients in chrF3 points so that scores stay comparable between experiments. A larger coverage coefficient lets coverage excuse omissions, because dropping words that don't align raises it; 60 balanced omissions against additions on the synthetic errors. In a typical comparison of two verses, chrF3 contributes a little over half the difference, coverage about a fifth, and key terms about a quarter.
+
+## How it was tested
+
+There are no human quality judgments for Bible translation in minority languages large enough to fit or test a metric, so four kinds of evidence stand in:
+
+1. **Field tests.** In 2025, Bible translation teams trialling AI drafts in Scripture Forge judged drafts in their own languages: which of two models' drafts of a verse was better, whether a draft was usable, and whether it would have helped. A metric should agree with them. Many of the teams' later texts were edited from one of the drafts, which makes them a biased reference, so results are shown separately for **independent references**, those that existed before the trial.
+2. **Synthetic errors.** Real machine translation outputs, each paired with a copy carrying one injected error. A metric should score the clean copy higher.
+3. **Silver labels.** Past systems' outputs on test sets in languages xCOMET-XL supports, with its preference standing in for a human's: 129,467 verse outputs, and 1,340 pairs of systems scored on the same test set. xCOMET-XL is far stronger than chrF3 but can't run on minority languages, which is why it can only check, not replace, the metric.
+4. **Published translations.** Fifteen published English Bibles, scored against the NASB as the reference alongside 22 MT systems on 3,000 held-out Old Testament verses. A good metric should rank each human translation above most MT output, however freely it is worded.
+
+## Results
+
+### Translation teams' judgments
+
+```{python}
+study.table(groups=FIELD, systems=SYSTEMS)
+```
+
+Agreement is the share of verse pairs (or ratings) where the metric ranks the drafts as the team did; the 95% interval is shown where one was computed. "Model comparisons won" counts whole comparisons of two models, where the metric's preferred model matches the team's.
+
+chrF-B leads on every measure. The gains are within the noise for any single measure (independent references cover only 128 verse pairs and 5 comparisons) but they point the same way throughout. The teams themselves agree on only 63% of verse preferences where two groups judged the same pair, so these judgments are noisy, and no metric should be expected near 100%.
+
+### Synthetic errors
+
+```{python}
+#| renderings: [light, dark]
+study.bar_chart(
+    "Error noticed",
+    systems=SYSTEMS,
+    x_title="Share of pairs where the clean output scores higher",
+)
+```
+
+```{python}
+study.table(measures=["Error noticed"], systems=SYSTEMS, intervals=False, measure_column=False, average=True)
+```
+
+Coverage is what catches added words (chrF3 0.49, chrF-B 0.91) and repeated text (0.62 to 0.92), which is exactly what a decoder loop produces. The cost is on omissions (0.98 to 0.94), truncation and removed negations (0.89 to 0.83): dropping words that don't align slightly raises coverage. Averaged over the nine error types, the clean output wins 94% of pairs under chrF-B, against 87% under chrF3.
+
+### Agreement with xCOMET-XL
+
+```{python}
+study.table(groups=["Silver labels (xCOMET-XL)", "Silver labels (xCOMET-XL-QE)"], systems=SYSTEMS)
+```
+
+chrF-B agrees more often than chrF3 with both the reference-based xCOMET-XL and its reference-free variant, for two systems' outputs of the same verse and for whole systems. The system-level intervals overlap, so this supports the change rather than proving it.
+
+### Published translations
+
+```{python}
+#| renderings: [light, dark]
+study.bar_chart(
+    "Share of MT systems outscored",
+    systems=SYSTEMS,
+    x_title="Share of the 22 MT systems the translation outscores",
+)
+```
+
+Translations are listed roughly from the most literal to the most dynamic. Under both metrics, the mainstream formal and mediating translations outscore every MT system, while the extremes at either end do not. Neither metric copes well with free translation against a single reference: the Contemporary English Version outscores none of the MT systems under chrF3 and 18% under chrF-B. Key terms help here, crediting translations that reword a verse but keep its key terms (the NET Bible rises from 77% to 91%).
+
+## Reading a difference
+
+How large must a chrF-B difference be before it means something? With no human rankings of Bible systems, the silver pairs stand in. The share of pairs where xCOMET-XL prefers the same system as chrF-B, by the size of the chrF-B difference, with its 95% interval. One experiment supplied a fifth of the pairs, mostly near-identical systems, so each test set's pairs count for at most 10 between them:
+
+```{python}
+study.table(
+    measures=["Agreement by chrF-B difference"],
+    measure_column=False,
+    group_title="chrF-B difference",
+)
+```
+
+In practice:
+
+- **Under 0.5 points**, treat the systems as tied.
+- **0.5 to 1 point** is likely real, about three times in four.
+- **Over 1 point** is very likely real. Beyond about 2 points, agreement levels off near 85%, which is partly xCOMET-XL's own error, so larger gaps can't be shown to be more certain.
+
+Report the paired-bootstrap interval of the difference alongside, since the bands come from test sets of 250 to 300 verses; a whole held-out book makes smaller differences reliable.
+
+## Limitations
+
+- **It is for comparing systems, not scoring a single verse.** Coverage is relative to the reference, which cancels between two drafts of one verse but not across verses. For per-verse scores, chrF3 is no worse.
+- **It is not for general-domain text.** On news translation, coverage rewards literal translation, which news raters penalize; adding it cost 17 points of system-level agreement with human judgments there.
+- **The weights rest on few independent judgments**: 5 model comparisons and 128 verse pairs.
+- **Key-term renderings are inferred**, not curated. Projects with curated renderings could use them instead.
+- **Scripts without spaces between words** (Thai, Lao, Khmer, Burmese, Tibetan, Chinese, Japanese and others) aren't supported: key terms almost never match and coverage aligns whole phrases. Use chrF3 for those languages.
+- **Scores aren't comparable across languages.** Use them to compare systems on one test set. A normalized form that subtracts the score of shuffled references is available for reading scores across projects.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+bt-metric's README gives the commands that produce each results file. This page's data is in [`data/metrics.csv`](data/metrics.csv). A `chrf-b` scorer is being added to [silnlp](https://github.com/sillsdev/silnlp), with the same verse pairing and alignment, so the two give the same scores.

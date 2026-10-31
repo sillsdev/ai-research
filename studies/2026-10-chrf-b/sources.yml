@@ -1,0 +1,96 @@
+sources:
+  bt-metric:
+    repo: https://github.com/sillsdev/bt-metric
+    commit: df535b482734a6cc5ce44fa55d6dd627fb718617
+    visibility: public
+
+tables:
+  - source: bt-metric
+    file: results/field_test_agreement.tsv
+    where: {metric: [chrF3, chrF-B], references: [independent, all]}
+    system: {column: metric}
+    group: {column: references}
+    rename:
+      independent: Field tests, independent references
+      all: Field tests, all references
+    measures:
+      - {column: verse_preference, name: Agrees with the team's preferred draft, lower: verse_preference_lower, upper: verse_preference_upper, n: verse_pairs}
+      - {column: comparison_preference, name: Model comparisons won, n: comparisons}
+      - {column: usability, name: Agrees with usability ratings}
+      - {column: human_ai, name: Agrees with "would this draft help"}
+
+  - source: bt-metric
+    file: results/challenge_set.tsv
+    where: {feature: [chrF3, chrF-B]}
+    system: {column: feature}
+    group: {column: perturbation}
+    rename:
+      addition: Added words
+      repetition: Repeated text
+      key_term: Wrong key term
+      word_order: Word order
+      wrong_verse: Wrong verse
+      source_copy: Source copied
+      truncation: Truncated
+      omission: Omitted words
+      negation: Negation removed
+    measures:
+      - {column: accuracy, name: Error noticed, n: rows}
+
+  - source: bt-metric
+    file: results/silver_agreement.tsv
+    where: {silver: [xCOMET-XL, xCOMET-XL-QE], metric: [chrF3, chrF-B]}
+    system: {column: metric}
+    group: {column: silver}
+    rename:
+      xCOMET-XL: Silver labels (xCOMET-XL)
+      xCOMET-XL-QE: Silver labels (xCOMET-XL-QE)
+    measures:
+      - {column: within_verse, name: Same-verse agreement}
+      - {column: system_level, name: System-level agreement, lower: system_level_lower, upper: system_level_upper}
+
+  - source: bt-metric
+    file: results/human_translations_summary.tsv
+    where: {feature: chrF3, human_translation: [en-YLT98, en-LSV, en-KJV, en-NKJV, en-RSV, en-NRSV, en-ESVUS16, en-WEB, en-BSB, en-CSB, en-NIV11R, en-NET08, en-NLT07, en-GNTD, en-CEVUS06]}
+    system: {column: feature}
+    group: {column: human_translation}
+    rename: &translations
+      en-YLT98: Young's Literal
+      en-LSV: Literal Standard Version
+      en-KJV: King James Version
+      en-NKJV: New King James Version
+      en-RSV: Revised Standard Version
+      en-NRSV: New Revised Standard Version
+      en-ESVUS16: English Standard Version
+      en-WEB: World English Bible
+      en-BSB: Berean Standard Bible
+      en-CSB: Christian Standard Bible
+      en-NIV11R: New International Version
+      en-NET08: NET Bible
+      en-NLT07: New Living Translation
+      en-GNTD: Good News Translation
+      en-CEVUS06: Contemporary English Version
+    measures:
+      - {column: beats_mt_share, name: Share of MT systems outscored}
+
+  - source: bt-metric
+    file: results/human_translations_chrf_b_summary.tsv
+    where: {feature: chrF-B, human_translation: [en-YLT98, en-LSV, en-KJV, en-NKJV, en-RSV, en-NRSV, en-ESVUS16, en-WEB, en-BSB, en-CSB, en-NIV11R, en-NET08, en-NLT07, en-GNTD, en-CEVUS06]}
+    system: {column: feature}
+    group: {column: human_translation}
+    rename: *translations
+    measures:
+      - {column: beats_mt_share, name: Share of MT systems outscored}
+
+  - source: bt-metric
+    file: results/significance_thresholds_bible_bands.tsv
+    where: {feature: chrF-B}
+    system: xCOMET-XL agrees
+    group: {column: band}
+    rename:
+      0-0.5: under 0.5 points
+      0.5-1: 0.5–1
+      1-2: 1–2
+      2-4: 2–4
+    measures:
+      - {column: agreement, name: Agreement by chrF-B difference, lower: lower, upper: upper, n: pairs}

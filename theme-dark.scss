@@ -1,0 +1,26 @@
+/*-- scss:defaults --*/
+// The SIL design system has no dark mode; this one steps its tints onto a navy ground.
+// Chart surfaces in research_site/study.py match these, so figures sit flush on the page.
+$body-bg: #0b1b2e;
+$body-color: #e5eef8;
+$primary: #337dc7;
+$link-color: #66caed;
+$headings-color: #99bee3;
+$border-color: #1f3a57;
+$navbar-bg: #042c54;
+$navbar-fg: #ffffff;
+$navbar-hl: #99dcf3;
+$code-bg: #102740;
+$code-color: #99dcf3;
+$footer-bg: #0b1b2e;
+// Bootstrap keeps light grays for these without a bootswatch dark base.
+$input-bg: #0b1b2e;
+$input-color: #e5eef8;
+$input-border-color: #1f3a57;
+$input-group-addon-bg: #102740;
+$input-group-addon-color: #e5eef8;
+$form-select-indicator-color: #e5eef8;
+
+$sil-eyebrow-color: #ffa666;
+$sil-table-head-bg: #034d8a;
+$table-striped-bg: #102740;

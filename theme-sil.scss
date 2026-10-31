@@ -1,0 +1,96 @@
+/*-- scss:defaults --*/
+// SIL Language Technology design system: Playfair Display for headings, Lora for body,
+// Source Sans 3 for labels and data. theme-light.scss and theme-dark.scss set the colors.
+$font-family-sans-serif: "Lora", Georgia, "Times New Roman", serif;
+$headings-font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+$headings-font-weight: 500;
+$line-height-base: 1.7;
+$border-radius: 4px;
+
+$sil-label-font: "Source Sans 3", "Source Sans Pro", system-ui, "Segoe UI", sans-serif !default;
+$sil-eyebrow-color: #c24f00 !default;
+$sil-keyline: #00a7e1 !default;
+$sil-table-head-bg: #005cb9 !default;
+$sil-table-head-color: #ffffff !default;
+
+/*-- scss:rules --*/
+h1, h2, h3, h4 {
+  line-height: 1.2;
+}
+
+h2 {
+  border-bottom: none;
+}
+
+h3, h4 {
+  font-family: $sil-label-font;
+  font-weight: 600;
+}
+
+.navbar-title {
+  font-family: $sil-label-font;
+  font-weight: 600;
+}
+
+// The logo SVG has no intrinsic size, so it needs a height to be drawn at all; its viewBox
+// includes the brand's quarter-height clear space.
+.navbar-logo {
+  height: 48px;
+  max-height: none;
+  width: auto;
+}
+
+// Eyebrows: the brand's uppercase, widely tracked label.
+.quarto-title .quarto-categories .quarto-category,
+.quarto-title-meta-heading,
+.listing-categories .listing-category,
+#TOC h2,
+#toc-title {
+  font-family: $sil-label-font;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+}
+
+.quarto-title .quarto-categories .quarto-category,
+.listing-categories .listing-category {
+  color: $sil-eyebrow-color;
+  border: none;
+  background: none;
+  padding-left: 0;
+  opacity: 1;
+}
+
+.quarto-title .description {
+  font-style: italic;
+}
+
+// Tables carry data, so they use the label face, a brand-blue header row and banded rows.
+main table,
+.table {
+  font-family: $sil-label-font;
+  font-variant-numeric: tabular-nums;
+
+  > thead > tr > th {
+    background: $sil-table-head-bg;
+    color: $sil-table-head-color;
+    border-bottom: none;
+    font-weight: 600;
+  }
+}
+
+.quarto-listing-table th a,
+.quarto-listing-table th a:hover {
+  color: $sil-table-head-color;
+}
+
+// The light-blue keyline is the brand's signature accent.
+blockquote,
+.callout {
+  border-left: 3px solid $sil-keyline !important;
+}
+
+.sidebar nav[role="doc-toc"] ul > li > a.active {
+  border-left-color: $sil-keyline;
+}
