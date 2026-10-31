@@ -31,6 +31,10 @@ The bucket has no commits, so a study pins it by content instead. `--freeze` cop
 recipe reads into a `files/` folder beside the recipe and records a `snapshot` hash of the recipe and
 those copies in sources.yml. Later imports read only the copies and fail if the hash no longer
 matches, so re-running or moving an experiment can't change a published study.
+
+A one-off study, with no harness or a temporary one, keeps its own summary files in a `source/`
+folder beside index.qmd (`in-study: true`, with an `origin` saying where they came from). Its
+tables are listed in sources.yml like a public source's, and `file` is relative to `source/`.
 """
 
 import argparse
@@ -180,6 +184,40 @@ class BucketSource:
         for path in sorted(self._read):
             digest.update(path.encode("utf-8") + b"\0" + hashlib.sha256(self._read[path]).digest())
         return f"sha256:{digest.hexdigest()}"
+
+
+class StudySource:
+    """Summary files kept in the study's own `source/` folder (`in-study: true`), for a one-off study.
+
+    There is no harness repository to pin, or it is temporary and may be deleted, so the files are
+    copied in, already anonymized, and this repository's history pins them.
+    """
+
+    is_public = True
+    recipe = None
+
+    def __init__(self, source_id: str, study_dir: Path):
+        self.id = source_id
+        self._dir = study_dir / "source"
+
+    def check(self) -> None:
+        if not self._dir.is_dir():
+            raise SourceError(f"source '{self.id}': no source/ folder in the study")
+
+    def resolve(self, pattern: str) -> list[str]:
+        paths = sorted(p.relative_to(self._dir).as_posix() for p in self._dir.glob(pattern) if p.is_file())
+        if not paths:
+            raise SourceError(f"source '{self.id}': no files in source/ match {pattern}")
+        return paths
+
+    def read_text(self, path: str) -> str:
+        return (self._dir / path).read_text(encoding="utf-8")
+
+    def read_table(self, file: str) -> pd.DataFrame:
+        return pd.read_csv(self._dir / file, sep="\t" if file.endswith(".tsv") else ",")
+
+    def finish(self, sources_file: Path) -> None:
+        pass
 
 
 def write_snapshot(sources_file: Path, source_id: str, snapshot: str) -> None:
@@ -419,6 +457,8 @@ def build_metrics(
     for source_id, source_spec in spec["sources"].items():
         if source_spec.get("bucket"):
             sources[source_id] = BucketSource(source_id, source_spec, bucket_root, freeze)
+        elif source_spec.get("in-study"):
+            sources[source_id] = StudySource(source_id, study_dir)
         else:
             checkout = checkouts.get(source_id, site_root.parent / source_id)
             sources[source_id] = GitSource(source_id, source_spec, checkout)

@@ -39,13 +39,21 @@ class Theme:
 
 class Study:
     def __init__(self, directory: str | Path = "."):
-        self._metrics = pd.read_csv(Path(directory) / "data" / "metrics.csv")
-        self._sources = yaml.safe_load((Path(directory) / "sources.yml").read_text(encoding="utf-8"))["sources"]
+        self._dir = Path(directory)
+        self._metrics = pd.read_csv(self._dir / "data" / "metrics.csv")
+        self._sources = yaml.safe_load((self._dir / "sources.yml").read_text(encoding="utf-8"))["sources"]
 
     def provenance(self) -> Markdown:
         """A sentence per source saying where the results came from, linked only where readers can follow."""
         lines = []
         for source in self._sources.values():
+            if source.get("in-study"):
+                folder = self._dir / "source"
+                files = sorted(p.relative_to(self._dir).as_posix() for p in folder.rglob("*") if p.is_file())
+                links = ", ".join(f"[`{f.removeprefix('source/')}`]({f})" for f in files)
+                origin = source["origin"].strip().rstrip(".")
+                lines.append(f"- {origin}. The results files are kept with this study: {links}.")
+                continue
             if source.get("bucket"):
                 digest = source["snapshot"].removeprefix("sha256:")
                 lines.append(

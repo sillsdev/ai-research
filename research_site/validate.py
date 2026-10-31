@@ -21,8 +21,10 @@ import pandas as pd
 import pycountry
 import yaml
 
-ALLOWED_SUFFIXES = {".qmd", ".md", ".csv", ".yml", ".yaml", ".png", ".svg", ".jpg", ".jpeg", ".webp"}
-TEXT_SUFFIXES = {".qmd", ".md", ".csv", ".yml", ".yaml"}
+ALLOWED_SUFFIXES = {".qmd", ".md", ".csv", ".tsv", ".yml", ".yaml", ".png", ".svg", ".jpg", ".jpeg", ".webp"}
+TEXT_SUFFIXES = {".qmd", ".md", ".csv", ".tsv", ".yml", ".yaml"}
+# A one-off study has no harness skill; publish-study's one-off rules stand in for one.
+NO_HARNESS = "none"
 MAX_FILE_BYTES = 500_000
 # Summary tables run to hundreds of rows; thousands means per-verse or per-segment data was copied.
 MAX_METRICS_ROWS = 5_000
@@ -61,8 +63,11 @@ class StudyCheck:
             if not front_matter.get(key):
                 self.errors.append(f"index.qmd front matter is missing '{key}'")
         harness = front_matter.get("harness")
-        if harness and harness not in self._harnesses:
-            self.errors.append(f"harness '{harness}' has no skill in .claude/skills (known: {sorted(self._harnesses)})")
+        if harness and harness != NO_HARNESS and harness not in self._harnesses:
+            self.errors.append(
+                f"harness '{harness}' has no skill in .claude/skills (known: {sorted(self._harnesses)}); "
+                f"use 'harness: {NO_HARNESS}' for a one-off study"
+            )
         return front_matter
 
     def _check_files(self) -> None:
@@ -112,6 +117,9 @@ class StudyCheck:
             if source.get("bucket"):
                 self._check_bucket_source(where, source_id, source)
                 continue
+            if source.get("in-study"):
+                self._check_study_source(where, source)
+                continue
             if not re.fullmatch(r"[0-9a-f]{7,40}", str(source.get("commit", ""))):
                 self.errors.append(f"{where} needs a commit hash")
             repo = re.fullmatch(r"https://github\.com/([\w.-]+/[\w.-]+)", str(source.get("repo", "")))
@@ -142,6 +150,20 @@ class StudyCheck:
             self.errors.append(f"{where} needs a 'recipe' in the bucket")
         if not re.fullmatch(r"sha256:[0-9a-f]{64}", str(source.get("snapshot", ""))):
             self.errors.append(f"{where} needs a snapshot; run rs-import with --freeze")
+
+    def _check_study_source(self, where: str, source: dict) -> None:
+        if not str(source.get("origin", "")).strip():
+            self.errors.append(f"{where} needs an 'origin': who produced these files, how and when")
+        folder = self._dir / "source"
+        tables = sorted(p for p in folder.rglob("*") if p.suffix.lower() in {".csv", ".tsv"}) if folder.is_dir() else []
+        if not tables:
+            self.errors.append(f"{where} keeps its results in the study, but source/ has no .csv or .tsv files")
+        for path in tables:
+            rows = len(pd.read_csv(path, sep="\t" if path.suffix.lower() == ".tsv" else ","))
+            if rows > MAX_METRICS_ROWS:
+                self.errors.append(
+                    f"{path.relative_to(self._dir)}: {rows} rows; copy summaries only (limit {MAX_METRICS_ROWS})"
+                )
 
     def _check_public(self, where: str, repo: str) -> None:
         # Unauthenticated, so a private repository answers 404 just like a missing one.

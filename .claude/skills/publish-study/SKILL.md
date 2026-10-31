@@ -11,7 +11,7 @@ The site is **public**. Every step below serves one rule: a reader sees aggregat
 
 Settle with the researcher:
 
-- **Harness**: which research harness produced the results. Load its skill, `harness-<name>`. If there is none, stop and say so: a harness skill holds the anonymization rules, and a study can't be published without them.
+- **Harness**: which research harness produced the results. Load its skill, `harness-<name>`, which holds the anonymization rules. If the results come from no harness, or from a temporary one without a skill, the study is a **one-off**: read [one-off.md](one-off.md) and follow it alongside the steps below.
 - **Question and conclusion**: what the study set out to answer, and what the researcher concludes. Take these from the researcher or from their written findings, never from your reading of the numbers alone.
 - **Material**: the findings, sections or experiments it covers, and the authors.
 
