@@ -10,6 +10,37 @@ Open Claude Code in this repository and ask it to publish a study, naming the ha
 
 The `publish-study` skill walks through it: it pins the harness commit, builds the data summary, drafts the write-up for you to edit, checks it, and opens a pull request. Each harness has its own skill (`.claude/skills/harness-*`) saying where its results are and what must be anonymized. Results from no harness, or from a temporary one, are published as a one-off study (below).
 
+### Step by step
+
+**Once, to set up:**
+
+1. Install [uv](https://docs.astral.sh/uv/), [Claude Code](https://claude.com/claude-code) and the [GitHub CLI](https://cli.github.com/).
+2. Clone this repository, and clone the harness repositories you publish from beside it (`../bt-metric`, `../silnlp`, `../bt-checking-eval` with `../bt-checking-eval-data`). For silnlp, mount the experiment bucket and set `SIL_NLP_DATA_PATH` to it.
+3. Run `uv sync` in this repository.
+
+**For each study:**
+
+1. **Start from the latest site.** Run `git switch main` and `git pull`, then open Claude Code in this repository.
+2. **Ask for the study.** Name the harness and the findings or experiments it covers, for example:
+   > Publish a study of chrF-B from bt-metric, covering PLAN.md sections 4.1.1 and 5.
+
+   > Publish a study comparing the alignment-enhanced configurations in silnlp's back-translation experiments.
+
+   > Publish a one-off study of the tokenizer results in my spreadsheet; there's no harness.
+3. **Answer its questions.** It asks what question the study answers, what you conclude, which material it covers, and who the authors are. The conclusions come from you or your written findings, not from Claude's reading of the numbers. A one-off study also asks where the results came from, whose data they are, and what could identify a project.
+4. **Approve the data.** Claude writes `sources.yml` and runs `rs-import` to build `data/metrics.csv`. For a private harness, the table selections go in a recipe in the private repository: review and merge that pull request there, then Claude pins the merged commit. For the experiment bucket, it freezes the files the recipe reads.
+5. **Edit the draft.** Claude writes `index.qmd` in the structure of the worked example. Rewrite it in your words, and check every claim against the tables. A number that isn't in the data is marked `<!-- REVIEW: ... -->` with where it came from: add it to the harness's results and import it, or take it out.
+6. **Check it.** Claude runs the harness's anonymization pass and `uv run rs-validate studies/<slug>`, then renders the page. Look at it yourself with `uv run quarto preview studies/<slug>/index.qmd`.
+7. **Open the pull request.** When you're happy, Claude commits to a `study/<slug>` branch and opens a pull request listing what it anonymized and any open REVIEW notes. CI validates and renders the site on the pull request.
+8. **Get it reviewed.** A second person reads the rendered page (checking out the branch and previewing it) for accuracy and for anything that could identify a project. Nothing is public until they approve.
+9. **Merge.** Merging to `main` deploys the site within a few minutes, at `https://sillsdev.github.io/ai-research/studies/<slug>/`.
+
+To change a published study later, follow the same steps on a new branch: re-import if the data changes, and the pull request shows the difference.
+
+**Without Claude Code:** copy `studies/2026-10-chrf-b` to `studies/YYYY-MM-<slug>/`, read the skill files in `.claude/skills/` for your harness's rules, write `sources.yml` and run `uv run rs-import studies/<slug>`, write `index.qmd`, then run `uv run rs-validate` and preview before opening a pull request.
+
+### Study folders
+
 A study is a folder `studies/YYYY-MM-<slug>/`:
 
 | File | What it is |
@@ -39,7 +70,7 @@ Requires [uv](https://docs.astral.sh/uv/). Quarto comes in as a Python package, 
 uv sync
 uv run rs-import studies/<slug>     # rebuild a study's data/metrics.csv
 uv run rs-validate                  # the checks CI runs
-uv run quarto preview               # live preview at http://localhost:4200
+uv run quarto preview               # live preview; the URL is printed when it starts
 ```
 
 ## What CI checks
