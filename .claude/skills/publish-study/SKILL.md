@@ -26,7 +26,7 @@ The tables, which map results to metrics, go in one of two places:
 - **Public source**: under `tables:` in the study's `sources.yml`.
 - **Private source**: in a **recipe** inside the private repository (`recipe:` gives its path), with any `label-files` mapping identifiers to public labels. The recipe names private files and real project codes, so it never enters this repository.
 
-Each table entry picks rows from one results file and maps columns to `system` (what is compared), `group` (the test or subset) and one or more measures, with `lower`/`upper` for intervals and `n` for sample size. `melt` turns a wide table (one column per project) into rows. `rename` gives public, readable names and replaces any identifier the harness skill says to anonymize.
+Each table entry picks rows from a results file (or many, with globs) and maps columns to `system` (what is compared), `group` (the test or subset) and one or more measures, with `lower`/`upper` for intervals and `n` for sample size. `melt` turns a wide table (one column per project) into rows. `rename` gives public, readable names and replaces any identifier the harness skill says to anonymize. `aggregate` pools many projects or experiments into statistics; the harness skill says when to use it.
 
 Run `uv run rs-import studies/<slug>`. It reads every source at its pinned commit, never from the working tree. While drafting a recipe, add `--draft-recipe <source>=<path>`. Once the recipe is right, commit it in the private repository, pin that commit in `sources.yml`, and import again without the flag.
 

@@ -23,7 +23,7 @@ sources:
 
 `MT/published/labels.yml` is shared by every silnlp study, so a language or project keeps one label everywhere. Add new entries, and leave existing ones as they are: changing or reusing a label would contradict studies already published.
 
-A recipe table can match many experiments with a glob in `file`. `capture` turns named groups in each path into columns, such as the experiment folder or the checkpoint in `scores-<checkpoint>.csv`.
+A recipe table can match many experiments with a glob in `file`. `capture` turns named groups in each path into columns, such as the experiment folder or the checkpoint in `scores-<checkpoint>.csv`. A study across many languages pools them; see "Pooling many experiments".
 
 ## Files by experiment type
 
@@ -39,6 +39,35 @@ Inspect an experiment folder before writing its recipe. A type not listed here g
 
 - `corpus-stats.csv`: one row per source/target pair, with verse counts, `align_score` and scripts.
 - `detailed_percentages_<project>.csv`: percentages by book (rows) and chapter (columns). Use `melt` to turn the chapter columns into rows.
+
+## Pooling many experiments
+
+A study comparing configurations across many languages shows pooled figures (the mean, the range, and the languages where each configuration beats the baseline), with no row per language. Every system to compare goes in **one** table, since pooling only compares systems within a table:
+
+```yaml
+  - file:                      # a glob per configuration
+      - MT/experiments/<group>/Base.???/scores-*.csv
+      - MT/experiments/<group>/AE.???.hmm/scores-*.csv
+    capture: '<group>/(?P<config>Base|AE)\.(?P<language>[a-z]{3})(?:\.(?P<aligner>hmm))?/scores-(?P<checkpoint>\d+)\.csv$'
+    where: {book: ALL, scorer: [CHRF3, BLEU]}
+    latest: {column: checkpoint, per: [config, aligner, language]}
+    system: {column: [config, aligner]}   # rejoins a configuration split around the language
+    rename: {Base: Baseline, AE.hmm: Alignment-enhanced}
+    group: Whole test set
+    measures:
+      - {column: score, name: {column: scorer}, parse: leading-number}
+    aggregate:
+      across: languages
+      by: language
+      paired: true
+      baseline: Baseline         # its published name, after rename
+      stats: [mean, min, max, wins]
+```
+
+- **One checkpoint per experiment.** Most experiments have two score files, and their names don't say which checkpoint was best. `latest` keeps the last one; say so in the study. To report the best instead, list each experiment's best checkpoint in the recipe with `where`. With neither, the import stops, because two rows for one language would count it twice.
+- **The same languages for every system.** `paired` drops languages missing a system or a score. Older runs sometimes lack chrF3, so the pool can differ by measure. rs-import prints how many it left out; give the count in the study ("6 of the 8 languages had all four configurations").
+- **Head-to-head counts.** `wins` gives each system's wins over the baseline, with n the languages compared, for claims like "better in 5 of 6 languages". Ties don't count as wins. Error rates (WER, TER) go in their own table with `better: lower`.
+- **Pool, or show languages.** Pool unless the study's point depends on individual languages, such as a pattern by language family. Then show labelled rows instead, knowing each label is added to `labels.yml` for good.
 
 **Off limits, in every type**: `*.txt` text and predictions, `*.vref.txt`, vocabularies and models, `.xlsx` workbooks, and the large per-pair CSVs (`<src>_<trg>_<date>.csv`). These hold verse text or per-verse rows.
 

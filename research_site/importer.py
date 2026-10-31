@@ -12,10 +12,19 @@ this repository named after the source.
 
 A public source lists its tables in the study's sources.yml. A private source lists them in a
 *recipe*, a file kept with the private data, because the recipe names private files and maps
-real project codes to public labels: published, it would undo the anonymization. A table can also
-`aggregate` its rows into statistics (`{across: projects, stats: [min, median, max]}`), so a study shows a
-distribution across projects without any row standing for one project. `--draft-recipe`
+real project codes to public labels: published, it would undo the anonymization. `--draft-recipe`
 reads a git recipe that isn't committed yet, to try it out before committing it and pinning that commit.
+
+A table can pool many experiments or projects:
+
+- `file` may be a list of glob patterns, and `capture` turns named groups in each path into columns.
+  `system: {column: [config, aligner]}` joins several columns with dots, skipping empty ones.
+- `latest: {column: checkpoint, per: [config, language]}` keeps each experiment's highest checkpoint.
+- `aggregate` collapses rows into statistics, so no row stands for one project or language:
+  `{across: languages, by: language, paired: true, baseline: Baseline, stats: [mean, min, max, wins]}`.
+  `by` names the column identifying each language and rejects any that has two rows for one system.
+  `paired` keeps only the languages every system has. `wins` counts the languages where each system beats
+  `baseline` (its published name; `better: lower` for error rates), with n the languages compared.
 
 A bucket source (`bucket: true`) reads the experiment store at SIL_NLP_DATA_PATH (or --bucket-root).
 The bucket has no commits, so a study pins it by content instead. `--freeze` copies every file the
@@ -194,19 +203,28 @@ class TableSpec:
     def __init__(self, spec: dict, source):
         self._spec = spec
         self._source = source
-        self.file = spec["file"]
+        # A list of patterns lets one table hold experiments whose folders are named differently,
+        # so they can be compared with each other.
+        self._patterns = spec["file"] if isinstance(spec["file"], list) else [spec["file"]]
+        self.file = ", ".join(self._patterns)
+        more = len(self._patterns) - 1
+        self._label = self._patterns[0] + (f" (and {more} more)" if more else "")
 
     def extract(self) -> pd.DataFrame:
-        table = self._filter(self._melt(self._read()))
+        table = self._latest(self._filter(self._melt(self._read())))
         rename = self._spec.get("rename", {})
+        unit = self._spec.get("aggregate", {}).get("by")
+        if unit is not None and unit not in table.columns:
+            raise SourceError(f"{self._label}: aggregate by '{unit}', which isn't a column")
         rows = []
         for measure in self._spec["measures"]:
             missing = [c for c in self._measure_columns(measure) if c not in table.columns]
             if missing:
-                raise SourceError(f"{self.file}: no column {', '.join(missing)}")
+                raise SourceError(f"{self._label}: no column {', '.join(missing)}")
             for _, row in table.iterrows():
                 rows.append(
                     {
+                        "_unit": None if unit is None else str(row[unit]),
                         "system": rename.get(v := self._resolve(self._spec["system"], row), v),
                         "group": rename.get(v := self._resolve(self._spec.get("group", ""), row), v),
                         "measure": self._resolve(measure.get("name", measure["column"]), row),
@@ -219,42 +237,109 @@ class TableSpec:
                         "file": self.file if self._source.is_public else None,
                     }
                 )
-        return self._aggregate(pd.DataFrame(rows, columns=METRICS_COLUMNS))
+        metrics = pd.DataFrame(rows, columns=["_unit", *METRICS_COLUMNS])
+        return self._aggregate(metrics).reindex(columns=METRICS_COLUMNS)
 
     def _aggregate(self, metrics: pd.DataFrame) -> pd.DataFrame:
         """Collapse rows that share a system, group and measure into summary statistics.
 
-        For results that may only be shown as a distribution across projects: with the project left
-        out of `system` and `group`, each project is one row, and only the statistics survive.
+        For results shown only as a distribution: with the project or language left out of `system`
+        and `group`, each one is a row, and only the statistics survive. `by` names the column that
+        identifies them, which `paired` and the `wins` statistic need to match systems up.
         """
         aggregate = self._spec.get("aggregate")
         if aggregate is None:
             return metrics
         across = aggregate["across"]
         keys = ["system", "group", "measure", "source", "file"]
-        values = pd.to_numeric(metrics["value"])
-        grouped = metrics.assign(value=values).groupby(keys, sort=False, dropna=False)["value"]
+        metrics = metrics.assign(value=pd.to_numeric(metrics["value"]))
+        if "by" in aggregate:
+            repeated = metrics.duplicated(keys + ["_unit"], keep=False)
+            if repeated.any():
+                raise SourceError(
+                    f"{self._label}: {metrics.loc[repeated, '_unit'].nunique()} of the {across} have more than one "
+                    "row for the same system, group and measure; pick one with `where` or `latest`"
+                )
+            if aggregate.get("paired"):
+                metrics = self._paired(metrics, across)
+        elif aggregate.get("paired") or "wins" in aggregate["stats"]:
+            raise SourceError(f"{self._label}: `paired` and `wins` need `by`, the column naming each of the {across}")
+        grouped = metrics.groupby(keys, sort=False, dropna=False)["value"]
         frames = []
         for stat in aggregate["stats"]:
+            if stat == "wins":
+                frames.append(self._wins(metrics, aggregate, across))
+                continue
             frame = grouped.agg(stat).reset_index()
             frame["measure"] = frame["measure"] + f", {stat} across {across}"
             frame["n"] = grouped.count().to_numpy()
             frames.append(frame)
-        return pd.concat(frames, ignore_index=True).reindex(columns=METRICS_COLUMNS)
+        return pd.concat(frames, ignore_index=True)
+
+    def _paired(self, metrics: pd.DataFrame, across: str) -> pd.DataFrame:
+        """Keep only what every system has a result for, so each system's statistics cover the same set."""
+        kept = []
+        for (group, measure), part in metrics.groupby(["group", "measure"], sort=False, dropna=False):
+            systems = part["system"].nunique()
+            complete = part.groupby("_unit")["system"].transform("nunique") == systems
+            dropped = part.loc[~complete, "_unit"].nunique()
+            if dropped:
+                total = part["_unit"].nunique()
+                print(
+                    f"{self._label}: paired: left out {dropped} of {total} {across} missing a system "
+                    f"({group}, {measure})",
+                    file=sys.stderr,
+                )
+            kept.append(part[complete])
+        return pd.concat(kept, ignore_index=True)
+
+    def _wins(self, metrics: pd.DataFrame, aggregate: dict, across: str) -> pd.DataFrame:
+        """For each system, how many of the units it beats the baseline on; ties don't count as wins."""
+        baseline = aggregate.get("baseline")
+        if baseline is None:
+            raise SourceError(f"{self._label}: the `wins` statistic needs a `baseline` system")
+        if baseline not in set(metrics["system"]):
+            raise SourceError(f"{self._label}: no rows for the baseline system '{baseline}'")
+        sign = -1 if aggregate.get("better") == "lower" else 1
+        match = ["group", "measure", "_unit"]
+        base = metrics.loc[metrics["system"] == baseline, match + ["value"]].rename(columns={"value": "_baseline"})
+        joined = metrics[metrics["system"] != baseline].merge(base, on=match)
+        joined["_win"] = sign * (joined["value"] - joined["_baseline"]) > 0
+        keys = ["system", "group", "measure", "source", "file"]
+        frame = (
+            joined.groupby(keys, sort=False, dropna=False)
+            .agg(value=("_win", "sum"), n=("_win", "size"))
+            .reset_index()
+        )
+        frame["measure"] = frame["measure"] + f", wins over {baseline} across {across}"
+        return frame
 
     def _read(self) -> pd.DataFrame:
-        """Read every file the pattern matches; `capture` turns named groups in each path into columns."""
+        """Read every file the patterns match; `capture` turns named groups in each path into columns."""
         capture = re.compile(self._spec["capture"]) if "capture" in self._spec else None
         frames = []
-        for path in self._source.resolve(self.file):
-            frame = self._source.read_table(path)
-            if capture is not None:
-                match = capture.search(path)
-                if match is None:
-                    raise SourceError(f"{path}: doesn't match capture {capture.pattern}")
-                frame = frame.assign(**match.groupdict())
-            frames.append(frame)
+        for pattern in self._patterns:
+            for path in self._source.resolve(pattern):
+                frame = self._source.read_table(path)
+                if capture is not None:
+                    match = capture.search(path)
+                    if match is None:
+                        raise SourceError(f"{path}: doesn't match capture {capture.pattern}")
+                    frame = frame.assign(**match.groupdict())
+                frames.append(frame)
         return pd.concat(frames, ignore_index=True)
+
+    def _latest(self, table: pd.DataFrame) -> pd.DataFrame:
+        """Keep each experiment's highest value of a column, such as the last tested checkpoint."""
+        latest = self._spec.get("latest")
+        if latest is None:
+            return table
+        column, per = latest["column"], latest["per"]
+        order = pd.to_numeric(table[column], errors="coerce")
+        if order.isna().any():
+            raise SourceError(f"{self._label}: latest: column '{column}' has values that aren't numbers")
+        highest = order.groupby([table[c] for c in per], dropna=False).transform("max")
+        return table[order == highest]
 
     def _melt(self, table: pd.DataFrame) -> pd.DataFrame:
         """Turn a wide table (one column per project, say) into rows, so its columns can be filtered and renamed."""
@@ -281,7 +366,7 @@ class TableSpec:
             # silnlp writes BLEU as "67.06/85.38/72.24/62.90/55.22/0.986/10932/11089": the score, then its details.
             match = re.match(r"\s*(-?\d+(?:\.\d+)?)", str(value))
             return float(match.group(1)) if match else None
-        raise SourceError(f"{self.file}: unknown parse '{how}'")
+        raise SourceError(f"{self._label}: unknown parse '{how}'")
 
     def _measure_columns(self, measure: dict) -> list[str]:
         return [measure[k] for k in ("column", "lower", "upper", "n") if k in measure]
@@ -290,7 +375,12 @@ class TableSpec:
         return field["column"] if isinstance(field, dict) else None
 
     def _resolve(self, field, row) -> str:
-        return str(row[field["column"]]) if isinstance(field, dict) else str(field)
+        if not isinstance(field, dict):
+            return str(field)
+        # Several columns join with dots, for names split around another part of a path, like the
+        # configuration in `AE.<language>.hmm`; an optional capture that didn't match is skipped.
+        columns = field["column"] if isinstance(field["column"], list) else [field["column"]]
+        return ".".join(str(row[c]) for c in columns if pd.notna(row[c]) and row[c] != "")
 
 
 class Recipe:
