@@ -1,6 +1,6 @@
 # SIL AI Engineering Research
 
-The public website for SIL AI Engineering's research studies, built with [Quarto](https://quarto.org) and published to GitHub Pages.
+The [public website](https://sillsdev.github.io/ai-research/) for SIL AI Engineering's research studies, built with [Quarto](https://quarto.org) and published to GitHub Pages.
 
 ## Publishing a study
 
