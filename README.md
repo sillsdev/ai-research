@@ -78,7 +78,7 @@ uv run quarto preview               # live preview; the URL is printed when it s
 
 ## What CI checks
 
-Every pull request runs `rs-validate` and renders the site; merging to `main` deploys it. The validator blocks:
+`main` is protected: every change goes through a pull request, which needs an approving review from someone other than its author and a passing build before it can merge. Every pull request runs `rs-validate` and renders the site; merging to `main` deploys it. The validator blocks:
 
 - missing front matter, data or sources, and sources not pinned to a GitHub repository and commit
 - a source marked public whose repository isn't (checked against GitHub), and a private source's tables or file paths in the public files
