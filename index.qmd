@@ -12,4 +12,4 @@ toc: false
 page-layout: full
 ---
 
-Research results from SIL AI Engineering on machine translation, translation checking and evaluation for Bible translation, especially in minority languages. Each study links to the code and the exact commit its numbers came from.
+Research results from SIL AI Engineering on machine translation, translation checking and evaluation for Bible translation, especially in minority languages. Each study says where its numbers came from: a public repository at an exact commit, or a fixed snapshot of results kept with SIL's internal data.
