@@ -1,6 +1,5 @@
 ---
 title: "About"
-toc: false
 ---
 
 SIL AI Engineering builds and researches AI for Bible translation: machine translation drafting, translation quality checking, speech and evaluation methods, with a focus on minority languages where the only data is often a single parallel Bible.
