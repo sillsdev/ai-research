@@ -7,8 +7,8 @@ SIL AI Engineering builds and researches AI for Bible translation: machine trans
 
 ## How studies are published
 
-Each study is a folder in [this site's repository](https://github.com/sillsdev/ai-research) with its write-up, a summary of the results and a `sources.yml` naming the repository and commit the results came from. The tables and charts are drawn from that summary when the site is built, so the numbers on a page are the numbers in the repository.
+Each study is a folder in [this site's repository](https://github.com/sillsdev/ai-research) with its write-up, a summary of the results and a `sources.yml` saying where the results came from. That is a repository at an exact commit, linked when the repository is public, or a fixed snapshot of results in SIL's internal experiment store. A study with no research repository behind it keeps copies of its results files in its own folder. The tables and charts are drawn from the summary when the site is built, so the numbers on a page are the numbers in the repository.
 
 ## What a study leaves out
 
-Much of this research uses unpublished translation drafts and Bibles that can't be redistributed, and some translation projects work in places where naming them could put people at risk. So the studies publish aggregate results only. They don't quote draft or copyrighted text, and they refer to translation projects, teams and languages by anonymous labels unless a language is named by a public dataset.
+Much of this research uses unpublished translation drafts and Bibles that can't be redistributed, and some translation projects work in places where naming them could put people at risk. So the studies publish aggregate results only. They don't quote draft or copyrighted text, and they don't name translation projects, teams or minority languages: results are pooled across them, or shown under anonymous labels. A published Bible, a widely published language such as English or French, or a public dataset's language may be named.
