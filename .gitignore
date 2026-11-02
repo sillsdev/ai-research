@@ -4,3 +4,5 @@
 __pycache__/
 *.pyc
 **/*.quarto_ipynb
+/README.html
+/README_files/
