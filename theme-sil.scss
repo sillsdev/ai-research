@@ -85,6 +85,12 @@ main table,
   color: $sil-table-head-color;
 }
 
+// On a phone the studies table is wider than the screen; scrolling it on its own keeps it from
+// widening the whole page.
+.quarto-listing-container-table {
+  overflow-x: auto;
+}
+
 // The light-blue keyline is the brand's signature accent.
 blockquote,
 .callout {
