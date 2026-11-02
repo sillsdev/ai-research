@@ -1,0 +1,6 @@
+sources:
+  silnlp-bucket:
+    bucket: true
+    visibility: private
+    recipe: MT/published/2026-11-nllb-baseline/recipe.yml
+    snapshot: sha256:4ff53b1db402f184ed1b477e5b7839bd57907870990162cfe929602b6db9ebce

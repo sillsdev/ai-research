@@ -1,0 +1,114 @@
+---
+title: "Fine-tuned NLLB for minority-language Bible translation: a baseline"
+description: "NLLB-200, fine-tuned on one Bible per language, reaches a mean chrF3 of 54.5 across 17 low-resource languages. Testing on the Old Testament, or on whole held-out books, costs about 7 points; the script and the source language make little difference."
+date: 2026-11-02
+author: AI Engineering Research Team
+harness: silnlp
+categories: [machine translation, baseline, silnlp]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+SETTINGS = [
+    "Random verses held out",
+    "Whole books held out",
+    "Latin script",
+    "Other scripts",
+    "English source",
+    "Other source language",
+    "Tested on the New Testament",
+    "Tested on the Old Testament",
+    "Tested on both testaments",
+]
+```
+
+## Summary
+
+- This is a **baseline** for machine translation of the Bible into minority languages: NLLB-200 fine-tuned separately for each of **17 low-resource languages**, scored on held-out verses. New methods can be compared with it on the same languages and test sets.
+- Across the 17 languages, chrF3 averages **54.5** (median 56.1), ranging from 41.0 to 62.3. BLEU averages 25.8.
+- **What is tested matters most.** Languages tested on the Old Testament average 50.3 chrF3, against 56.9 for the New Testament, and those tested on whole held-out books 49.7, against 56.5 for 250 random verses. A team that has finished its New Testament and is drafting the Old should expect the lower figures.
+- **Script and source language make little difference** to chrF3: Latin and other scripts average 54.8 and 54.2, and English and other source languages 54.4 and 54.5.
+- Each group holds 4 to 13 languages and the groupings overlap, so these are descriptions of this benchmark, not measured effects of one factor.
+
+## The benchmark
+
+The benchmark is a fixed set of fine-tuning experiments, one per language, kept so that new methods for low-resource languages can be evaluated on the same languages and test sets.
+
+For each language, the distilled 1.3-billion-parameter NLLB-200 model is fine-tuned on that language's Bible text, aligned verse by verse with a published Bible in a language of wider communication. None of the target languages is among NLLB-200's languages. Every source language is.
+
+The languages vary in the ways that matter for this work:
+
+- **Script.** 8 are written in Latin script and 9 in other scripts.
+- **Source language.** 4 are paired with an English Bible and 13 with a Bible in another language of wider communication.
+- **Testament.** 8 are tested on New Testament verses and 4 on Old Testament books. The other 5 are tested on verses from both.
+- **Test set.** 12 hold out 250 verses chosen at random from across the text. 5 hold out one or more whole books.
+
+## How it was tested
+
+Each model was trained for 5,000 steps and scored at that **last checkpoint**, so that no choice was made by looking at the test set. Scores are BLEU, chrF3 (character n-grams, with recall weighted three times as heavily as precision) and chrF3++ (chrF3 with word unigrams and bigrams added), computed by silnlp's test stage with sacrebleu.
+
+```{python}
+study.pooled_table(["Training steps", "Test verses"], groups=["All languages"], digits=0)
+```
+
+## Results
+
+### Across all languages
+
+```{python}
+study.pooled_table(["chrF3", "BLEU", "chrF3++"], groups=["All languages"])
+```
+
+There is one model and one test set per language, so these figures carry no confidence intervals. The spread between languages, shown by the range, is the uncertainty that matters for a baseline: a new method's gain should be judged language by language against it, or as a count of languages improved.
+
+### By setting
+
+```{python}
+#| renderings: [light, dark]
+study.range_chart(
+    "chrF3",
+    groups=SETTINGS,
+    x_title="chrF3 across the languages in each group",
+    x_range=(30, 70),
+    reference="All languages",
+)
+```
+
+Each dot is a group's mean, and its line runs from the group's lowest-scoring language to its highest. Within most groups, languages differ by 10 points or more, more than any two group means do.
+
+```{python}
+study.pooled_table(["chrF3"], groups=SETTINGS, group_title="Setting")
+```
+
+- **Test set.** Whole held-out books average 49.7 chrF3 against 56.5 for random verses, and their median is lower still (47.0 against 56.8). Random verses come from books the model also trained on, so a score on them is likely to be the more optimistic one. Report which kind of test set a result uses.
+- **Script.** Latin and other scripts average within a point of each other (54.8 and 54.2), well inside the spread of either group.
+- **Source language.** English and other source languages average 54.4 and 54.5.
+- **Testament.** New Testament test sets average 56.9 chrF3, Old Testament ones 50.3, and those drawn from both 53.9. The Old Testament test sets are all whole held-out books, so this and the test-set difference overlap. Together they describe the usual next step for a team: a finished New Testament, and an Old Testament still to draft.
+
+BLEU shows the same pattern by test set, more strongly, and is lower for other scripts than for Latin:
+
+```{python}
+study.pooled_table(["BLEU"], groups=SETTINGS, group_title="Setting")
+```
+
+BLEU counts whole words, so it depends on how a script separates words and on rich morphology. chrF3 is the better measure for comparing across these languages.
+
+## Limitations
+
+- **One run per language.** There is a single training run and test set per language, with no repeated runs to measure training noise.
+- **Small, overlapping groups.** With 4 to 13 languages per group and settings that go together, no difference between groups can be put down to one factor.
+- **Test sets differ.** They range from 249 to 2,427 verses and differ in kind, and scores in different languages aren't strictly comparable. Compare methods within each language.
+- **The last checkpoint, not the best.** Choosing each language's best checkpoint on the test set raises some scores but overstates them.
+- **One model size and training budget.** Other NLLB sizes, longer training or other base models may do differently.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+Each language's experiment configuration is kept with its results. This page's data is in [`data/metrics.csv`](data/metrics.csv).

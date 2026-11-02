@@ -11,6 +11,7 @@ In a study's index.qmd:
 A chart cell needs `#| renderings: [light, dark]`, since each chart outputs one figure per theme.
 """
 
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -129,6 +130,46 @@ class Study:
                 add_row("Average", measure, means, with_intervals=False, summary=True)
         return Markdown("\n".join(lines))
 
+    def pooled_table(
+        self,
+        measures: list[str],
+        groups: list[str] | None = None,
+        stats: list[str] | None = None,
+        digits: int = 1,
+        group_title: str = "Group",
+    ) -> Markdown:
+        """Statistics pooled by the importer's `aggregate`, one column per statistic and one row per group
+        and measure, with the count they pool over.
+
+        `measures` are the names before the statistic, as in "chrF3, mean across languages". A Group or
+        Measure column appears only when there is more than one of them.
+        """
+        stats = stats or ["mean", "median", "min", "max"]
+        pattern = re.compile(rf"^({'|'.join(map(re.escape, measures))}), ({'|'.join(stats)}) across (.+)$")
+        parts = self._metrics["measure"].str.extract(pattern)
+        rows = self._metrics.assign(base=parts[0], stat=parts[1], across=parts[2]).dropna(subset=["stat"])
+        if groups is not None:
+            rows = rows[rows["group"].isin(groups)]
+        groups = groups or list(dict.fromkeys(rows["group"]))
+        if rows.empty:
+            raise KeyError(f"no pooled {measures} in metrics.csv")
+        across = rows["across"].iloc[0]
+        lead = ([group_title] if len(groups) > 1 else []) + (["Measure"] if len(measures) > 1 else [])
+        lines = [
+            "| " + " | ".join(lead + [s.capitalize() for s in stats] + [across.capitalize()]) + " |",
+            "|" + "---|" * len(lead) + "---:|" * (len(stats) + 1),
+        ]
+        for group in groups:
+            for measure in measures:
+                cells = rows[(rows["group"] == group) & (rows["base"] == measure)].set_index("stat")
+                if cells.empty:
+                    continue
+                values = [f"{cells.loc[s, 'value']:.{digits}f}" if s in cells.index else "—" for s in stats]
+                count = str(int(cells["n"].iloc[0]))
+                label = ([group] if len(groups) > 1 else []) + ([measure] if len(measures) > 1 else [])
+                lines.append("| " + " | ".join(label + values + [count]) + " |")
+        return Markdown("\n".join(lines))
+
     def dot_chart(
         self,
         measure: str,
@@ -136,12 +177,15 @@ class Study:
         systems: list[str] | None = None,
         x_title: str | None = None,
         x_range: tuple[float, float] | None = None,
+        reference: str | None = None,
     ) -> None:
         """A dot per (group, system) with its interval as a whisker; for measures whose axis can't start at zero.
 
-        Displays a light and a dark rendering.
+        `reference` names a group, such as the result over all groups, drawn as a labelled line instead of
+        a dot. Displays a light and a dark rendering.
         """
-        self._show("dot", measure, groups, systems, x_title, x_range)
+        rows, systems, line = self._chart_rows(measure, groups, systems, reference)
+        self._show("dot", rows, systems, x_title or measure, x_range, line)
 
     def bar_chart(
         self,
@@ -150,20 +194,67 @@ class Study:
         systems: list[str] | None = None,
         x_title: str | None = None,
         x_range: tuple[float, float] | None = None,
+        reference: str | None = None,
     ) -> None:
         """Grouped horizontal bars from zero, one per (group, system), with intervals as whiskers.
 
-        Displays a light and a dark rendering.
+        `reference` names a group, such as the result over all groups, drawn as a labelled line instead of
+        a bar. Displays a light and a dark rendering.
         """
-        self._show("bar", measure, groups, systems, x_title, x_range)
+        rows, systems, line = self._chart_rows(measure, groups, systems, reference)
+        self._show("bar", rows, systems, x_title or measure, x_range, line)
 
-    def _show(self, kind, measure, groups, systems, x_title, x_range) -> None:
-        rows = self._select(groups, [measure], systems)
+    def range_chart(
+        self,
+        measure: str,
+        groups: list[str] | None = None,
+        x_title: str | None = None,
+        x_range: tuple[float, float] | None = None,
+        reference: str | None = None,
+    ) -> None:
+        """For a measure pooled by the importer's `aggregate`: a dot per group at its mean, with a line from
+        its lowest to its highest value across what was pooled.
+
+        `measure` is the name before the statistic, as in "chrF3". `reference` names a group, such as the
+        result over all groups, drawn as a labelled line at its mean. Displays a light and a dark rendering.
+        """
+        parts = self._metrics["measure"].str.extract(rf"^({re.escape(measure)}), (mean|min|max) across (.+)$")
+        pooled = self._metrics.assign(stat=parts[1], across=parts[2]).dropna(subset=["stat"])
+        if pooled.empty:
+            raise KeyError(f"no pooled {measure} in metrics.csv")
+        across = pooled["across"].iloc[0]
+        wide = pooled.pivot_table(index=["system", "group"], columns="stat", values="value", sort=False)
+        mean = f"{measure}, mean across {across}"
+        rows = wide.reset_index().rename(columns={"mean": "value", "min": "lower", "max": "upper"})
+        rows, systems, line = self._chart_rows(mean, groups, None, reference, rows.assign(measure=mean))
+        self._show("dot", rows, systems, x_title or mean, x_range, line, interval=f"range across {across}")
+
+    def _chart_rows(self, measure, groups, systems, reference, metrics=None):
+        rows = self._select(groups, [measure], systems, metrics)
         systems = systems or list(dict.fromkeys(rows["system"]))
-        for theme in (Theme("light"), Theme("dark")):
-            self._figure(kind, rows, systems, theme, x_title or measure, x_range).show()
+        line = None
+        if reference is not None:
+            values = self._select([reference], [measure], systems, metrics)["value"]
+            if len(values) != 1:
+                raise KeyError(f"reference '{reference}' needs exactly one {measure} value, not {len(values)}")
+            line = (reference, values.iloc[0])
+        return rows, systems, line
 
-    def _figure(self, kind, rows, systems, theme: Theme, x_title, x_range) -> go.Figure:
+    def _show(self, kind, rows, systems, x_title, x_range, line, interval="95% interval") -> None:
+        for theme in (Theme("light"), Theme("dark")):
+            figure = self._figure(kind, rows, systems, theme, x_title, x_range, interval)
+            if line is not None:
+                figure.add_vline(
+                    x=line[1],
+                    line=dict(color=theme.text, width=1.5, dash="dash"),
+                    annotation=dict(text=f"{line[0]}: {line[1]:.1f}", font=dict(color=theme.text)),
+                    annotation_position="top",
+                )
+                # Room above the plot for the line's label.
+                figure.update_layout(margin_t=36, height=figure.layout.height + 26)
+            figure.show()
+
+    def _figure(self, kind, rows, systems, theme: Theme, x_title, x_range, interval) -> go.Figure:
         figure = go.Figure()
         # Reversed so the first group sits at the top, reading order matching the tables.
         categories = list(dict.fromkeys(rows["group"]))[::-1]
@@ -188,7 +279,7 @@ class Study:
                 ),
                 customdata=points[["lower", "upper"]],
                 hovertemplate=f"<b>{system}</b><br>%{{y}}<br>%{{x:.3f}}"
-                + ("<br>95% interval %{customdata[0]:.3f}–%{customdata[1]:.3f}" if has_interval.any() else "")
+                + (f"<br>{interval} %{{customdata[0]:.3f}}–%{{customdata[1]:.3f}}" if has_interval.any() else "")
                 + "<extra></extra>",
             )
             if kind == "bar":
@@ -198,13 +289,16 @@ class Study:
                 figure.add_trace(go.Scatter(**common, mode="markers", marker=marker))
         # A 56px row with these gaps gives two bars of about 20px with a 2px gap between them.
         row_height = 56 if kind == "bar" else 44
+        # Plotly sizes the label margin before the web font loads, which can clip a long label's first
+        # characters, so the margin has a floor from the label length.
+        label_width = int(0.55 * 13 * max(len(str(c)) for c in categories)) + 16
         figure.update_layout(
             template="none",
             paper_bgcolor=theme.surface,
             plot_bgcolor=theme.surface,
             font=dict(color=theme.text, size=13, family="Source Sans 3, sans-serif"),
             height=90 + row_height * len(categories),
-            margin=dict(l=10, r=10, t=10, b=50),
+            margin=dict(l=label_width, r=10, t=10, b=50),
             legend=dict(
                 orientation="h", yanchor="bottom", y=1.0, x=0, traceorder="reversed", font=dict(color=theme.muted)
             ),
@@ -231,8 +325,8 @@ class Study:
         )
         return figure
 
-    def _select(self, groups, measures, systems) -> pd.DataFrame:
-        rows = self._metrics
+    def _select(self, groups, measures, systems, metrics=None) -> pd.DataFrame:
+        rows = self._metrics if metrics is None else metrics
         for column, wanted in (("group", groups), ("measure", measures), ("system", systems)):
             if wanted is None:
                 continue

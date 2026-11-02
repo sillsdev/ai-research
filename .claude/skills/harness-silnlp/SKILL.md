@@ -32,6 +32,7 @@ Inspect an experiment folder before writing its recipe. A type not listed here g
 **Translation** (a `config.yml` with `corpus_pairs`, plus `scores-<checkpoint>.csv`):
 
 - `scores-<checkpoint>.csv`, one per tested checkpoint. Its columns are `book, src_iso, trg_iso, num_refs, references, sent_len, scorer, score`. `book` is `ALL` for the whole test set, or a book code when scored by book. Use `name: {column: scorer}` for the measure. `parse: leading-number` reads BLEU, which silnlp writes as the score followed by its n-gram precisions, brevity penalty and lengths.
+  Newer runs write a wide `scores-<checkpoint>.csv` instead: one row per test set, a `draft_index` column, and a column per scorer (`BLEU` as a plain number, its details in `BLEU_*` columns, then `chrF3`, `chrF3+`, `chrF3++`, `spBLEU` and others). List each scorer as its own measure, `{column: chrF3}`, with no `parse`. `sent_len` is the number of test verses.
 - `config.yml` and `effective-config-*.yml` describe the setup. Describe the settings that differ between experiments (parent model, vocabulary size, data mix) in the study's prose. Don't import these files, because they name projects.
 - Choose the checkpoint(s) to report with `where` on the captured checkpoint, and say in the study which one was used (best on validation, or last).
 
