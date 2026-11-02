@@ -49,7 +49,7 @@ Front matter needs `title`, `description`, `date`, `author`, `harness` and `cate
 
 ## 4. Check it
 
-1. Run the harness skill's anonymization pass.
+1. Run the harness skill's anonymization pass. For a private harness, it includes an **identifier check**: a command that reads the real project codes and other identifiers from the private data itself and searches the study for them, so no list needs keeping and no identifier is written into this repository. A private harness skill without an identifier check gets one before anything is published from it.
 2. Run `uv run rs-validate studies/<slug>`. It passes once the REVIEW notes are resolved. Until then, the REVIEW notes should be its only errors.
 3. Run `uv run quarto render studies/<slug>/index.qmd` and open `_site/studies/<slug>/index.html`. Check that tables and charts render, labels don't collide, and the prose numbers match the tables.
 

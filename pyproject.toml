@@ -18,6 +18,7 @@ dependencies = [
 [project.scripts]
 rs-import = "research_site.importer:main"
 rs-validate = "research_site.validate:main"
+rs-check-bucket = "research_site.check_bucket:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -28,7 +28,7 @@ The `publish-study` skill walks through it: it pins the harness commit, builds t
 
    > Publish a one-off study of the tokenizer results in my spreadsheet; there's no harness.
 3. **Answer its questions.** It asks what question the study answers, what you conclude, which material it covers, and who the authors are. The conclusions come from you or your written findings, not from Claude's reading of the numbers. A one-off study also asks where the results came from, whose data they are, and what could identify a project.
-4. **Approve the data.** Claude writes `sources.yml` and runs `rs-import` to build `data/metrics.csv`. For a private harness, the table selections go in a recipe in the private repository: review and merge that pull request there, then Claude pins the merged commit. For the experiment bucket, it freezes the files the recipe reads.
+4. **Approve the data.** Claude writes `sources.yml` and runs `rs-import` to build `data/metrics.csv`. The tables in `sources.yml` say which rows and columns of which results files become the study's numbers, and what public names they get. For a private harness, the tables go instead in a **recipe**: a file kept with the private data, because its file paths and label mappings would reveal the real projects, and `sources.yml` only points to it (see [Private harnesses](#private-harnesses)). For bt-checking-eval, review and merge the recipe's pull request in the data repository, then Claude pins the merged commit. For the experiment bucket, Claude writes the recipe in the bucket and freezes the files it reads.
 5. **Edit the draft.** Claude writes `index.qmd` in the structure of the worked example. Rewrite it in your words, and check every claim against the tables. A number that isn't in the data is marked `<!-- REVIEW: ... -->` with where it came from: add it to the harness's results and import it, or take it out.
 6. **Check it.** Claude runs the harness's anonymization pass and `uv run rs-validate studies/<slug>`, then renders the page. Look at it yourself with `uv run quarto preview studies/<slug>/index.qmd`.
 7. **Open the pull request.** When you're happy, Claude commits to a `study/<slug>` branch and opens a pull request listing what it anonymized and any open REVIEW notes. CI validates and renders the site on the pull request.
@@ -52,7 +52,7 @@ A study is a folder `studies/YYYY-MM-<slug>/`:
 
 ### Private harnesses
 
-For a private repository, the table selections live in a **recipe** inside that repository, not in `sources.yml`, which only points to it (`recipe: published/<slug>.yml`). The recipe names private files and maps real project codes to public labels, so publishing it would undo the anonymization. A recipe can share label files, so a project keeps the same label in every study. The study page says the results come from an internal repository at a given commit, without linking to it.
+For a private repository, the tables live in a **recipe** inside that repository, not in `sources.yml`, which only points to it (`recipe: published/<slug>.yml`). The recipe names private files and maps real project codes to public labels, so publishing it would undo the anonymization. A recipe can share label files, so a project keeps the same label in every study. The study page says the results come from an internal repository at a given commit, without linking to it.
 
 The experiment bucket (`bucket: true`, read from `SIL_NLP_DATA_PATH` or `--bucket-root`) has no commits, so it is pinned by content. Its recipe lives in the bucket under `MT/published/<slug>/`. `rs-import --freeze` copies every file the recipe reads into a `files/` folder beside it and records a `snapshot` hash in `sources.yml`. Later imports read only those copies and fail if the hash changes, so re-running or moving an experiment can't change a published study.
 
@@ -70,6 +70,7 @@ Requires [uv](https://docs.astral.sh/uv/). Quarto comes in as a Python package, 
 uv sync
 uv run rs-import studies/<slug>     # rebuild a study's data/metrics.csv
 uv run rs-validate                  # the checks CI runs
+uv run rs-check-bucket studies/<slug>  # search a bucket study for real project codes; needs the bucket
 uv run quarto preview               # live preview; the URL is printed when it starts
 ```
 
@@ -83,7 +84,7 @@ Every pull request runs `rs-validate` and renders the site; merging to `main` de
 - country names, unless listed under `allowed-terms` in the study's front matter
 - unresolved `<!-- REVIEW: ... -->` notes, which mark numbers that don't come from the data
 
-CI can't see a harness's private project codes or corpus, so it backs up the harness skill's anonymization pass rather than replacing it. A reviewer approves every study before it goes public.
+CI can't see a harness's private project codes or corpus, so it backs up the harness skill's anonymization pass rather than replacing it. Before the pull request is opened, the harness skill also runs an identifier check that reads the real project codes from the private data and searches the study for them: `check_provenance.py` in bt-checking-eval, and `uv run rs-check-bucket studies/<slug>` for the experiment bucket. A reviewer approves every study before it goes public.
 
 ## License
 

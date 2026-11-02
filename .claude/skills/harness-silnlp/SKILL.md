@@ -75,8 +75,13 @@ A study comparing configurations across many languages shows pooled figures (the
 
 Experiment paths and files are full of identifying names: country and language folders (`<Country>/<Language>/...`), Paratext project codes with dates (`<iso>-<ProjectName>_<yyyy>_<mm>_<dd>`), ISO codes, and the `references` column of a scores file.
 
-- Every target or minority language, project, team and country becomes a label from `labels.yml` ("Language A", "Project B"), including ISO codes.
-- A published Bible used as a source may be named as a published Bible (BSB, NIV), and a widely published major language such as English or French may be named. Quote no text from either.
-- Describe experiment groups by what they test, never by their folder name.
+1. **Run the identifier check**, after freezing: `uv run rs-check-bucket studies/<slug>`. It reads the identifiers from the bucket each time: every project code in `MT/scripture`, and, for the study's own experiments, their folder names, ISO codes and the projects in their scores and configs, plus every key of the label files. It prints each line of the study that names one, with the identifier, and exits 0 only when there are none. Replace each hit with its label or leave it out. List a term under `allowed-terms` only when it is safe to publish, such as a published Bible's name.
 
-Done when the study's `metrics.csv`, prose and front matter contain no folder name, ISO code or project code, and every label comes from `labels.yml` or the recipe.
+   The check reads labels from the label files only, so map a project to its label in `labels.yml`, not in a table's `rename`.
+2. **Read the study** for what the check can't see, such as a language or country name in prose that no folder or code spells the same way:
+   - Every target or minority language, project, team and country becomes a label from `labels.yml` ("Language A", "Project B"), including ISO codes.
+   - A published Bible used as a source may be named as a published Bible (BSB, NIV), and a widely published major language such as English or French may be named. Quote no text from either.
+   - Describe experiment groups by what they test, never by their folder name.
+   - Leave out anything that points to one project without naming it, such as a script, region or corpus size.
+
+Done when `rs-check-bucket` exits 0, and the study's `metrics.csv`, prose and front matter contain no folder name, ISO code or project code, with every label coming from `labels.yml` or the recipe.
