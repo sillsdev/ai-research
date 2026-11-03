@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by the AI Engineering Research Team with in-house back-translation scripts, scoring each machine draft against an existing human back translation (chrF3), October 2026
+
+tables:
+  - source: results
+    file: scores.tsv
+    system: {column: donor}
+    group: {column: language}
+    measures:
+      - {column: chrF3, n: passages}
