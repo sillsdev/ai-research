@@ -26,8 +26,6 @@ TRANSLATION = "Translation of held-out passages"
 
 ## The question
 
-OBT projects often have only passage-level data, not verse-level data: the recordings and their transcriptions are of passages. Metrics therefore have to be computed at the passage level, by regrouping the verse-level drafts into the passages that were recorded.
-
 When ASR output is split into verses, a bad split gives a source verse that is paired with far too much or too little target text, and the MT model trains on that. The segmenter aligns the text with the published source Bible using eflomal, which trains a statistical model and so can give different alignments on different runs. Does running it several times and combining the results give better verse segmentation?
 
 ## The method
