@@ -1,0 +1,81 @@
+---
+title: "A larger context window: translating several verses at once"
+description: "Training and translating with several verses combined into one segment did not beat translating verse by verse and joining the output. At best it gained about three chrF3 points at two or three verses, and it lost points beyond that."
+date: 2026-11-10
+author: Laura Burdick
+harness: none
+categories: [machine translation, context window]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+JOINT = "Combined in training and inference"
+AFTER = "Joined after inference"
+```
+
+## Summary
+
+- Verse-level machine translation sees one verse at a time. We gave NLLB several verses at once, in training and in translating, for one language (Language L).
+- Combining verses in training and inference gained at most **3 chrF3 points** over one verse at a time (58.4 against 55.4, at three verses), and fell below it from five verses on, to 33.3 at eight verses.
+- **Translating verse by verse and joining the output afterwards was at least as good at every size**, and the gap grew with size: 0.4 chrF3 points at two verses, 30.6 at eight. Training sequences were truncated from six verses on, which probably explains much of that loss.
+- Each number is one training run with no interval, so differences of about a point are not established.
+
+## The question
+
+A verse is a short segment, and the model translates it without seeing its neighbors. A larger context window might let it use the surrounding verses, handle a sentence that runs across a verse boundary, or learn from longer examples. It could also hurt: longer sequences are harder to learn from a small corpus, and a sequence that is too long gets truncated.
+
+NLLB-200's positional embeddings allow sequences of up to 1,024 tokens. silnlp uses a maximum of 512 tokens.
+
+Our hypothesis is that quality will drop for long segments even inside that limit, because NLLB was trained on sentences, not passages. A very long training example is probably malformed, a run-on or an odd web sentence, so the model has seen little text that looks like a passage.
+
+This study asks whether translating several verses at once improves drafts compared with translating one verse at a time.
+
+## How it was tested
+
+NLLB-200 was fine-tuned with silnlp. The language is anonymized as Language L, the same label as in [verse-level vs. passage-level scores](../2026-11-verse-vs-passage-scores/index.html).
+
+The model was trained on the New Testament except Romans and Revelation and tested on those two books, 836 verses in all. For each size from one to eight verses, consecutive verses were combined into one segment, in two ways:
+
+- **Combined in training and inference:** training examples and the text to translate were both combined segments.
+- **Joined after inference:** the output was combined into segments of the same size before scoring.
+
+Training sequences were capped at 512 tokens. At five verses the longest sequence was 429 tokens. From six verses on, the longest were cut at 512. Each score is one run.
+
+## Results
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart(
+    "chrF3",
+    systems=[JOINT, AFTER],
+    x_title="chrF3 on the held-out books",
+    x_range=(30, 66),
+)
+```
+
+```{python}
+study.table(measures=["chrF3", "BLEU"], systems=[JOINT, AFTER], intervals=False, group_title="Verses per segment")
+```
+
+- **Combining in training and inference peaks early.** Against one verse at a time (55.4 chrF3, 19.7 BLEU), two verses gave 57.5 and 20.0, and three gave 58.4 and 19.7. From four verses on both metrics fell, to 33.3 chrF3 and 6.0 BLEU at eight.
+- **Scores of different sizes can't be compared.** Joining the output of the verse-by-verse model after the fact rises steadily, from 57.9 chrF3 at two verses to 63.8 at eight. That isn't a better model. A longer scoring unit gives a higher score, the effect described in [verse-level vs. passage-level scores](../2026-11-verse-vs-passage-scores/index.html). Compare the two methods only within a row.
+- **Within a row, joining after was never worse.** The difference in chrF3 was 0.4 points at two verses, 1.2 at three, 5.7 at four and 30.6 at eight. In BLEU it was 0.1, 0.6, 3.1 and 15.3.
+
+## Limitations
+
+- **One run per setting and no intervals.** Differences of about a point are not established.
+- **One language and one model**, tested on two books.
+- **The 512-token cap confounds long segments.** The losses from six verses on are partly truncation, not only context.
+- **We did not test other uses of context**, such as giving the model the previous verse as extra input.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).
