@@ -1,0 +1,106 @@
+---
+title: "Verse-level vs. passage-level scores in Bible translation"
+description: "Scoring the same drafts of Matthew over whole passages instead of verse by verse raises chrF3 by 12 points on average and BLEU by 4, in 15 languages. The gap varies by language, so scores at the two levels can't be compared."
+date: 2026-11-10
+author: Laura Burdick
+harness: none
+categories: [evaluation, machine translation]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+VP = ["Verse-level", "Passage-level"]
+GAP = ["Gap (passage minus verse)"]
+```
+
+## Summary
+
+- The same draft scores much higher when chrF3 and BLEU are computed over whole passages than when they are averaged over verses. Across 15 languages, **passage-level chrF3 is 11.6 points higher on average** (range 5.6 to 22.3) and **passage-level BLEU 3.6 points higher** (range 0.9 to 9.8).
+- Passage-level was higher in every language, on both metrics.
+- The gap is not constant, so a verse-level score can't be converted to a passage-level one, or the reverse. Report which level a number is, and compare only like with like.
+- The largest gap, in Language O, is 22.3 chrF3 points; the next largest is 16.1.
+
+## The problem
+
+In oral Bible translation (OBT) projects the reference is often only available as passages, since speech is recorded and transcribed as running text rather than verse by verse. Metrics then have to be computed at passage level, and the scores can't be set beside the verse-level scores reported for written projects.
+
+This study asks how much that choice changes chrF3 and BLEU, and whether the effect is similar across languages.
+
+## Why passage-level scores are higher
+
+Both metrics count the n-grams (character n-grams for chrF3, word n-grams for BLEU) that the draft shares with the reference. A verse has few n-grams to match against. A passage has many more, so a draft n-gram is more likely to find a match somewhere in the reference by chance, even where it is not in the right place or doesn't mean the same thing. Common words and phrases are the likeliest to match.
+
+These chance matches count as matches, so the score rises with the length of the text being scored. The gap measures the effect of scoring longer segments, not a better draft. How large it is depends on the language, as the results show.
+
+## How it was tested
+
+NLLB-200 was fine-tuned with silnlp for each of 15 languages, drafting from a source-language Bible. Each model was trained on Matthew 1 to 10 and 17 to 28 and tested on Matthew 1 to 16. The same outputs were scored twice:
+
+- **Verse level:** each verse scored against its reference verse.
+- **Passage level:** consecutive verses grouped into passages, each passage scored against its reference passage.
+
+Languages are anonymized as Language A to Language O. Each score is from one training run, with no interval.
+
+## Results
+
+### chrF3
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart(
+    "chrF3",
+    systems=VP,
+    x_title="chrF3 on Matthew 1 to 16",
+    x_range=(35, 70),
+)
+```
+
+```{python}
+study.table(measures=["chrF3"], systems=VP, intervals=False, measure_column=False, average=True, group_title="Language")
+```
+
+### BLEU
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart(
+    "BLEU",
+    systems=VP,
+    x_title="BLEU on Matthew 1 to 16",
+    x_range=(10, 42),
+)
+```
+
+```{python}
+study.table(measures=["BLEU"], systems=VP, intervals=False, measure_column=False, average=True, group_title="Language")
+```
+
+### The gap
+
+```{python}
+study.table(measures=["chrF3 gap", "BLEU gap"], systems=GAP, intervals=False, average=True, group_title="Language")
+```
+
+- The average gap is 11.6 chrF3 points and 3.6 BLEU points; the median is 10.0 and 2.8.
+- Apart from Language O, the chrF3 gap runs from 5.6 to 16.1 points and the BLEU gap from 0.9 to 7.2.
+- **Language O is an outlier**, at 22.3 chrF3 and 9.8 BLEU. We have not tested why. Its verse-level scores are the lowest in the set on both metrics.
+- Languages with a low verse-level score don't always have a large gap (Languages B and F have similar verse-level chrF3, 42.6 and 43.7, but gaps of 16.1 and 11.7), so the gap can't be predicted from the verse-level score.
+
+## Limitations
+
+- **One run per language**, so no uncertainty is given. Small differences between languages' gaps aren't established; the overall direction, passage-level higher in all 15, is clear.
+- **How passages were formed** affects the result. A different grouping would give different gaps.
+- **Matthew only**, with a single model and training split.
+- **Not a measure of draft quality.** We don't know which level better matches a translation team's judgment.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

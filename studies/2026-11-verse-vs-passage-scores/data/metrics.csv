@@ -1,0 +1,91 @@
+system,group,measure,value,lower,upper,n,source,file
+Verse-level,Language A,chrF3,48.08,,,,results,scores.tsv
+Passage-level,Language A,chrF3,58.11,,,,results,scores.tsv
+Verse-level,Language B,chrF3,42.55,,,,results,scores.tsv
+Passage-level,Language B,chrF3,58.62,,,,results,scores.tsv
+Verse-level,Language C,chrF3,56.5,,,,results,scores.tsv
+Passage-level,Language C,chrF3,65.81,,,,results,scores.tsv
+Verse-level,Language D,chrF3,49.66,,,,results,scores.tsv
+Passage-level,Language D,chrF3,65.05,,,,results,scores.tsv
+Verse-level,Language E,chrF3,49.21,,,,results,scores.tsv
+Passage-level,Language E,chrF3,54.8,,,,results,scores.tsv
+Verse-level,Language F,chrF3,43.67,,,,results,scores.tsv
+Passage-level,Language F,chrF3,55.35,,,,results,scores.tsv
+Verse-level,Language G,chrF3,49.64,,,,results,scores.tsv
+Passage-level,Language G,chrF3,64.47,,,,results,scores.tsv
+Verse-level,Language H,chrF3,48.24,,,,results,scores.tsv
+Passage-level,Language H,chrF3,56.9,,,,results,scores.tsv
+Verse-level,Language I,chrF3,54.59,,,,results,scores.tsv
+Passage-level,Language I,chrF3,64.15,,,,results,scores.tsv
+Verse-level,Language J,chrF3,53.24,,,,results,scores.tsv
+Passage-level,Language J,chrF3,60.5,,,,results,scores.tsv
+Verse-level,Language K,chrF3,45.22,,,,results,scores.tsv
+Passage-level,Language K,chrF3,59.13,,,,results,scores.tsv
+Verse-level,Language L,chrF3,53.89,,,,results,scores.tsv
+Passage-level,Language L,chrF3,66.2,,,,results,scores.tsv
+Verse-level,Language M,chrF3,43.03,,,,results,scores.tsv
+Passage-level,Language M,chrF3,52.85,,,,results,scores.tsv
+Verse-level,Language N,chrF3,59.73,,,,results,scores.tsv
+Passage-level,Language N,chrF3,66.66,,,,results,scores.tsv
+Verse-level,Language O,chrF3,38.82,,,,results,scores.tsv
+Passage-level,Language O,chrF3,61.13,,,,results,scores.tsv
+Verse-level,Language A,BLEU,22.52,,,,results,scores.tsv
+Passage-level,Language A,BLEU,24.11,,,,results,scores.tsv
+Verse-level,Language B,BLEU,17.97,,,,results,scores.tsv
+Passage-level,Language B,BLEU,24.72,,,,results,scores.tsv
+Verse-level,Language C,BLEU,27.73,,,,results,scores.tsv
+Passage-level,Language C,BLEU,29.8,,,,results,scores.tsv
+Verse-level,Language D,BLEU,14.07,,,,results,scores.tsv
+Passage-level,Language D,BLEU,16.78,,,,results,scores.tsv
+Verse-level,Language E,BLEU,16.18,,,,results,scores.tsv
+Passage-level,Language E,BLEU,17.11,,,,results,scores.tsv
+Verse-level,Language F,BLEU,14.32,,,,results,scores.tsv
+Passage-level,Language F,BLEU,16.88,,,,results,scores.tsv
+Verse-level,Language G,BLEU,24.58,,,,results,scores.tsv
+Passage-level,Language G,BLEU,31.75,,,,results,scores.tsv
+Verse-level,Language H,BLEU,34.87,,,,results,scores.tsv
+Passage-level,Language H,BLEU,39.68,,,,results,scores.tsv
+Verse-level,Language I,BLEU,27.57,,,,results,scores.tsv
+Passage-level,Language I,BLEU,30.58,,,,results,scores.tsv
+Verse-level,Language J,BLEU,25.09,,,,results,scores.tsv
+Passage-level,Language J,BLEU,26.62,,,,results,scores.tsv
+Verse-level,Language K,BLEU,12.77,,,,results,scores.tsv
+Passage-level,Language K,BLEU,16.16,,,,results,scores.tsv
+Verse-level,Language L,BLEU,23.1,,,,results,scores.tsv
+Passage-level,Language L,BLEU,25.93,,,,results,scores.tsv
+Verse-level,Language M,BLEU,22.91,,,,results,scores.tsv
+Passage-level,Language M,BLEU,25.91,,,,results,scores.tsv
+Verse-level,Language N,BLEU,26.11,,,,results,scores.tsv
+Passage-level,Language N,BLEU,28.05,,,,results,scores.tsv
+Verse-level,Language O,BLEU,11.76,,,,results,scores.tsv
+Passage-level,Language O,BLEU,21.58,,,,results,scores.tsv
+Gap (passage minus verse),Language A,chrF3 gap,10.03,,,,results,gaps.tsv
+Gap (passage minus verse),Language B,chrF3 gap,16.07,,,,results,gaps.tsv
+Gap (passage minus verse),Language C,chrF3 gap,9.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language D,chrF3 gap,15.39,,,,results,gaps.tsv
+Gap (passage minus verse),Language E,chrF3 gap,5.59,,,,results,gaps.tsv
+Gap (passage minus verse),Language F,chrF3 gap,11.68,,,,results,gaps.tsv
+Gap (passage minus verse),Language G,chrF3 gap,14.83,,,,results,gaps.tsv
+Gap (passage minus verse),Language H,chrF3 gap,8.66,,,,results,gaps.tsv
+Gap (passage minus verse),Language I,chrF3 gap,9.56,,,,results,gaps.tsv
+Gap (passage minus verse),Language J,chrF3 gap,7.26,,,,results,gaps.tsv
+Gap (passage minus verse),Language K,chrF3 gap,13.91,,,,results,gaps.tsv
+Gap (passage minus verse),Language L,chrF3 gap,12.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language M,chrF3 gap,9.82,,,,results,gaps.tsv
+Gap (passage minus verse),Language N,chrF3 gap,6.93,,,,results,gaps.tsv
+Gap (passage minus verse),Language O,chrF3 gap,22.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language A,BLEU gap,1.59,,,,results,gaps.tsv
+Gap (passage minus verse),Language B,BLEU gap,6.75,,,,results,gaps.tsv
+Gap (passage minus verse),Language C,BLEU gap,2.07,,,,results,gaps.tsv
+Gap (passage minus verse),Language D,BLEU gap,2.71,,,,results,gaps.tsv
+Gap (passage minus verse),Language E,BLEU gap,0.93,,,,results,gaps.tsv
+Gap (passage minus verse),Language F,BLEU gap,2.56,,,,results,gaps.tsv
+Gap (passage minus verse),Language G,BLEU gap,7.17,,,,results,gaps.tsv
+Gap (passage minus verse),Language H,BLEU gap,4.81,,,,results,gaps.tsv
+Gap (passage minus verse),Language I,BLEU gap,3.01,,,,results,gaps.tsv
+Gap (passage minus verse),Language J,BLEU gap,1.53,,,,results,gaps.tsv
+Gap (passage minus verse),Language K,BLEU gap,3.39,,,,results,gaps.tsv
+Gap (passage minus verse),Language L,BLEU gap,2.83,,,,results,gaps.tsv
+Gap (passage minus verse),Language M,BLEU gap,3.0,,,,results,gaps.tsv
+Gap (passage minus verse),Language N,BLEU gap,1.94,,,,results,gaps.tsv
+Gap (passage minus verse),Language O,BLEU gap,9.82,,,,results,gaps.tsv
