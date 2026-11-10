@@ -1,0 +1,55 @@
+system,group,measure,value,lower,upper,n,source,file
+Baseline (1 run),Translation of held-out passages,chrF3,70.01,,,17,results,scores.tsv
+"Baseline, flagged training verses removed",Translation of held-out passages,chrF3,69.73,,,17,results,scores.tsv
+2 eflomal runs,Translation of held-out passages,chrF3,70.25,,,17,results,scores.tsv
+5 eflomal runs,Translation of held-out passages,chrF3,70.61,,,17,results,scores.tsv
+10 eflomal runs,Translation of held-out passages,chrF3,70.32,,,17,results,scores.tsv
+15 eflomal runs,Translation of held-out passages,chrF3,70.57,,,17,results,scores.tsv
+Baseline (1 run),Translation of held-out passages,BLEU,29.09,,,17,results,scores.tsv
+"Baseline, flagged training verses removed",Translation of held-out passages,BLEU,30.02,,,17,results,scores.tsv
+2 eflomal runs,Translation of held-out passages,BLEU,29.36,,,17,results,scores.tsv
+5 eflomal runs,Translation of held-out passages,BLEU,29.86,,,17,results,scores.tsv
+10 eflomal runs,Translation of held-out passages,BLEU,29.74,,,17,results,scores.tsv
+15 eflomal runs,Translation of held-out passages,BLEU,29.35,,,17,results,scores.tsv
+Baseline (1 run),"Verse segmentation, training data",Flagged verses (%),2.68,,,9350,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, training data",Flagged verses (%),0.0,,,9099,results,scores.tsv
+2 eflomal runs,"Verse segmentation, training data",Flagged verses (%),2.38,,,9375,results,scores.tsv
+5 eflomal runs,"Verse segmentation, training data",Flagged verses (%),2.29,,,9374,results,scores.tsv
+10 eflomal runs,"Verse segmentation, training data",Flagged verses (%),2.12,,,9374,results,scores.tsv
+15 eflomal runs,"Verse segmentation, training data",Flagged verses (%),2.11,,,9374,results,scores.tsv
+Baseline (1 run),"Verse segmentation, training data",Target much longer than source (%),0.72,,,9350,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, training data",Target much longer than source (%),0.0,,,9099,results,scores.tsv
+2 eflomal runs,"Verse segmentation, training data",Target much longer than source (%),0.57,,,9375,results,scores.tsv
+5 eflomal runs,"Verse segmentation, training data",Target much longer than source (%),0.58,,,9374,results,scores.tsv
+10 eflomal runs,"Verse segmentation, training data",Target much longer than source (%),0.49,,,9374,results,scores.tsv
+15 eflomal runs,"Verse segmentation, training data",Target much longer than source (%),0.47,,,9374,results,scores.tsv
+Baseline (1 run),"Verse segmentation, training data",Target much shorter than source (%),1.51,,,9350,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, training data",Target much shorter than source (%),0.0,,,9099,results,scores.tsv
+2 eflomal runs,"Verse segmentation, training data",Target much shorter than source (%),1.51,,,9375,results,scores.tsv
+5 eflomal runs,"Verse segmentation, training data",Target much shorter than source (%),1.38,,,9374,results,scores.tsv
+10 eflomal runs,"Verse segmentation, training data",Target much shorter than source (%),1.4,,,9374,results,scores.tsv
+15 eflomal runs,"Verse segmentation, training data",Target much shorter than source (%),1.43,,,9374,results,scores.tsv
+Baseline (1 run),"Verse segmentation, training data",One-word target verses (%),0.81,,,9350,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, training data",One-word target verses (%),0.0,,,9099,results,scores.tsv
+2 eflomal runs,"Verse segmentation, training data",One-word target verses (%),0.71,,,9375,results,scores.tsv
+5 eflomal runs,"Verse segmentation, training data",One-word target verses (%),0.71,,,9374,results,scores.tsv
+10 eflomal runs,"Verse segmentation, training data",One-word target verses (%),0.59,,,9374,results,scores.tsv
+15 eflomal runs,"Verse segmentation, training data",One-word target verses (%),0.55,,,9374,results,scores.tsv
+Baseline (1 run),"Verse segmentation, training data",Length correlation,0.0922,,,9350,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, training data",Length correlation,0.8647,,,9099,results,scores.tsv
+2 eflomal runs,"Verse segmentation, training data",Length correlation,0.0918,,,9375,results,scores.tsv
+5 eflomal runs,"Verse segmentation, training data",Length correlation,0.0918,,,9374,results,scores.tsv
+10 eflomal runs,"Verse segmentation, training data",Length correlation,0.0917,,,9374,results,scores.tsv
+15 eflomal runs,"Verse segmentation, training data",Length correlation,0.0918,,,9374,results,scores.tsv
+Baseline (1 run),"Verse segmentation, test data",Flagged verses (%),0.85,,,235,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, test data",Flagged verses (%),0.0,,,233,results,scores.tsv
+2 eflomal runs,"Verse segmentation, test data",Flagged verses (%),1.27,,,237,results,scores.tsv
+5 eflomal runs,"Verse segmentation, test data",Flagged verses (%),1.27,,,237,results,scores.tsv
+10 eflomal runs,"Verse segmentation, test data",Flagged verses (%),1.27,,,237,results,scores.tsv
+15 eflomal runs,"Verse segmentation, test data",Flagged verses (%),1.27,,,237,results,scores.tsv
+Baseline (1 run),"Verse segmentation, test data",Length correlation,0.8171,,,235,results,scores.tsv
+"Baseline, flagged training verses removed","Verse segmentation, test data",Length correlation,0.8438,,,233,results,scores.tsv
+2 eflomal runs,"Verse segmentation, test data",Length correlation,0.8495,,,237,results,scores.tsv
+5 eflomal runs,"Verse segmentation, test data",Length correlation,0.8443,,,237,results,scores.tsv
+10 eflomal runs,"Verse segmentation, test data",Length correlation,0.8371,,,237,results,scores.tsv
+15 eflomal runs,"Verse segmentation, test data",Length correlation,0.8397,,,237,results,scores.tsv
