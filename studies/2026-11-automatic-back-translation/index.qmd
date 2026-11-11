@@ -18,7 +18,7 @@ study = Study()
 - **Question:** is automatic back translation effective for oral Bible translation (OBT) projects?
 - In four OBT projects, a two-stage pipeline (training a speech recognition model using a sister-language orthography, then drafting using an LLM) produced passage-level written back translations.
 - Against a human back translation, the best draft in each language scores **chrF3 54.3, 65.5, 49.1 and 73.8** (Languages A to D).
-- Each language was scored on **4 to 66 passages** with a single run and no confidence intervals.
+- Each language was scored on **4 to 66 passages**.
 - **Conclusion:** the scores indicate that the drafts could be a useful starting point for a consultant to review in Paratext, but human feedback would be needed to validate this.
 
 ## The problem
@@ -33,18 +33,16 @@ OBT projects record a translation as audio, often in a language with no orthogra
     - **Self-training.** The adapter is then trained further on the chunks paired with its own transcripts, so that it spells recurring sounds and words consistently. The final transcripts come from this retrained adapter, and they are what the drafting step uses as source text.
     - **Donor choice.** Several donors were tried per language. A donor orthography that captures the language's sounds well should survive a text-to-speech *round trip*, so the donors were compared that way, with no ground-truth transcript needed:
         - **One text-to-speech model per donor.** For each donor, a text-to-speech model (SpeechT5) is trained on pairs of a chunk's audio and its transcript in that donor's orthography.
-        - **Held-out audio.** Whole recordings are held out, so no test chunk shares a recording with training audio. The held-out transcripts are synthesized with each donor's model, using the speaker characteristics of the original chunk.
-        - **Scoring.** A speech recognition model forced to an LWC of the community (Whisper large-v3) transcribes both the original chunk and its synthesized copy. The score is the character error rate (CER) between those two transcripts.
-2. **Drafting.** A large language model (gpt-6.1-sol) is shown 10 retrieved pairs of donor-spelling text and an existing human back translation, then drafts the back translation of each remaining passage. Passages used as references are kept out of the examples.
-    - **Human back translations recorded as audio.** Where a human back translation existed only as a recording, it was first transcribed with a speech recognition model.
-    - **Examples.** The examples are pairs of a passage's donor-orthography transcript and its existing human back translation, taken from other parts of the Bible than the passages being drafted. For each passage, a retriever picks the 10 most similar pairs, so the prompt is about 25,000 tokens.
-    - **Published Bible passages as extra examples.** One language had only 12 recorded passages with a human back translation, too few to fill the examples. For it, the pool also held passages from a published Bible in the reviewer language, each paired with the donor-orthography transcript of the same verses.
-    - **Recitation check.** A model that knows the Bible might recall a published verse instead of translating the transcript. Each draft was therefore compared with published Bibles in the reviewer language, and its closeness was judged against the closeness of the human back translation to those same Bibles.
+        - **Held-out audio.** Whole recordings are held out, so no test chunk shares a recording with training audio. The held-out transcripts are synthesized with each donor's model.
+        - **Scoring.** An ASR model (Whisper large-v3) in an LWC transcribes both the original chunk and its synthesized copy. The score is the character error rate (CER) between those two transcripts.
+2. **Drafting.** A large language model (gpt-6.1-sol) is shown 10 examples of transcribed source passages, paired with an existing human back translation, then drafts the back translation of each remaining passage. Ten examples of paired passages is around 25,000 tokens. Passages used as references are kept out of the examples.
+    - **Audio human back translations.** Where a human back translation existed only as a recording, it was first transcribed with a speech recognition model.
+    - **Published Bible passages as extra examples.** One language had only 12 recorded passages with a human back translation, too few to fill the examples. We augmented the human back translations with passages from a published Bible in the LWC.
+    - **Recitation check.** A model that knows the Bible might recall a published verse instead of translating the transcript. Each draft was therefore compared with published Bibles in the LWC.
 
 ## How it was tested
 
-We measured **chrF3** against an existing human back translation of the same passages. We are currently getting human feedback from translation consultants.
-
+We measured **chrF3** against existing human back translations of the same passages.
 ## Results
 
 ```{python}
@@ -68,12 +66,12 @@ for language, rows in scores.groupby("group", sort=False):
 Markdown("\n".join(lines))
 ```
 
-Donors are numbered within each language, not comparable across languages. In Language C, Donor 1 was the one chosen by the round trip and scored lowest (47.2 against 49.1 and 47.8); in Language D, the donors are listed in the round-trip order, and the round-trip intervals overlapped. With 4 to 5 passages each, the differences between donors are not distinguishable from noise.
+Donors are numbered within each language, not comparable across languages. With 4 to 5 passages each, the differences between donors are not distinguishable from noise.
 
 ## Limitations
 
-- **Small samples.** 4 passages (Language D), 5 (C), 12 (A) and 66 (B).
-- **Not human-checked.** We are currently collecting feedback from translation consultants.
+- **Small samples.** 4-66 passages.
+- **Not human-checked.**
 
 ## Reproducing this
 
