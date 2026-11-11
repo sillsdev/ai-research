@@ -1,7 +1,7 @@
 sources:
   results:
     in-study: true
-    origin: Computed by Laura Burdick, who trained the speech recognition model and fine-tuned NLLB with silnlp, then scored passages with sacrebleu (chrF3), November 2026
+    origin: Computed by Laura Burdick, who trained the speech recognition model and fine-tuned NLLB with silnlp, then scored passages with sacrebleu (chrF3), September–October 2025
 
 tables:
   - source: results
