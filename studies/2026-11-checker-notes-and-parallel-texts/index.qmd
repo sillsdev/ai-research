@@ -1,7 +1,11 @@
 ---
 title: "Translator's notes and parallel texts as extra context for an LLM checker"
 description: "Giving an LLM translation checker SIL's Open Translator's Notes, or the Hebrew, Greek and other English Bibles beside its source text, did not help it find more errors in Bible translation drafts. It raised the cost by up to three times, and the parallel texts added false alarms."
-date: 2026-11-03
+date: 2026-11-05
+date-modified: 2026-11-03
+language:
+  title-block-published: "Work completed"
+  title-block-modified: "Added to this site"
 author: Adam Hannon
 harness: bt-checking-eval
 categories: [translation checking, grounding, LLM evaluation, bt-checking-eval]
