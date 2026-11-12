@@ -1,8 +1,8 @@
 ---
 title: "Translator's notes and parallel texts as extra context for an LLM checker"
-description: "Giving an LLM translation checker SIL's Open Translator's Notes, or the Hebrew, Greek and other English Bibles beside its source text, did not help it find more errors in Bible translation drafts. It raised the cost by up to three times, and the parallel texts added false alarms."
-date: 2026-11-05
-date-modified: 2026-11-03
+description: "Given SIL's Open Translator's Notes in its chapter check, an LLM translation checker found more of the errors the notes explain (64% against 58%) and flagged fewer defensible interpretations as errors (5% against 12%). It cost about $0.01 to $0.03 more a chapter. Earlier tests that seeded only substitutions and omissions showed no effect, and parallel texts did not help."
+date: 2026-11-06
+date-modified: 2026-11-12
 language:
   title-block-published: "Work completed"
   title-block-modified: "Added to this site"
@@ -15,6 +15,10 @@ categories: [translation checking, grounding, LLM evaluation, bt-checking-eval]
 from research_site import Study
 
 study = Study()
+NOTES = ["Control", "All notes in the chapter check"]
+INTERP = ["Readings the notes rule out, 12 noted chapters"]
+EXEG = ["Defensible and wrong readings, 34 sites in 8 noted chapters"]
+EXEG_FLEET = ["Eleven drafts, back translation regenerated", "Eleven drafts, back translation written with the edit"]
 FLEET = ["Eleven drafts, four noted chapters"]
 LOW = ["Control", "Notes beside", "Notes only", "Base text as source"]
 MEDIUM = ["Control", "Control, medium", "Base text as source, medium"]
@@ -25,45 +29,242 @@ MODES = ["Control", "Notes where flagged", "Notes on request"]
 ## Summary
 
 - An LLM-based checker reads a Bible translation draft beside a source text and reports possible meaning errors. These tests gave it more context: **SIL's Open Translator's Notes**, an openly licensed set of per-verse exegetical notes, and **parallel texts**: the Hebrew, the Septuagint, four Greek New Testament editions and seven public-domain English Bibles.
-- On eleven drafts in minority languages with seeded errors, **neither changed which errors the checker found.** With the notes beside the source, F2 was 0.626 against 0.618 for the unchanged checker. With the parallel texts it was 0.656 against 0.662. Both differences are within run-to-run noise.
-- **Both raised the cost.** The notes made each chapter's first check cost about three times as much ($0.094 against $0.032). The parallel texts doubled the cost of the checking calls and added false alarms: 4.8% of clean verses were flagged, against 3.8%.
-- **One setting lost a quarter of the recall**: the notes in place of the material built from the source text. The loss came from removing that material, not from the notes.
-- **The notes did not help LLM judges either.** Judges given the notes beside the Hebrew or Greek changed about as many verdicts for the better as for the worse. Given the notes instead of the original text, they changed twice as many for the worse.
-- **A newer version of the pipeline** shows the notes only where they might help. Recall there stayed inside the control's own run-to-run range.
-- **The notes could excuse almost none of the checker's false alarms.** Of 21 false alarms a reviewer rejected on verses with a note, none had its flagged wording among the renderings the note lists.
+- **The notes help the checker with the errors they are written about.** On a test set of 70 readings that the notes rule out, such as a wrong referent, a figure of speech taken literally or implied information made explicit wrongly, the checker found 64.3% with every noted verse's notes in its chapter check, against 57.9% without them. That is six runs each, and the difference is significant (permutation test p 0.011). The largest gains were on additions (29% to 88%), figures of speech (44% to 69%) and implied information (57% to 81%).
+- **The notes also reduce false alarms on defensible interpretations.** Where a verse has more than one interpretation that published versions take, the checker without the notes flagged a draft that took a different one from its source text in 12% of checks. With the notes it flagged 5%, and it still caught the readings the notes rule out (92% against 93%). For the interpretation the notes recommend over the source text, flags fell from 17% to 7%. Four sites became flagged less often and none more often; with this few sites the sign test gives p 0.125, so the direction is clear but not yet established.
+- **On real drafts the notes did no harm.** On eleven drafts in minority languages, read through their back translations, recall of seeded errors was 52.0% with the notes against 49.6% without, in one run each. On defensible interpretations carried into the same drafts, the checker flagged few with or without the notes (7% to 9%), so there was little for the notes to remove, and one run each showed no change.
+- **The cost is small.** The notes added $0.013 to $0.020 a chapter on the English test sets and up to $0.030 a chapter on the drafts. With them, the slowest tenth of chapters took 41 seconds or less, inside the pipeline's 60-second limit per chapter.
+- **Earlier tests found no effect, because they measured errors the notes do not discuss.** Seeded substitutions, omissions and additions, and the false alarms a reviewer rejected on published English, are not what the notes address. In those tests the notes changed nothing measurable, whether beside the source, given to the LLM judges or used as a filter.
+- **Parallel texts did not help.** They left recall unchanged, doubled the cost of the checking calls and added false alarms.
 
 ## The question
 
-The checker compares a draft with a source text, usually the Berean Standard Bible (BSB), a modern English translation in the public domain. It reports places where the draft's meaning departs from that source. It already receives material built from the source: reference pairs (verses from the project's own translated text beside the source) and a written critique of the chapter.
+The checker compares a draft with a source text, the Berean Standard Bible (BSB), a modern English translation in the public domain, and reports places where the draft's meaning departs from it. Because it compares with one translation, it can see that a draft differs from the BSB but not whether the difference is a mistake or one of the interpretations other published versions take.
 
-A human translation consultant has more than that to hand: exegetical notes on what the original means and which renderings are acceptable, and the original languages and other translations. Two questions follow:
+A human translation consultant has more to hand: exegetical notes on what the original means and which interpretations are defensible, and the original languages and other translations. Three questions follow:
 
-1. Do SIL's Open Translator's Notes help the checker, or the LLM judges that decide whether a flag is real?
-2. Do parallel texts beside the source help the checker find errors?
+1. Do SIL's Open Translator's Notes help the checker find errors that need knowledge of what the original means?
+2. Do the notes stop the checker from flagging a defensible interpretation that differs from the BSB?
+3. Do parallel texts beside the source help the checker find errors?
 
-The Open Translator's Notes give, for each verse, a section summary, a base text (the BSB's wording), other acceptable ways to render it, and an explanation of the original. The version tested covers 36 books: every New Testament book except Acts, and ten Old Testament books. Open Translator's Notes © 2024 SIL International, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). This page quotes no note text.
+The Open Translator's Notes give, for each verse, a section summary, a base text (the BSB's wording), other acceptable ways to render it, and an explanation of the original that sets out its interpretations and the versions that take each one. The version tested covers 36 books: every New Testament book except Acts, and ten Old Testament books. Open Translator's Notes © 2024 SIL International, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). This page quotes no note text.
 
 ## How it was tested
 
-**Drafts with seeded errors.** Eleven Bible translation drafts in minority languages, each with errors of known kinds seeded into chosen verses, form the main test set. Results are pooled over the eleven drafts; no draft is reported on its own. **Recall** is the share of seeded errors found, **precision** the share of findings that point at a seeded error, and **F2** combines the two with recall weighted twice as heavily. The **share of clean verses flagged** counts verses with nothing seeded that the checker flagged anyway.
+**The checker.** The checker first compares the draft with the source verse by verse, then a chapter check decides which recorded differences to report. Its model is Gemini 3.8 Flash. The notes were given to the chapter check in the simplest way that worked: **all notes in the chapter check** puts the notes of every verse in the chapter that has a note into its prompt, with no extra call. The **control** is the same checker without the notes.
 
-**Published Bibles.** Public-domain and openly licensed published Bibles, checked against the BSB or against the Hebrew and Greek, have no seeded errors. There, a reviewer's verdicts on the checker's flags stand in for an answer sheet.
+**Test sets built from the notes.** Two test sets were built from the notes themselves, in chapters of a modernized King James Version (public domain) checked against the BSB:
 
-**Configurations.** The notes were given to the checker in three ways:
+- **Readings the notes rule out**: 70 errors planted in 12 noted chapters (284 verses). Each is a reading that the verse's note explains is wrong and that the BSB does not take. The kinds are a wrong referent, a wrong word sense, a figure of speech taken the wrong way, implied information made explicit wrongly, a rhetorical question read as a real one or the reverse, a reversed relation between clauses, a misread construction, an inclusive or exclusive "we" swapped, an overly literal rendering, and ambiguity introduced into the target. By MQM error category, these are mostly mistranslations of content that is ambiguous in the source.
+- **Defensible and wrong readings**: 34 sites in eight noted chapters (250 verses), at verses where the note sets out two or three interpretations and names the published versions that take each. Each site is served twice, on two copies of the text: once as a **defensible reading**, an interpretation the notes attribute to published versions and the BSB does not take, which the checker should leave alone; and once as a **wrong reading**, one the note rules out, which it should flag. For 10 sites the defensible reading is the one the notes recommend over the BSB's; for the other 24 the notes prefer the BSB's reading but name versions that take the other.
 
-- **Notes beside**: the source and everything built from it kept, with each verse's note added.
-- **Base text as source**: the notes' base text as the source, which for these tests is the BSB itself, with the rest of the note beside it and the reference pairs and critique kept.
-- **Notes only**: the note as the only context, with the reference pairs and critique removed.
+Because a model drafted these readings from the notes, the sets favor errors the notes discuss. That is their purpose, and it limits the claim to errors of that kind.
 
-Each configuration was compared with an unchanged control run in the same week. The checking model was Gemini 3.8 Flash at the default thinking level (low); one pair of tests repeated the control and the base-text setting at thinking level medium. Each test ran three times.
+**Drafts with seeded errors.** Eleven Bible translation drafts in minority languages form the main test set of the wider project, each with errors of known kinds seeded into chosen verses. The checker reads each draft through its back translation into English. Results are pooled over the eleven drafts; no draft is reported on its own. For the second question the defensible and wrong readings were also carried into the drafts (described below).
 
-**Noise.** The model does not give the same answer twice. In the parallel-texts test, four runs of the unchanged control ranged from F2 0.656 to 0.670, so a difference under about 0.014 is a tie. Paired comparisons count the seeded verses each arm caught in more runs or fewer, with a sign test.
+**Measures.** **Recall** is the share of planted or seeded errors found. A defensible reading counts as **flagged** when any finding falls on its verse. **Clean-verse findings** are findings on verses with nothing planted. Each English test ran three or six times, and the drafts once.
+
+**Noise.** The model does not give the same answer twice. On the 70 planted readings, six runs of the control found between 38 and 43, so differences are judged across runs with an exact permutation test, and by site with a sign test.
 
 ## Results
 
-### The notes on drafts with seeded errors
+### Errors the notes explain
 
-These are the four chapters of the test set that the notes cover (Luke 10 and 11, Romans 7 and 8): 318 seeded and 1,423 clean verses across the eleven drafts, three runs of each configuration.
+```{python}
+#| renderings: [light, dark]
+study.dot_chart("Recall", groups=INTERP, systems=["Control", "All notes in the chapter check", "Notes on request", "Notes on request, without literal glosses"], x_title="Recall of the 70 planted readings (range is lowest to highest run)")
+```
+
+```{python}
+study.table(
+    groups=INTERP,
+    measures=["Recall"],
+    systems=["Control", "All notes in the chapter check", "Notes on request", "Notes on request, without literal glosses"],
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=["Readings the notes rule out, six runs each"],
+    measures=["Planted readings found per run beyond the control", "All-notes runs above the control's best"],
+    systems=["All notes against control"],
+    digits=1,
+    group_title="Test set",
+)
+```
+
+With all notes in the chapter check, the checker found 4.5 more planted readings a run than the control, and five of its six runs found more than the control's best run. An exact permutation test over the twelve runs gives p 0.011.
+
+Two other ways of giving the notes were tried. **Notes on request** adds a call before the chapter check that asks for the notes of the verses it wants. It reached the same recall over three runs, but the extra call made its slowest tenth of chapters take 58 seconds, close to the pipeline's 60-second limit per chapter. Removing the notes' word-for-word glosses of the original from that arm lowered recall and gained nothing.
+
+The gain is in the readings a note names directly. By MQM category, as the share of runs in which each planted reading was found:
+
+```{python}
+study.table(
+    measures=["Share of runs found"],
+    groups=["Addition", "Mistranslation", "Ambiguous source content read wrongly", "Ambiguity introduced", "Overly literal"],
+    systems=NOTES,
+    group_title="MQM category",
+)
+```
+
+By kind, figures of speech rose from 44% to 69%, implied information from 57% to 81% and clause relations from 61% to 75%. Wrong referents (90%) and misread constructions (88% to 92%) were already found without the notes. Six readings account for most of the gain: two went from found in no run to found in every run, three from one run or three runs in six to every run, and one from one run in six to four. Four went the other way, by smaller margins. Overly literal readings fell from 30% to 20% in every arm with the notes, with or without the glosses; five planted readings are too few to say why.
+
+### Defensible interpretations
+
+```{python}
+#| renderings: [light, dark]
+study.bar_chart(
+    "Defensible readings flagged",
+    groups=EXEG,
+    systems=NOTES,
+    x_title="Share of checks that flagged a defensible reading (34 sites, three runs each)",
+)
+```
+
+```{python}
+study.table(
+    groups=EXEG,
+    measures=["Wrong readings caught", "Sites told apart"],
+    systems=NOTES,
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=EXEG,
+    measures=["Defensible readings flagged", "Defensible readings flagged, the one the notes recommend", "Defensible readings flagged, another the notes name"],
+    systems=NOTES,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+"Told apart" counts a site once for each pair of runs in which its wrong reading was caught and its defensible reading was not flagged. Without the notes the checker leaves most defensible readings alone, but it flags them often enough to matter, and more often when the draft takes the reading the notes recommend (17%) than another one (10%). With the notes, both kinds of flag fell by more than half, and the wrong readings were caught as often as before. Two wrong readings were missed in every run of both arms.
+
+```{python}
+study.table(
+    groups=EXEG,
+    measures=["Sites flagged in fewer runs", "Sites flagged in more runs"],
+    systems=["All notes against control"],
+    digits=0,
+    group_title="Test set",
+)
+```
+
+An exact sign test over the sites gives p 0.125. Five sites account for every flagged defensible reading. With the notes, the flags at three of them (Proverbs 14:17, Hosea 4:9 and Micah 2:12) went away in every run, and at a fourth (Micah 2:7) they fell from three runs to two. The fifth (1 Corinthians 14:32) was flagged in every run of both arms. The flags that remain with the notes are key-term findings: the defensible reading does not use the term the BSB uses for "spirit". The part of the checker that checks key terms does not read the notes, so the notes cannot clear such a flag. No site was flagged more often with the notes.
+
+### On real drafts
+
+The notes were run on the eleven drafts in two ways: once against the drafts' own seeded errors, and once with the defensible and wrong readings carried into the drafts.
+
+**The drafts' seeded errors.** The question here was harm, not gain. The pass rule was set before the run: recall within 5 points of the control's, and clean-verse findings below twice its rate. The control is an earlier stored run of the same checker on the same chapters.
+
+```{python}
+study.table(
+    groups=["Eleven drafts, four noted chapters, one run"],
+    measures=["Recall"],
+    systems=NOTES,
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=["Eleven drafts, four noted chapters, one run"],
+    measures=["Clean-verse findings", "Findings per chapter"],
+    systems=NOTES,
+    digits=1,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=["Eleven drafts, four noted chapters, one run"],
+    measures=["Projects whose recall rose", "Projects whose recall held", "Projects whose recall fell"],
+    systems=["All notes in the chapter check"],
+    digits=0,
+    group_title="Test set",
+)
+```
+
+Both limits passed. Recall rose on five drafts, held on five and fell on one. With one run against one and no measured run-to-run spread on the drafts, the 2.4-point rise is in the same direction as on the English test set but is not by itself a gain. Most of the extra clean-verse findings came from one draft.
+
+**Defensible and wrong readings in the drafts.** Sixteen sites in Luke 11 and Romans 8 were carried into each draft: a model made the smallest edit to the draft verse that carries the reading, and each draft took one reading per site, alternating between drafts, so every site was served both ways across the eleven. The drafts already take some of the notes' defensible readings, at 10 site-drafts. This was done twice:
+
+- **Back translation regenerated**: the edited chapters were back-translated again, and a site was kept only where the new back translation still showed the reading. Of 176 site-drafts, 124 were kept.
+- **Back translation written with the edit**: the edit also wrote the verse's back translation, so the draft and its back translation agree by construction. Of 176, 147 were kept.
+
+```{python}
+study.table(
+    groups=EXEG_FLEET,
+    measures=["Wrong readings caught", "Recall of all seeded errors"],
+    systems=NOTES,
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=EXEG_FLEET,
+    measures=["Defensible readings flagged", "Defensible readings flagged, the one the notes recommend", "Defensible readings flagged, another the notes name", "Clean-verse findings per chapter-run"],
+    systems=NOTES,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+On the drafts the notes made no measurable difference in either direction. The control flagged few defensible readings to begin with (7% to 9%, against 12% on the English text), so there was little to remove, and one run each cannot separate a change of one or two flags from run-to-run spread. In the first version, flags that were about the interpretation fell from four to two, in the same direction as on the English text. As on the English text, some of the flags that remained at a reading the notes recommend were key-term findings. One wrong reading, which its note warns against, was missed in every draft by both arms.
+
+### Cost, latency and length
+
+```{python}
+study.table(
+    groups=INTERP + EXEG,
+    measures=["Dollars per chapter", "Clean-verse findings per chapter-run"],
+    systems=NOTES,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+```{python}
+study.table(
+    groups=INTERP + EXEG,
+    measures=["Seconds per chapter, median", "Seconds per chapter, 90th percentile", "Words per finding, median"],
+    systems=NOTES,
+    digits=0,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+```{python}
+DRAFTS = ["Eleven drafts, four noted chapters, one run"] + EXEG_FLEET
+study.table(groups=DRAFTS, measures=["Dollars per chapter"], systems=NOTES, higher_is_better=False, group_title="Test set")
+```
+
+```{python}
+study.table(
+    groups=DRAFTS,
+    measures=["Seconds per chapter, median", "Seconds per chapter, 90th percentile", "Words per finding, median"],
+    systems=NOTES,
+    digits=0,
+    higher_is_better=False,
+    group_title="Test set",
+)
+```
+
+The notes make the chapter check's prompt about four and a half times as long. Most of a chapter's cost is the verse-by-verse comparison, so the notes add about a fifth to a chapter's cost on the drafts and about a third on the English text. Findings are a few words longer. The control on the drafts' seeded errors ran on an earlier day than the notes arm, so part of that latency difference may be the provider's.
+
+### Why the earlier tests found nothing
+
+Before the test sets above were built, the notes were tried on the drafts' seeded errors, on published Bibles and with the LLM judges that rate the checker's findings. Each of those tests measured errors the notes do not discuss: seeded errors are substitutions, omissions and additions that no note would call acceptable, and the false alarms on published English are mostly about key terms, a pronoun for a title, near-synonyms and punctuation. In all of them the notes changed nothing measurable, and that result is what led to the test sets built from the notes.
+
+**An earlier version of the checker, on the drafts.** This version checked each verse with material built from the source text: reference pairs (verses from the project's own translated text beside the source) and a written critique of the chapter. The notes were given in three ways: **notes beside** the source, the notes' **base text as source** with the rest of the note beside it, and **notes only**, with the reference pairs and critique removed. These are the four chapters of the drafts that the notes cover (Luke 10 and 11, Romans 7 and 8), three runs each, at the model's default thinking level. F2 combines precision and recall with recall weighted twice as heavily.
 
 ```{python}
 #| renderings: [light, dark]
@@ -73,57 +274,19 @@ study.dot_chart("F2", groups=FLEET, systems=LOW, x_title="F2, pooled over eleven
 ```{python}
 study.table(
     groups=FLEET,
-    measures=["Precision", "Recall", "F2", "Defect-level F2"],
-    systems=LOW,
-    group_title="Test set",
-)
-```
-
-The notes beside the source and the base text as source both stay level with the control. Notes beside caught seeded verses in more runs than the control 23 times and in fewer runs 15 times (sign test p 0.256). F2 rose on 6 drafts and fell on 5.
-
-Notes only lost a quarter of the recall, and F2 fell on all eleven drafts. That setting also removes the reference pairs and the critique. Notes beside shows the checker nearly the same prompt as base text as source, keeps those sources, and loses nothing. So the loss measures what the reference pairs and critique are worth to the checker, not what the notes cost.
-
-```{python}
-PAIRED = ["Notes beside against control", "Base text as source against control", "Notes only against control"]
-study.table(
-    groups=FLEET,
-    measures=["Seeded verses kept", "Seeded verses gained", "Seeded verses caught in more runs", "Projects whose F2 rose"],
-    systems=PAIRED,
-    digits=0,
-    group_title="Test set",
-)
-```
-
-```{python}
-study.table(
-    groups=FLEET,
-    measures=["Seeded verses lost", "Seeded verses caught in fewer runs", "Projects whose F2 fell"],
-    systems=PAIRED,
-    digits=0,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-"Kept", "lost" and "gained" count seeded verses caught in at least two of three runs, compared with the control. For notes only, the sign test on seeded verses gives p under 0.001.
-
-**Cost, latency and length.** The notes make the prompt much longer, which is where the cost comes from. Latency and the length of findings barely move. The first run is the closest stand-in for a single check; the later runs read much of the prompt from the provider's cache.
-
-```{python}
-study.table(
-    groups=FLEET,
-    measures=["Share of clean verses flagged", "Dollars per chapter, first run", "Dollars per chapter, mean of three runs"],
+    measures=["Precision", "Recall", "F2", "Share of clean verses flagged", "Dollars per chapter, first run"],
     systems=LOW,
     digits=3,
-    higher_is_better=False,
     group_title="Test set",
 )
 ```
 
+Notes beside and base text as source stayed level with the control (seeded verses caught in more runs 23 times and in fewer runs 15 times, sign test p 0.256), at about three times the cost of the first check. Notes only lost a quarter of the recall, and F2 fell on all eleven drafts; notes beside keeps the reference pairs and critique and loses nothing, so that loss measures what those are worth, not what the notes cost.
+
 ```{python}
 study.table(
     groups=FLEET,
-    measures=["Seconds per chapter, median", "Seconds per chapter, 95th percentile", "Findings per chapter", "Words per finding, median"],
+    measures=["Seconds per chapter, median", "Seconds per chapter, 95th percentile", "Words per finding, median"],
     systems=LOW,
     digits=1,
     higher_is_better=False,
@@ -131,7 +294,7 @@ study.table(
 )
 ```
 
-**Thinking longer helps on its own, with or without the notes.** At thinking level medium, the control's F2 rose from 0.618 to 0.655, on 10 of the 11 drafts (sign test p 0.012). With the notes at medium it was 0.650, level with the medium control. The gain has a price: $0.075 a chapter on the first run against $0.032, and a median of 48 seconds a chapter against 11.
+Thinking longer helped on its own: at thinking level medium the control's F2 rose from 0.618 to 0.655, on 10 of the 11 drafts (sign test p 0.012), and the notes at medium were level with it.
 
 ```{python}
 study.table(
@@ -142,40 +305,7 @@ study.table(
 )
 ```
 
-```{python}
-study.table(
-    groups=FLEET,
-    measures=["Share of clean verses flagged", "Dollars per chapter, first run"],
-    systems=MEDIUM,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-```{python}
-study.table(
-    groups=FLEET,
-    measures=["Seconds per chapter, median", "Seconds per chapter, 95th percentile"],
-    systems=MEDIUM,
-    digits=1,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-### The notes on published Bibles
-
-On clean published text at the default thinking level, the checker often answers a chapter with nothing at all. On drafts with seeded errors it almost never does:
-
-```{python}
-#| renderings: [light, dark]
-study.bar_chart(
-    "Chapters answered with nothing at once",
-    x_title="Share of chapters where both meaning passes returned nothing (range across configurations)",
-)
-```
-
-So a single run on a clean chapter is close to a coin toss, and three runs of each configuration were made. With the notes beside the source on fifteen configurations over published Bibles, the checker raised fewer flags of every kind. That included flags a reviewer had confirmed as real errors, which were raised again in 51% of runs against 74%:
+**On published Bibles.** On clean published text the checker often answers a chapter with nothing at all, so a single run is close to a coin toss and three runs of each configuration were made. With the notes beside the source on fifteen configurations, the checker raised fewer flags of every kind, including flags a reviewer had confirmed as real errors (raised again in 51% of runs against 74%; sign test p 0.02 for confirmed flags, under 0.001 for all 275 questions).
 
 ```{python}
 #| renderings: [light, dark]
@@ -186,31 +316,7 @@ study.bar_chart(
 )
 ```
 
-```{python}
-study.table(
-    measures=["Questions raised in more runs", "Questions raised in fewer runs"],
-    groups=["Confirmed by the reviewer", "Rejected by the reviewer", "All questions"],
-    digits=0,
-    group_title="Reviewer's answer",
-)
-```
-
-For the confirmed flags the sign test gives p 0.02, and for all 275 questions p under 0.001.
-
-On the configurations grounded on the BSB, two chat judges (GPT-5 and Claude Sonnet 5) rated every flag either arm raised. By verse, the notes-only arm found the same seven verses with real errors as the control, and the same number of verses with only rejected flags. Its extra flags were all in the debatable middle.
-
-```{python}
-study.table(
-    measures=["Verses with a confirmed flag", "Verses whose best flag is debatable", "Verses with only rejected flags", "Verses flagged"],
-    systems=["Control", "Notes only"],
-    digits=0,
-    group_title="Test set",
-)
-```
-
-### The notes and the judges
-
-Six decision models judge whether a flag is a real error. They were asked again about 82 reviewed questions on verses with a note, once with the note beside the Hebrew or Greek and once with the note in its place. Each verdict that moved closer to or further from the reviewer's answer was counted:
+**With the LLM judges.** Six decision models that rate whether a finding is a real error were asked again about 82 reviewed questions on verses with a note. Beside the Hebrew or Greek, the notes moved about as many verdicts closer to the reviewer's answer as further from it (33 against 29 on exact agreement, p 0.70). In place of the original, they made twice as many worse as better (35 against 69, p 0.001).
 
 ```{python}
 study.table(measures=["Verdicts made right"], digits=0, group_title="Agreement measured as")
@@ -220,86 +326,37 @@ study.table(measures=["Verdicts made right"], digits=0, group_title="Agreement m
 study.table(measures=["Verdicts made wrong"], digits=0, higher_is_better=False, group_title="Agreement measured as")
 ```
 
-Beside the original, the notes moved about as many verdicts each way (33 better, 29 worse on exact agreement, p 0.70). In place of the original, they made twice as many verdicts worse as better (35 against 69, p 0.001).
-
-### The notes in a newer version of the pipeline
-
-A newer version of the pipeline first compares draft and source, then has a judge decide on each chapter's recorded differences. Two ways of bringing the notes in only where they might help were tried there. **Notes where flagged** shows the judge the notes for verses with a recorded difference. **Notes on request** lets the model ask for the notes of the verses it wants. The test set was a modernized public-domain English Bible with planted errors, on the 12 of its chapters that have notes (68 planted errors), three runs each.
+**On planted substitutions, in the current version.** On the 12 noted chapters of the modernized King James Version with 68 planted substitutions, omissions and additions, two ways of giving the notes only where they might help, **notes where flagged** and **notes on request**, stayed inside the control's own run-to-run range. The set had no clean-verse findings for the notes to excuse.
 
 ```{python}
 #| renderings: [light, dark]
 study.dot_chart("Recall", groups=["Planted English text, 12 noted chapters"], systems=MODES, x_title="Recall of planted errors (range is lowest to highest run)")
 ```
 
-```{python}
-PLANTED = ["Planted English text, 12 noted chapters"]
-study.table(groups=PLANTED, measures=["Recall"], systems=MODES, group_title="Test set")
-```
-
-```{python}
-study.table(
-    groups=PLANTED,
-    measures=["Clean-verse findings per chapter-run", "Dollars per chapter"],
-    systems=MODES,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-```{python}
-study.table(
-    groups=PLANTED,
-    measures=["Seconds per chapter, median", "Seconds per chapter, 90th percentile", "Words per finding, median"],
-    systems=MODES,
-    digits=0,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-Both modes stay inside the control's range across its three runs. Notes on request asked for notes in 28 of 36 chapter-runs, 65 verses in all. A planted error is a substitution, omission or addition that no note would call acceptable, and this set had no clean-verse findings for the notes to excuse. So the set can show only that the notes do no harm here, not where they would help.
-
-The notes were also tried as a filter: two cheap decision models, given the notes, judged each stored finding on a verse with a note, and a rejected finding was dropped. One of them (Jev) rejected mostly real errors: 9 of its 10 rejections on the planted set, and 26 of 32 on the drafts, were on verses holding a planted error. Recall fell by about five points. The other (Perplexity's decider) rejected almost nothing.
+**As a filter.** Two decision models, given the notes, judged each stored finding on a verse with a note, and a rejected finding was dropped. One of them (Jev) rejected mostly real errors, 9 of its 10 rejections on the planted English text and 26 of 32 on the drafts, and recall fell by about five points. The other (Perplexity's decider) rejected almost nothing.
 
 ```{python}
 study.table(
     groups=["Planted English text, 3 runs", "Eleven drafts, 1 run"],
-    measures=["Recall"],
+    measures=["Recall", "Clean-verse findings per run"],
     systems=["No filter", "Jev", "Perplexity decider"],
     group_title="Test set",
 )
 ```
 
-```{python}
-study.table(
-    groups=["Planted English text, 3 runs", "Eleven drafts, 1 run"],
-    measures=["Findings per run", "Clean-verse findings per run"],
-    systems=["No filter", "Jev", "Perplexity decider"],
-    digits=1,
-    higher_is_better=False,
-    group_title="Test set",
-)
-```
-
-On the drafts, Jev's filter removed 0.4 clean-verse findings a run, at the cost of 5.6 points of recall.
-
-### The most the notes could excuse
-
-The notes' purpose is to show which renderings are acceptable, so they might excuse a false alarm on a defensible rendering. To find the most they could do, each meaning finding a reviewer had answered on a published Bible was checked for its flagged wording in the note for that verse. No model was involved.
+**The false alarms a reviewer rejected.** Each meaning finding a reviewer had answered on a published Bible was checked for its flagged wording in the note for that verse, with no model involved. None of the 21 rejected findings on a verse with a note had its flagged wording in a listed rendering, and the notes' explanations mentioned the flagged words of confirmed findings as often as rejected ones. Those false alarms are not about interpretation, so the notes could excuse almost none of them. This is the reason the defensible-reading test set was built from the notes' own interpretations instead.
 
 ```{python}
 study.table(
-    measures=["Reviewed", "On a verse with a note", "Flagged wording in the notes' base text", "Flagged wording in a listed rendering", "Flagged words in a listed rendering, any order", "Flagged words mentioned in the note's explanation"],
+    measures=["Reviewed", "On a verse with a note", "Flagged wording in a listed rendering", "Flagged words mentioned in the note's explanation"],
     digits=0,
     group_title="Reviewer's answer",
 )
 ```
 
-None of the 21 rejected findings on a verse with a note has its flagged wording in a listed rendering, and only one has its words there in some order. The notes' explanations mention the flagged words of 5 confirmed findings and 3 rejected ones, so where they touch the flagged wording at all, they touch real errors as often. A finding whose wording is in the base text is excused by the BSB itself, not by anything the notes add. The checker's false alarms on published English are mostly about key-term consistency, a pronoun in place of a title, near-synonyms and punctuation. The notes' listed renderings paraphrase whole clauses and rarely contain such wording.
-
 ### Parallel texts beside the source
 
-The test set's seven chapters (Genesis 1 to 3, Luke 10 and 11, Romans 7 and 8) were checked with each verse shown in further texts beside the BSB source. For Genesis these were the Masoretic Hebrew and the Septuagint; for Luke and Romans, four Greek editions (the SBL Greek New Testament, the Byzantine text, the Text-Critical Greek New Testament and the Textus Receptus). Both testaments also had every other public-domain English text in the collection: the World English Bible, the Majority Standard Bible, the American Standard Version, the King James Version and Young's Literal Translation, with the JPS Tanakh and Brenton's English Septuagint in Genesis. The prompt said the source remained the text to check against.
+On the earlier version of the checker, the drafts' seven chapters (Genesis 1 to 3, Luke 10 and 11, Romans 7 and 8) were checked with each verse shown in further texts beside the BSB source. For Genesis these were the Masoretic Hebrew and the Septuagint; for Luke and Romans, four Greek editions (the SBL Greek New Testament, the Byzantine text, the Text-Critical Greek New Testament and the Textus Receptus). Both testaments also had every other public-domain English text in the collection: the World English Bible, the Majority Standard Bible, the American Standard Version, the King James Version and Young's Literal Translation, with the JPS Tanakh and Brenton's English Septuagint in Genesis. The prompt said the source remained the text to check against.
 
 ```{python}
 #| renderings: [light, dark]
@@ -327,8 +384,6 @@ study.table(
 
 Recall did not move (0.644 in both the parallel arm and the same-week control). Seeded verses caught in more and in fewer runs balance, 34 against 27 (p 0.443). The parallel texts did add false alarms: clean verses were flagged more often 78 times and less often 35 times (p under 0.001). Few of the extra findings cite a parallel text, so they look like a longer prompt making the checker readier to flag, not readings taken from the other texts.
 
-Against the same-week control alone the picture is the same: seeded verses 26 more against 23 fewer (p 0.775), clean verses 70 against 34 (p under 0.001), and F2 rose on 5 drafts and fell on 6.
-
 ```{python}
 study.table(
     groups=["Eleven drafts, seven chapters"],
@@ -350,14 +405,22 @@ study.table(
 )
 ```
 
-The checking calls cost about twice as much on the first run. Each chapter's back translation and critique are generated once, before the check, and cost the same in both arms. Counting them, a chapter's first check costs $0.250 with the parallel texts against $0.217.
+The checking calls cost about twice as much on the first run. Counting the back translation and critique generated once per chapter, a chapter's first check costs $0.250 with the parallel texts against $0.217.
+
+## Conclusions
+
+- Interpretive notes are useful context for an LLM checker, for two things a source-text comparison cannot do on its own: finding errors that need knowledge of what the original means, and leaving alone an interpretation that differs from the source text but that published versions take.
+- The simplest way to give them, every noted verse's notes in the one chapter check, worked as well as asking for them on request and was faster. Using the notes to filter findings after the fact dropped real errors.
+- The effect on real drafts is not yet shown in either direction. The drafts do take some of the notes' interpretations, so the case occurs in practice, but one run per arm cannot measure a change in a flag rate that starts at 7% to 9%.
+- Notes do not clear a key-term finding, because the key-term check does not read them. For the notes to clear a key-term flag on an interpretation they recommend, that check would need them too.
 
 ## Limitations
 
-- **The seeded errors are not what the notes are for.** Seeded errors are substitutions, omissions and additions, which no note calls acceptable. Where the notes could help, by excusing a defensible rendering, the drafts' test set has too few such cases to measure. The ceiling count above is the only evidence on that, and it covers 70 of the 200 reviewed meaning findings, because the notes cover 36 books.
-- **The fleet tests of the notes cover four chapters**, the ones every draft has and the notes cover. The parallel-texts test covers seven.
+- **The test sets built from the notes favor the errors the notes discuss.** A model drafted the planted readings from the notes, so the gains measure the notes on the errors they are about, not on errors in general.
+- **The defensible-reading result rests on few sites.** The drop from 12% to 5% comes from five sites, and the sign test over sites (p 0.125) does not yet establish it.
+- **The drafts ran once per arm.** Neither the gain in recall nor any change in flagged defensible readings on the drafts can be separated from run-to-run spread.
+- **The notes cover 36 books**, so the tests on drafts use the four chapters every draft has that the notes cover, and the defensible-reading test on drafts uses two of them.
 - **The parallel texts were not tested where they should matter most**: a draft that follows a manuscript reading the BSB does not. No seeded error is a textual variant.
-- **The three runs are not fully independent.** Later runs read a cached prompt, and on published Bibles the second and third runs were nearly the same.
 - **One checking model.** All checker results are from Gemini 3.8 Flash. Another model may use extra context differently.
 - **Judged by models and one reviewer.** Verdicts on published Bibles come from two chat judges, six decision models and one reviewer's answers to part of the flags.
 
