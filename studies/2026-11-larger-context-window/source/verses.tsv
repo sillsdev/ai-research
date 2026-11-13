@@ -1,0 +1,16 @@
+method	verses	chrF3	BLEU	verses_tested
+Combined in training and inference	1 verse	55.42	19.69	836
+Combined in training and inference	2 verses	57.5	20.04	836
+Combined in training and inference	3 verses	58.42	19.74	836
+Combined in training and inference	4 verses	55.13	17.61	836
+Combined in training and inference	5 verses	48.65	14.3	836
+Combined in training and inference	6 verses	42.38	10.59	836
+Combined in training and inference	7 verses	37.46	8.37	836
+Combined in training and inference	8 verses	33.27	6.02	836
+Joined after inference	2 verses	57.89	20.11	836
+Joined after inference	3 verses	59.59	20.38	836
+Joined after inference	4 verses	60.85	20.71	836
+Joined after inference	5 verses	61.82	20.82	836
+Joined after inference	6 verses	62.53	21.0	836
+Joined after inference	7 verses	63.25	21.16	836
+Joined after inference	8 verses	63.84	21.33	836

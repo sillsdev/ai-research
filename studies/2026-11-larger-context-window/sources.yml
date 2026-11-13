@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick, who fine-tuned NLLB with silnlp and scored the outputs with sacrebleu (chrF3 and BLEU). The figures were taken from an internal slide deck of progress updates
+tables:
+  - source: results
+    file: verses.tsv
+    system: {column: method}
+    group: {column: verses}
+    measures:
+      - {column: chrF3, n: verses_tested}
+      - {column: BLEU, n: verses_tested}
