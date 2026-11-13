@@ -1,0 +1,19 @@
+system	group	chrF3	BLEU
+No related language (baseline)	One language added	48.74	11.88
+Related language A	One language added	49.05	12.25
+Related language B	One language added	49.39	11.7
+Related language C	One language added	49.28	11.27
+Related language D	One language added	47.94	11.15
+Related language E	One language added	47.13	11.02
+No related language (baseline)	Added one at a time, best first	48.74	11.88
+A	Added one at a time, best first	49.05	12.25
+A, B	Added one at a time, best first	48.86	11.9
+A, B, C	Added one at a time, best first	48.92	11.87
+A, B, C, D	Added one at a time, best first	49.15	11.49
+A, B, C, D, E	Added one at a time, best first	48.79	11.59
+No related language (baseline)	Unordered sets	48.74	11.88
+B	Unordered sets	49.39	11.7
+B, E	Unordered sets	48.08	11.46
+B, E, D	Unordered sets	48.32	11.5
+B, E, D, C	Unordered sets	48.48	11.5
+B, E, D, C, A	Unordered sets	48.85	11.63

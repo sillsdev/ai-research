@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick, who fine-tuned NLLB with silnlp and scored the drafts with sacrebleu (chrF3 and BLEU). The figures come from the experiment outputs behind an internal slide deck of progress updates
+tables:
+  - source: results
+    file: peekahead.tsv
+    system: {column: system}
+    group: {column: group}
+    measures:
+      - {column: chrF3, name: chrF3}
+      - {column: BLEU, name: BLEU}
