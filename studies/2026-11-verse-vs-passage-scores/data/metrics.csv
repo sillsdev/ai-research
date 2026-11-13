@@ -59,33 +59,33 @@ Verse-level,Language N,BLEU,26.11,,,,results,scores.tsv
 Passage-level,Language N,BLEU,28.05,,,,results,scores.tsv
 Verse-level,Language O,BLEU,11.76,,,,results,scores.tsv
 Passage-level,Language O,BLEU,21.58,,,,results,scores.tsv
-Gap (passage minus verse),Language A,chrF3 gap,10.03,,,,results,gaps.tsv
-Gap (passage minus verse),Language B,chrF3 gap,16.07,,,,results,gaps.tsv
-Gap (passage minus verse),Language C,chrF3 gap,9.31,,,,results,gaps.tsv
-Gap (passage minus verse),Language D,chrF3 gap,15.39,,,,results,gaps.tsv
-Gap (passage minus verse),Language E,chrF3 gap,5.59,,,,results,gaps.tsv
-Gap (passage minus verse),Language F,chrF3 gap,11.68,,,,results,gaps.tsv
-Gap (passage minus verse),Language G,chrF3 gap,14.83,,,,results,gaps.tsv
-Gap (passage minus verse),Language H,chrF3 gap,8.66,,,,results,gaps.tsv
-Gap (passage minus verse),Language I,chrF3 gap,9.56,,,,results,gaps.tsv
-Gap (passage minus verse),Language J,chrF3 gap,7.26,,,,results,gaps.tsv
-Gap (passage minus verse),Language K,chrF3 gap,13.91,,,,results,gaps.tsv
-Gap (passage minus verse),Language L,chrF3 gap,12.31,,,,results,gaps.tsv
-Gap (passage minus verse),Language M,chrF3 gap,9.82,,,,results,gaps.tsv
-Gap (passage minus verse),Language N,chrF3 gap,6.93,,,,results,gaps.tsv
-Gap (passage minus verse),Language O,chrF3 gap,22.31,,,,results,gaps.tsv
-Gap (passage minus verse),Language A,BLEU gap,1.59,,,,results,gaps.tsv
-Gap (passage minus verse),Language B,BLEU gap,6.75,,,,results,gaps.tsv
-Gap (passage minus verse),Language C,BLEU gap,2.07,,,,results,gaps.tsv
-Gap (passage minus verse),Language D,BLEU gap,2.71,,,,results,gaps.tsv
-Gap (passage minus verse),Language E,BLEU gap,0.93,,,,results,gaps.tsv
-Gap (passage minus verse),Language F,BLEU gap,2.56,,,,results,gaps.tsv
-Gap (passage minus verse),Language G,BLEU gap,7.17,,,,results,gaps.tsv
-Gap (passage minus verse),Language H,BLEU gap,4.81,,,,results,gaps.tsv
-Gap (passage minus verse),Language I,BLEU gap,3.01,,,,results,gaps.tsv
-Gap (passage minus verse),Language J,BLEU gap,1.53,,,,results,gaps.tsv
-Gap (passage minus verse),Language K,BLEU gap,3.39,,,,results,gaps.tsv
-Gap (passage minus verse),Language L,BLEU gap,2.83,,,,results,gaps.tsv
-Gap (passage minus verse),Language M,BLEU gap,3.0,,,,results,gaps.tsv
-Gap (passage minus verse),Language N,BLEU gap,1.94,,,,results,gaps.tsv
-Gap (passage minus verse),Language O,BLEU gap,9.82,,,,results,gaps.tsv
+Gap (passage minus verse),Language A,chrF3,10.03,,,,results,gaps.tsv
+Gap (passage minus verse),Language B,chrF3,16.07,,,,results,gaps.tsv
+Gap (passage minus verse),Language C,chrF3,9.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language D,chrF3,15.39,,,,results,gaps.tsv
+Gap (passage minus verse),Language E,chrF3,5.59,,,,results,gaps.tsv
+Gap (passage minus verse),Language F,chrF3,11.68,,,,results,gaps.tsv
+Gap (passage minus verse),Language G,chrF3,14.83,,,,results,gaps.tsv
+Gap (passage minus verse),Language H,chrF3,8.66,,,,results,gaps.tsv
+Gap (passage minus verse),Language I,chrF3,9.56,,,,results,gaps.tsv
+Gap (passage minus verse),Language J,chrF3,7.26,,,,results,gaps.tsv
+Gap (passage minus verse),Language K,chrF3,13.91,,,,results,gaps.tsv
+Gap (passage minus verse),Language L,chrF3,12.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language M,chrF3,9.82,,,,results,gaps.tsv
+Gap (passage minus verse),Language N,chrF3,6.93,,,,results,gaps.tsv
+Gap (passage minus verse),Language O,chrF3,22.31,,,,results,gaps.tsv
+Gap (passage minus verse),Language A,BLEU,1.59,,,,results,gaps.tsv
+Gap (passage minus verse),Language B,BLEU,6.75,,,,results,gaps.tsv
+Gap (passage minus verse),Language C,BLEU,2.07,,,,results,gaps.tsv
+Gap (passage minus verse),Language D,BLEU,2.71,,,,results,gaps.tsv
+Gap (passage minus verse),Language E,BLEU,0.93,,,,results,gaps.tsv
+Gap (passage minus verse),Language F,BLEU,2.56,,,,results,gaps.tsv
+Gap (passage minus verse),Language G,BLEU,7.17,,,,results,gaps.tsv
+Gap (passage minus verse),Language H,BLEU,4.81,,,,results,gaps.tsv
+Gap (passage minus verse),Language I,BLEU,3.01,,,,results,gaps.tsv
+Gap (passage minus verse),Language J,BLEU,1.53,,,,results,gaps.tsv
+Gap (passage minus verse),Language K,BLEU,3.39,,,,results,gaps.tsv
+Gap (passage minus verse),Language L,BLEU,2.83,,,,results,gaps.tsv
+Gap (passage minus verse),Language M,BLEU,3.0,,,,results,gaps.tsv
+Gap (passage minus verse),Language N,BLEU,1.94,,,,results,gaps.tsv
+Gap (passage minus verse),Language O,BLEU,9.82,,,,results,gaps.tsv

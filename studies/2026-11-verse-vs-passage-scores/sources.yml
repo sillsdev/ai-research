@@ -15,5 +15,5 @@ tables:
     system: {column: level}
     group: {column: language}
     measures:
-      - {column: chrF3, name: chrF3 gap}
-      - {column: BLEU, name: BLEU gap}
+      - {column: chrF3}
+      - {column: BLEU}

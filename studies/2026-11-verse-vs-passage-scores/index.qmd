@@ -1,6 +1,6 @@
 ---
 title: "Verse-level vs. passage-level scores in Bible translation"
-description: "Scoring the same drafts of Matthew over whole passages instead of verse by verse raises chrF3 by 12 points on average and BLEU by 4, in 15 languages. The gap varies by language, so scores at the two levels can't be compared."
+description: "Scoring a Bible draft at the verse-level cannot be compared wit scoring a draft at the passage-level. Across 15 languages, we see that passage-level scores are an average of 12 chrf3 points and 4 BLEU points higher."
 date: 2026-11-10
 author: Laura Burdick
 harness: none
@@ -8,6 +8,8 @@ categories: [evaluation, machine translation]
 ---
 
 ```{python}
+import pandas as pd
+from IPython.display import Markdown
 from research_site import Study
 
 study = Study()
@@ -17,83 +19,61 @@ GAP = ["Gap (passage minus verse)"]
 
 ## Summary
 
-- The same draft scores much higher when chrF3 and BLEU are computed over whole passages than when they are averaged over verses. Across 15 languages, **passage-level chrF3 is 11.6 points higher on average** (range 5.6 to 22.3) and **passage-level BLEU 3.6 points higher** (range 0.9 to 9.8).
-- Passage-level was higher in every language, on both metrics.
-- The gap is not constant, so a verse-level score can't be converted to a passage-level one, or the reverse. Report which level a number is, and compare only like with like.
-- The largest gap, in Language O, is 22.3 chrF3 points; the next largest is 16.1.
+- Passage-level and verse-level translation metrics are not directly comparable. Across 15 languages, **passage-level chrF3 is 11.6 points higher on average** and **passage-level BLEU 3.6 points higher**.
+- Passage-level metrics are consistently higher than verse-level metrics.
+- The gap between verse-level and passage-level metrics is not consistent across languages.
 
 ## The problem
 
-In oral Bible translation (OBT) projects the reference is often only available as passages, since speech is recorded and transcribed as running text rather than verse by verse. Metrics then have to be computed at passage level, and the scores can't be set beside the verse-level scores reported for written projects.
-
-This study asks how much that choice changes chrF3 and BLEU, and whether the effect is similar across languages.
+In oral Bible translation (OBT) projects, we often only have passage-level data to work with, so we need to compute our metrics over passages, rather than verses. Do we need to think about passage-level metrics differently than we think about verse-level metrics? Is there a consistent gap between passage-level and verse-level metrics across languages?
 
 ## Why passage-level scores are higher
 
-Both metrics count the n-grams (character n-grams for chrF3, word n-grams for BLEU) that the draft shares with the reference. A verse has few n-grams to match against. A passage has many more, so a draft n-gram is more likely to find a match somewhere in the reference by chance, even where it is not in the right place or doesn't mean the same thing. Common words and phrases are the likeliest to match.
+We see that passage-level chrf3 and BLEU scores are consistently higher than verse-level scores. Why is this?
 
-These chance matches count as matches, so the score rises with the length of the text being scored. The gap measures the effect of scoring longer segments, not a better draft. How large it is depends on the language, as the results show.
+Both metrics count the n-grams (character n-grams for chrF3, word n-grams for BLEU) that the draft shares with the reference. A verse has relatively few n-grams to match against. A passage has many more, so a draft n-gram is more likely to find a match somewhere in the reference by chance, even if it is not in the right place or doesn't mean the same thing. Common words and phrases are the likeliest to match. These chance matches count as matches, so the score rises with the length of the text being scored.
 
 ## How it was tested
 
-NLLB-200 was fine-tuned with silnlp for each of 15 languages, drafting from a source-language Bible. Each model was trained on Matthew 1 to 10 and 17 to 28 and tested on Matthew 1 to 16. The same outputs were scored twice:
+NLLB was fine-tuned with silnlp for 15 languages. Each model was trained on Matthew 1-10 and 17-28 and tested on Matthew 11-16. The outputs were scored in two ways:
 
-- **Verse level:** each verse scored against its reference verse.
-- **Passage level:** consecutive verses grouped into passages, each passage scored against its reference passage.
+- **Verse level:** First, each verse was scored against its reference verse. Then, we averaged the verse-level metrics.
+- **Passage level:** First, consecutive verses were grouped into passages. Then, we ran each metric at the passage level.
 
 Languages are anonymized as Language A to Language O. Each score is from one training run, with no interval.
 
 ## Results
 
-### chrF3
+### Verse-level and passage-level scores
+
+<style>
+.chrf-bleu th:nth-child(5), .chrf-bleu td:nth-child(5) { border-left: 1px solid rgba(128, 128, 128, 0.6); }
+</style>
+
+::: {.chrf-bleu}
 
 ```{python}
-#| renderings: [light, dark]
-study.dot_chart(
-    "chrF3",
-    systems=VP,
-    x_title="chrF3 on Matthew 1 to 16",
-    x_range=(35, 70),
-)
+metrics = pd.read_csv("data/metrics.csv")
+levels = {"Verse-level": "verse", "Passage-level": "passage", "Gap (passage minus verse)": "gap"}
+wide = metrics.pivot(index="group", columns=["measure", "system"], values="value")
+wide = wide[[(m, s) for m in ["chrF3", "BLEU"] for s in levels]]
+wide.columns = [f"{m} {levels[s]}" for m, s in wide.columns]
+wide.loc["**Average**"] = wide.mean()
+wide.index.name = "Language"
+Markdown(wide.reset_index().to_markdown(index=False, floatfmt=".1f", colalign=["left"] + ["right"] * 6))
 ```
 
-```{python}
-study.table(measures=["chrF3"], systems=VP, intervals=False, measure_column=False, average=True, group_title="Language")
-```
-
-### BLEU
-
-```{python}
-#| renderings: [light, dark]
-study.dot_chart(
-    "BLEU",
-    systems=VP,
-    x_title="BLEU on Matthew 1 to 16",
-    x_range=(10, 42),
-)
-```
-
-```{python}
-study.table(measures=["BLEU"], systems=VP, intervals=False, measure_column=False, average=True, group_title="Language")
-```
+:::
 
 ### The gap
 
-```{python}
-study.table(measures=["chrF3 gap", "BLEU gap"], systems=GAP, intervals=False, average=True, group_title="Language")
-```
-
 - The average gap is 11.6 chrF3 points and 3.6 BLEU points; the median is 10.0 and 2.8.
 - Apart from Language O, the chrF3 gap runs from 5.6 to 16.1 points and the BLEU gap from 0.9 to 7.2.
-- **Language O is an outlier**, at 22.3 chrF3 and 9.8 BLEU. We have not tested why. Its verse-level scores are the lowest in the set on both metrics.
-- Languages with a low verse-level score don't always have a large gap (Languages B and F have similar verse-level chrF3, 42.6 and 43.7, but gaps of 16.1 and 11.7), so the gap can't be predicted from the verse-level score.
+- **Language O is an outlier**, at 22.3 chrF3 and 9.8 BLEU. Its verse-level scores are the lowest in the set on both metrics. But, languages with a low verse-level score don't always have a large gap (Languages B and F have similar verse-level chrF3, 42.6 and 43.7, but gaps of 16.1 and 11.7), so the gap can't be predicted from the verse-level score.
 
 ## Limitations
 
-- **One run per language**, so no uncertainty is given. Small differences between languages' gaps aren't established; the overall direction, passage-level higher in all 15, is clear.
-- **How passages were formed** affects the result. A different grouping would give different gaps.
-- **Matthew only**, with a single model and training split.
-- **Not a measure of draft quality.** We don't know which level better matches a translation team's judgment.
+- **One run per language**, so no uncertainty is given.
 
 ## Reproducing this
 
