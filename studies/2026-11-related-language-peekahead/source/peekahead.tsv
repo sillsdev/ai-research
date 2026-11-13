@@ -1,0 +1,33 @@
+system	metric	score
+No related language (baseline)	chrF3	48.74
+No related language (baseline)	BLEU	11.88
+Related language A	chrF3	49.05
+Related language A	BLEU	12.25
+Related language B	chrF3	49.39
+Related language B	BLEU	11.7
+Related language C	chrF3	49.28
+Related language C	BLEU	11.27
+Related language D	chrF3	47.94
+Related language D	BLEU	11.15
+Related language E	chrF3	47.13
+Related language E	BLEU	11.02
+A	chrF3	49.05
+A	BLEU	12.25
+A, B	chrF3	48.86
+A, B	BLEU	11.9
+A, B, C	chrF3	48.92
+A, B, C	BLEU	11.87
+A, B, C, D	chrF3	49.15
+A, B, C, D	BLEU	11.49
+A, B, C, D, E	chrF3	48.79
+A, B, C, D, E	BLEU	11.59
+B	chrF3	49.39
+B	BLEU	11.7
+B, E	chrF3	48.08
+B, E	BLEU	11.46
+B, E, D	chrF3	48.32
+B, E, D	BLEU	11.5
+B, E, D, C	chrF3	48.48
+B, E, D, C	BLEU	11.5
+B, E, D, C, A	chrF3	48.85
+B, E, D, C, A	BLEU	11.63

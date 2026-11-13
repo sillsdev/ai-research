@@ -1,0 +1,79 @@
+---
+title: "Adding related languages to NLLB training"
+description: "Adding related languages to NLLB training does not improve translation performance."
+date: 2026-11-13
+author: Laura Burdick
+harness: none
+categories: [machine translation, related languages]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+BASE = "No related language (baseline)"
+ONE = [BASE] + [f"Related language {x}" for x in "ABCDE"]
+GREEDY = [BASE, "A", "A, B", "A, B, C", "A, B, C, D", "A, B, C, D, E"]
+SETS = [BASE, "B", "B, E", "B, E, D", "B, E, D, C", "B, E, D, C, A"]
+```
+
+## Summary
+
+- We experimented with adding related languages to an NLLB training run.
+- Adding related languages does not help translation performance.
+
+## The question
+
+Language O has little training data. Related languages might share vocabulary and grammar with it, so training on them too could help the model. This study asks whether adding related languages improves drafts, and whether choosing them one at a time (best performance first) is better than choosing them in an arbitrary order.
+
+## How it was tested
+
+NLLB was fine-tuned with silnlp. The source text is in a related language to Language O. We trained on the NT, minus Luke and Romans, and tested on Romans, 432 verses. The reference text for Romans is a transcript: the translation started as audio, and a speech-recognition model produced the text we score against. For each related language X, the source text was also translated into X and added to the training data. The related languages are labeled A to E, and each letter means the same language in every table.
+
+We tested the following configurations:
+
+- **One language added:** each related language alone.
+- **Unordered sets:** the same five languages added in an arbitrary order (B, E, D, C, A).
+- **Added one at a time, best first:** start from the language with the highest single-language BLEU and add the next best each time, up to five (A, then B, C, D and E).
+
+All scores are verse-level chrF3 and BLEU.
+
+## Results
+
+**One related language added**
+
+```{python}
+study.table(systems=ONE, digits=2, measure_column=False, group_title="Measure")
+```
+
+**Unordered sets of related languages**
+
+```{python}
+study.table(systems=SETS, digits=2, measure_column=False, group_title="Measure")
+```
+
+**Related languages added one at a time, best first**
+
+```{python}
+study.table(systems=GREEDY, digits=2, measure_column=False, group_title="Measure")
+```
+
+- Adding related languages does not reliably improve translation results.
+
+## Limitations
+
+- **One run per setting and no intervals.** Differences within about a point of chrF3 are not established.
+- **The test set is ASR-generated.** The reference text is a speech-recognition transcript of the audio, so it may contain recognition errors.
+- **One target language, one model**, and 432 verses of Romans.
+- **The best-first ordering is fragile.** It ranks the languages by BLEU of the single-language runs. Ranked by chrF3, the order would be B, C, A, D, E. The top three languages are within 0.5 BLEU and 0.34 chrF3 of each other, so with one run each their order is not established.
+- **The ordering is greedy.** It can miss non-greedy combinations that work well together.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).
