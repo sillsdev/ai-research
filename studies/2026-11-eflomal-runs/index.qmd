@@ -1,0 +1,88 @@
+---
+title: "Running eflomal several times for verse segmentation"
+description: "Does running eflomal multiple times improve verse segmentation quality? It seems to improve the segmentation quality some (fewer very long or very short verses), but it doesn't improve the downstream translation scores."
+date: 2026-11-10
+author: Laura Burdick
+harness: none
+categories: [oral Bible translation, verse segmentation, machine translation]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+TRAIN = "Verse segmentation, training data"
+TEST = "Verse segmentation, test data"
+TRANSLATION = "Translation of held-out passages"
+```
+
+## Summary
+
+- Oral Bible translation (OBT) projects translate at a passage-level, rather than a verse-level. Because NLLB can't handle long, passage-level data, the passages need to be split into verses first. The verse segmentation algorithm in silnlp uses a word aligner, eflomal, whose results vary from run to run.
+- Running eflomal multiple times resulted in fewer suspect verses (verses that seem too long or too short): **251 verses** (2.68%) with one eflomal run, **199 verses** (2.12%) with 10 eflomal runs and **198 verses** (2.11%) with 15 eflomal runs. Most of the gain came when moving from 1 to 10 eflomal runs.
+- **Translation quality did not change measurably.** chrF3 on held-out passages was 70.0 with one eflomal run and 70.3 to 70.6 with several eflomal runs.
+- Removing the suspect verses from NLLB training altogether did not help either: chrF3 was 69.7.
+
+## The question
+
+Does running eflomal multiple times in the verse segmentation algorithm result in a higher quality verse segmentation, leading to higher quality translation scores? There is a cost to running eflomal multiple times - eflomal is a slow algorithm, and running it more than once takes a bit of time. But, is this cost worth it to get better results?
+
+## The method
+
+The segmenter runs eflomal N times and keeps a word link only if it appears in **more than half** of the runs. We experimented with N = 1, 2, 5, 10, and 15.
+
+A sixth experiment keeps the baseline (N=1) segmentation and removes the verses flagged as suspect from the training data.
+
+## How it was tested
+
+**Segmentation quality.** There are no correct verse boundaries to compare with, so segmentation is judged by whether each target verse has a plausible length for its source verse. A verse is flagged as **suspect** if either:
+
+- its length differs from the source verse's by at least 5 tokens and is an extreme outlier among all verses (a modified z-score of at least 10 on the length difference)
+- its target has one token (no target verses were entirely empty)
+
+The **length correlation** is the Pearson correlation between source and target verse lengths. It is computed for the training data and for the Matthew 11-16 test data.
+
+**Translation.** Each model was scored on **17 passages of Matthew 11 to 16**, using passage-level chrF3 and BLEU against the human transcriptions of the recordings.
+
+## Results
+
+### Translation
+
+```{python}
+study.table(groups=[TRANSLATION], intervals=False, digits=2, group_title=None, measure_title="Metric")
+```
+
+All five variants score within 0.6 chrF3 of the baseline, and none is clearly better than another. BLEU differs by up to 0.8 and doesn't follow the number of runs. Each setting is one training run on 17 passages, so these differences are within the noise.
+
+### Segmentation of the training data
+
+```{python}
+study.table(groups=[TRAIN], intervals=False, digits=2, group_title=None)
+```
+
+- **More runs, fewer suspect verses.** Suspect verses fell from 2.68% to 2.38% with 2 runs, 2.29% with 5, 2.12% with 10, and 2.11% with 15. The gains level off at 10 eflomal runs.
+- **Long target verses and one-word verses improve the most.** With 10 eflomal runs, verses where the target is far longer than the source fell by about a third (0.72% to 0.49%), and one-word verses by about a third (0.81% to 0.59%). Verses where the target is far shorter than the source barely moved (1.51% to 1.40%).
+
+### Segmentation of the test data
+
+```{python}
+study.table(groups=[TEST], intervals=False, digits=2, group_title=None)
+```
+
+The test passages are short, so these counts are tiny: the baseline only has 2 suspect verses, out of 235 verses.
+
+## Limitations
+
+- **One run and 17 passages per setting.** There are no confidence intervals and no repeated training runs, so translation differences under about a point are not established.
+- **A length check, not a boundary check.** We are measuring the quality of the segmentation algorithm by looking at verses that seem too long or too short, rather than comparing the output against ground truth segmentation boundaries. Better segmentation here means fewer implausible lengths, not more correct boundaries.
+- **One language and one corpus.** The results describe a single project's speech recognition output and a single source Bible.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

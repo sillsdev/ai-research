@@ -1,0 +1,32 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick with silnlp's verse segmentation and NLLB fine-tuning, a verse-length check script, and sacrebleu for passage-level scores, March 2026
+
+tables:
+  - source: results
+    file: scores.tsv
+    system: {column: configuration}
+    group: Translation of held-out passages
+    measures:
+      - {column: chrF3, n: passages}
+      - {column: BLEU, n: passages}
+
+  - source: results
+    file: scores.tsv
+    system: {column: configuration}
+    group: Verse segmentation, training data
+    measures:
+      - {column: train_flagged, name: Suspect verses (%), n: train_verses}
+      - {column: train_long, name: Target much longer than source (%), n: train_verses}
+      - {column: train_short, name: Target much shorter than source (%), n: train_verses}
+      - {column: train_one_token, name: One-word target verses (%), n: train_verses}
+      - {column: train_corr, name: Length correlation, n: train_verses}
+
+  - source: results
+    file: scores.tsv
+    system: {column: configuration}
+    group: Verse segmentation, test data
+    measures:
+      - {column: test_flagged, name: Suspect verses (%), n: test_verses}
+      - {column: test_corr, name: Length correlation, n: test_verses}
