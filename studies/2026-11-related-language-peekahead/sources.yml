@@ -6,7 +6,6 @@ tables:
   - source: results
     file: peekahead.tsv
     system: {column: system}
-    group: {column: group}
+    group: {column: metric}
     measures:
-      - {column: chrF3, name: chrF3}
-      - {column: BLEU, name: BLEU}
+      - {column: score, name: Score}

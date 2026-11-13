@@ -88,18 +88,16 @@ class Study:
         measure_column: bool = True,
         average: bool = False,
         group_title: str = "Test",
-        group_column: bool = True,
     ) -> Markdown:
         """One row per (group, measure), one column per system; the best value in each row is bold.
 
         Set `measure_column=False` when the measure is named nearby, such as in the chart above.
         `average=True` adds a last row per measure with each system's mean over the groups, each
-        group counting equally. `group_title` heads the first column; `group_column=False` drops it,
-        for a table of a single group that a heading already names.
+        group counting equally. `group_title` heads the first column.
         """
         rows = self._select(groups, measures, systems)
         systems = systems or list(dict.fromkeys(rows["system"]))
-        lead = ([group_title] if group_column else []) + (["Measure"] if measure_column else [])
+        lead = [group_title, "Measure"] if measure_column else [group_title]
         lines = [
             "| " + " | ".join(lead + systems) + " |",
             "|" + "---|" * len(lead) + "---:|" * len(systems),
@@ -118,7 +116,7 @@ class Study:
                 if with_intervals and pd.notna(cell["lower"]):
                     text += f" ({cell['lower']:.{digits}f}–{cell['upper']:.{digits}f})"
                 formatted.append(f"**{text}**" if values.count() > 1 and cell["value"] == best else text)
-            lead = ([group] if group_column else []) + ([measure] if measure_column else [])
+            lead = [group, measure] if measure_column else [group]
             # A summary row's label is bold, so the row stands apart while its values still mark the best.
             if summary:
                 lead = [f"**{c}**" for c in lead]

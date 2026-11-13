@@ -11,9 +11,10 @@ categories: [machine translation, related languages]
 from research_site import Study
 
 study = Study()
-ONE = "One language added"
-GREEDY = "Added one at a time, best first"
-SETS = "Unordered sets"
+BASE = "No related language (baseline)"
+ONE = [BASE] + [f"Related language {x}" for x in "ABCDE"]
+GREEDY = [BASE, "A", "A, B", "A, B, C", "A, B, C, D", "A, B, C, D, E"]
+SETS = [BASE, "B", "B, E", "B, E, D", "B, E, D, C", "B, E, D, C, A"]
 ```
 
 ## Summary
@@ -42,19 +43,19 @@ All scores are verse-level chrF3 and BLEU.
 **One related language added**
 
 ```{python}
-study.table(groups=[ONE], digits=2, group_column=False)
+study.table(systems=ONE, digits=2, measure_column=False, group_title="Measure")
 ```
 
 **Unordered sets of related languages**
 
 ```{python}
-study.table(groups=[SETS], digits=2, group_column=False)
+study.table(systems=SETS, digits=2, measure_column=False, group_title="Measure")
 ```
 
 **Related languages added one at a time, best first**
 
 ```{python}
-study.table(groups=[GREEDY], digits=2, group_column=False)
+study.table(systems=GREEDY, digits=2, measure_column=False, group_title="Measure")
 ```
 
 - Adding related languages does not reliably improve translation results.
