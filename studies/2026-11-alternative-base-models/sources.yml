@@ -1,0 +1,11 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick, who fine-tuned MADLAD and T5Gemma with silnlp and scored passages with sacrebleu (chrF3). The figures were taken from an internal slide deck of progress updates
+tables:
+  - source: results
+    file: models.tsv
+    system: {column: model}
+    group: {column: test}
+    measures:
+      - {column: chrF3, name: Passage-level chrF3}

@@ -1,0 +1,69 @@
+---
+title: "MADLAD and T5Gemma as alternatives to NLLB for oral Bible translation"
+description: "Fine-tuned on the same New Testament data, neither MADLAD nor T5Gemma matches NLLB, and training on whole passages instead of single verses hurts both."
+date: 2026-11-13
+author: Laura Burdick
+harness: none
+categories: [machine translation, base models]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+VERSE = "Verse-level"
+PASSAGE = "Passage-level"
+```
+
+## Summary
+
+- We fine-tuned two other pretrained models, MADLAD and T5Gemma, on the same data as an NLLB baseline for one low-resource language.
+- **NLLB scored highest.** MADLAD with verse-level training reached 61.8 passage-level chrF3 against NLLB's 66.7. T5Gemma reached about 44.
+- **Training and translating whole passages was worse than single verses** for both alternatives.
+
+## The question
+
+Our NLLB experiments use one verse at a time, and the [combining-verses study](../2026-11-combining-verses/index.html) found that joining verses did not help. Other pretrained models may handle longer inputs or translate better. This study asks whether MADLAD or T5Gemma beats NLLB on the same task.
+
+## How it was tested
+
+- **Language and data.** Language O (the label used in [combining verses](../2026-11-combining-verses/index.html)), translated from a related language of wider communication. All models were trained on the whole New Testament except Matthew 11-16, which is the test set. NLLB has no passage-level run here. Scores are passage-level chrF3.
+- **Models.** NLLB is the baseline from the earlier studies. MADLAD and T5Gemma were fine-tuned with silnlp.
+- **Verse-level or passage-level.** Verse-level runs train and translate one verse at a time. Passage-level runs train and translate whole passages; for T5Gemma the context window was 1,000 tokens.
+- **Epochs.** T5Gemma was trained for 100 and for 1,000 epochs at verse level.
+
+## Results
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart(
+    "Passage-level chrF3",
+    groups=[VERSE, PASSAGE],
+    x_title="Passage-level chrF3 (Matthew 11-16)",
+)
+```
+
+```{python}
+study.table(groups=[VERSE, PASSAGE], group_title="Training and translating", intervals=False)
+```
+
+- **MADLAD is 4.9 points below NLLB at verse level**, and 17.8 below it at passage level.
+- **T5Gemma is about 22 points below NLLB at verse level.** Ten times the epochs added 0.6 points, so training length does not explain the gap.
+- **Passage-level training cost 12.9 points for MADLAD and 10.8 for T5Gemma.** We don't know why. Long passages may be truncated, as in the [combining-verses study](../2026-11-combining-verses/index.html).
+- **Cost.** MADLAD did not fit on A100 GPUs or on half of an H100; it needed a full 94 GB H100. T5Gemma ran on half of an H100 (we did not try A100s).
+
+<!-- REVIEW: the takeaways and the 'long passages may be truncated' hypothesis are the drafter's reading of the slide numbers; Laura confirmed them in conversation, a second reader should check. GPU notes come from slide text, not a results file. -->
+
+## Limitations
+
+- **One run per setting and no intervals.** Differences within about a point of chrF3 are not established, including 100 against 1,000 epochs.
+- **One language and one test set**, six chapters of Matthew.
+- **Settings were not tuned per model.** The models may need different hyperparameters than NLLB, so this is a comparison of defaults, not of best possible results.
+
+## Reproducing this
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

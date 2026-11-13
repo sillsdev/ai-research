@@ -1,0 +1,7 @@
+system,group,measure,value,lower,upper,n,source,file
+NLLB (baseline),Verse-level,Passage-level chrF3,66.69,,,,results,models.tsv
+MADLAD,Verse-level,Passage-level chrF3,61.8,,,,results,models.tsv
+MADLAD,Passage-level,Passage-level chrF3,48.9,,,,results,models.tsv
+T5Gemma (100 epochs),Verse-level,Passage-level chrF3,43.84,,,,results,models.tsv
+"T5Gemma (1,000 epochs)",Verse-level,Passage-level chrF3,44.45,,,,results,models.tsv
+"T5Gemma (1,000 epochs)",Passage-level,Passage-level chrF3,33.68,,,,results,models.tsv

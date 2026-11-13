@@ -1,0 +1,7 @@
+model	test	chrF3
+NLLB (baseline)	Verse-level	66.69
+MADLAD	Verse-level	61.80
+MADLAD	Passage-level	48.90
+T5Gemma (100 epochs)	Verse-level	43.84
+T5Gemma (1,000 epochs)	Verse-level	44.45
+T5Gemma (1,000 epochs)	Passage-level	33.68
