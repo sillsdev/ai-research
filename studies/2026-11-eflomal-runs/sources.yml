@@ -17,7 +17,7 @@ tables:
     system: {column: configuration}
     group: Verse segmentation, training data
     measures:
-      - {column: train_flagged, name: Flagged verses (%), n: train_verses}
+      - {column: train_flagged, name: Suspect verses (%), n: train_verses}
       - {column: train_long, name: Target much longer than source (%), n: train_verses}
       - {column: train_short, name: Target much shorter than source (%), n: train_verses}
       - {column: train_one_token, name: One-word target verses (%), n: train_verses}
@@ -28,5 +28,5 @@ tables:
     system: {column: configuration}
     group: Verse segmentation, test data
     measures:
-      - {column: test_flagged, name: Flagged verses (%), n: test_verses}
+      - {column: test_flagged, name: Suspect verses (%), n: test_verses}
       - {column: test_corr, name: Length correlation, n: test_verses}

@@ -1,6 +1,6 @@
 ---
 title: "Running eflomal several times for verse segmentation"
-description: "Running the word aligner more than once before splitting speech recognition output into verses flags about a fifth fewer odd verses in the training data, with no measurable change in translation quality."
+description: "Does running eflomal multiple times improve verse segmentation quality? It seems to improve the segmentation quality some (fewer very long or very short verses), but it doesn't improve the downstream translation scores."
 date: 2026-11-10
 author: Laura Burdick
 harness: none
@@ -18,41 +18,38 @@ TRANSLATION = "Translation of held-out passages"
 
 ## Summary
 
-- Oral Bible translation (OBT) projects get running text from speech recognition (ASR), which has to be **split into verses** before a machine translation (MT) model can train on it. Verse segmentation uses a word aligner, eflomal, whose results vary from run to run.
-- Running eflomal several times and keeping the word links found in most runs **flagged fewer odd verses** in the training data: **251** (2.68%) with one run, **199** (2.12%) with 10 runs and **198** (2.11%) with 15. Most of the gain came by 10 runs.
-- The gain is in verses whose target is much longer than the source (67 to 44) and in one-word verses (76 to 52). Verses much shorter than the source barely changed (141 to 134).
-- **Translation quality did not change measurably.** chrF3 on held-out passages was 70.0 with one run and 70.3 to 70.6 with several. That is a gain of 0.2 to 0.6 points, within what one run on 17 passages can move.
-- Removing the flagged training verses altogether did not help either: chrF3 was 69.7.
+- Oral Bible translation (OBT) projects translate at a passage-level, rather than a verse-level. Because NLLB can't handle long, passage-level data, the passages need to be split into verses first. The verse segmentation algorithm in silnlp uses a word aligner, eflomal, whose results vary from run to run.
+- Running eflomal multiple times resulted in fewer suspect verses (verses that seem too long or too short): **251 verses** (2.68%) with one eflomal run, **199 verses** (2.12%) with 10 eflomal runs and **198 verses** (2.11%) with 15 eflomal runs. Most of the gain came when moving from 1 to 10 eflomal runs.
+- **Translation quality did not change measurably.** chrF3 on held-out passages was 70.0 with one eflomal run and 70.3 to 70.6 with several eflomal runs.
+- Removing the suspect verses from NLLB training altogether did not help either: chrF3 was 69.7.
 
 ## The question
 
-When ASR output is split into verses, a bad split gives a source verse that is paired with far too much or too little target text, and the MT model trains on that. The segmenter aligns the text with the published source Bible using eflomal, which trains a statistical model and so can give different alignments on different runs. Does running it several times and combining the results give better verse segmentation?
+Does running eflomal multiple times in the verse segmentation algorithm result in a higher quality verse segmentation, leading to higher quality translation scores? There is a cost to running eflomal multiple times - eflomal is a slow algorithm, and running it more than once takes a bit of time. But, is this cost worth it to get better results?
 
 ## The method
 
-The segmenter runs eflomal N times and keeps a word link only if it appears in **more than half** of the runs. N is 1 for the baseline and 2, 5, 10 or 15 for the others.
+The segmenter runs eflomal N times and keeps a word link only if it appears in **more than half** of the runs. We experimented with N = 1, 2, 5, 10, and 15.
 
-For each setting, NLLB-200 was fine-tuned with silnlp on the verse-segmented ASR output for the New Testament, Genesis, Ruth and Jonah, paired verse by verse with a published Bible in a related language. All settings used the same ASR output, so only the verse boundaries differ.
-
-A sixth experiment keeps the baseline segmentation and removes the verses flagged as odd (below) from the training data.
+A sixth experiment keeps the baseline (N=1) segmentation and removes the verses flagged as suspect from the training data.
 
 ## How it was tested
 
-**Translation.** Each model was scored at its 5,000-step checkpoint on **17 passages of Matthew 11 to 16**, using passage-level chrF3 and BLEU against the human transcriptions of the recordings.
+**Segmentation quality.** There are no correct verse boundaries to compare with, so segmentation is judged by whether each target verse has a plausible length for its source verse. A verse is flagged as **suspect** if either:
 
-**Segmentation quality.** There are no correct verse boundaries to compare with, so segmentation is judged by whether each target verse has a plausible length for its source verse. A verse is **flagged** if either:
+- its length differs from the source verse's by at least 5 tokens and is an extreme outlier among all verses (a modified z-score of at least 10 on the length difference)
+- its target has one token (no target verses were entirely empty)
 
-- its length differs from the source verse's by at least 5 tokens and is an extreme outlier among all verses (a modified z-score of at least 10 on the length difference), whether the target is much longer or much shorter than the source, or
-- its target has one token, or is empty (none were).
+The **length correlation** is the Pearson correlation between source and target verse lengths. It is computed for the training data and for the Matthew 11-16 test data.
 
-The **length correlation** is the Pearson correlation between source and target verse lengths. It is computed for the training data and for the Matthew 11 to 16 test data.
+**Translation.** Each model was scored on **17 passages of Matthew 11 to 16**, using passage-level chrF3 and BLEU against the human transcriptions of the recordings.
 
 ## Results
 
 ### Translation
 
 ```{python}
-study.table(groups=[TRANSLATION], intervals=False, digits=2, group_title="Test")
+study.table(groups=[TRANSLATION], intervals=False, digits=2, group_title=None, measure_title="Metric")
 ```
 
 All five variants score within 0.6 chrF3 of the baseline, and none is clearly better than another. BLEU differs by up to 0.8 and doesn't follow the number of runs. Each setting is one training run on 17 passages, so these differences are within the noise.
@@ -60,31 +57,25 @@ All five variants score within 0.6 chrF3 of the baseline, and none is clearly be
 ### Segmentation of the training data
 
 ```{python}
-study.table(groups=[TRAIN], intervals=False, digits=2, group_title="Data")
+study.table(groups=[TRAIN], intervals=False, digits=2, group_title=None)
 ```
 
-- **More runs, fewer odd verses.** Flagged verses fell from 2.68% to 2.38% with 2 runs, 2.29% with 5, 2.12% with 10 and 2.11% with 15. The gains level off at 10 runs.
-- **It is the long targets that improve.** Verses where the target is far longer than the source fell by about a third (0.72% to 0.47%), and one-word verses by about a third (0.81% to 0.55%). Verses where the target is far shorter than the source barely moved (1.51% to 1.43%).
-- **The length correlation did not move** (0.09 for the baseline and for every run count). It is dominated by the few extreme verses: dropping the 251 flagged baseline verses lifts it from 0.09 to 0.86. Fixing about a fifth of them isn't enough to show.
+- **More runs, fewer suspect verses.** Suspect verses fell from 2.68% to 2.38% with 2 runs, 2.29% with 5, 2.12% with 10, and 2.11% with 15. The gains level off at 10 eflomal runs.
+- **Long target verses and one-word verses improve the most.** With 10 eflomal runs, verses where the target is far longer than the source fell by about a third (0.72% to 0.49%), and one-word verses by about a third (0.81% to 0.59%). Verses where the target is far shorter than the source barely moved (1.51% to 1.40%).
 
 ### Segmentation of the test data
 
 ```{python}
-study.table(groups=[TEST], intervals=False, digits=2, group_title="Data")
+study.table(groups=[TEST], intervals=False, digits=2, group_title=None)
 ```
 
-The test passages are short, so these counts are tiny: the baseline flags 2 of 235 verses and every multi-run setting 3 of 237. That is a difference of one verse, and tells us nothing about the effect of extra runs. The length correlation stays between 0.82 and 0.85.
-
-### Removing flagged verses
-
-The experiment with the 251 flagged training verses removed has no flagged verses left and a length correlation of 0.86. Its chrF3 is 69.7, 0.3 below the baseline, and its BLEU 30.0, 0.9 above. The two measures disagree, so removing the odd verses did not clearly help or hurt.
+The test passages are short, so these counts are tiny: the baseline only has 2 suspect verses, out of 235 verses.
 
 ## Limitations
 
 - **One run and 17 passages per setting.** There are no confidence intervals and no repeated training runs, so translation differences under about a point are not established.
-- **A length check, not a boundary check.** A flagged verse is a suspicious one, and an unflagged verse can still have the wrong boundary. Better segmentation here means fewer implausible lengths, not more correct boundaries.
+- **A length check, not a boundary check.** We are measuring the quality of the segmentation algorithm by looking at verses that seem too long or too short, rather than comparing the output against ground truth segmentation boundaries. Better segmentation here means fewer implausible lengths, not more correct boundaries.
 - **One language and one corpus.** The results describe a single project's speech recognition output and a single source Bible.
-- **The test data is small.** Its segmentation statistics rest on two or three verses.
 
 ## Reproducing this
 
