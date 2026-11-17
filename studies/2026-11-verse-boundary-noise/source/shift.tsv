@@ -1,0 +1,55 @@
+system	setting	BLEU	chrF3
+Language A	Shift 0	14.45	42.46
+Language A	Shift 1	14.21	42.29
+Language A	Shift 2	14.09	42.15
+Language A	Shift 3	13.61	42.19
+Language A	Shift 4	13.43	41.84
+Language A	Shift 5	13.18	42.19
+Language A	Shift 10	12.29	41.48
+Language A	Shift 20	10.1	40.5
+Language A	Shift 30	8.68	38.57
+Language A (NT)	Shift 0	15.98	45.97
+Language A (NT)	Shift 1	15.85	45.76
+Language A (NT)	Shift 2	15.57	45.74
+Language A (NT)	Shift 3	15.67	45.63
+Language A (NT)	Shift 4	16	46.29
+Language A (NT)	Shift 5	15.24	45.19
+Language A (NT)	Shift 10	14.91	44.54
+Language A (NT)	Shift 20	13.68	44.13
+Language A (NT)	Shift 30	12.18	42.99
+Language B	Shift 0	16.61	45.7
+Language B	Shift 1	15.7	45.34
+Language B	Shift 2	15.39	44.38
+Language B	Shift 3	14.87	43.84
+Language B	Shift 4	14.19	42.5
+Language B	Shift 5	14.07	42.79
+Language B	Shift 10	10.8	38.86
+Language B	Shift 20	7.28	33.55
+Language B	Shift 30	6.51	29.97
+Language B (NT)	Shift 0	32.95	59.38
+Language B (NT)	Shift 1	31.24	59.05
+Language B (NT)	Shift 2	29.99	57.89
+Language B (NT)	Shift 3	29.9	57.66
+Language B (NT)	Shift 4	29.63	56.87
+Language B (NT)	Shift 5	28.34	55.46
+Language B (NT)	Shift 10	25.4	51.86
+Language B (NT)	Shift 20	20.36	48.53
+Language B (NT)	Shift 30	18.92	46.77
+Language C	Shift 0	13.99	47.57
+Language C	Shift 1	13.55	46.95
+Language C	Shift 2	13.32	46.24
+Language C	Shift 3	12.73	45.99
+Language C	Shift 4	12.43	44.67
+Language C	Shift 5	12.08	44.76
+Language C	Shift 10	10.64	42.19
+Language C	Shift 20	8.03	36.55
+Language C	Shift 30	6.54	34.91
+Language C (NT)	Shift 0	19.99	57.05
+Language C (NT)	Shift 1	20.2	56.76
+Language C (NT)	Shift 2	18.7	55.75
+Language C (NT)	Shift 3	18.39	54.77
+Language C (NT)	Shift 4	17.86	54.02
+Language C (NT)	Shift 5	17.92	54.19
+Language C (NT)	Shift 10	15.69	51.99
+Language C (NT)	Shift 20	14	48.93
+Language C (NT)	Shift 30	12.15	45.1

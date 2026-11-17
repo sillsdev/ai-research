@@ -130,6 +130,36 @@ class Study:
                 add_row("Average", measure, means, with_intervals=False, summary=True)
         return Markdown("\n".join(lines))
 
+    def stacked_table(
+        self,
+        groups: list[str],
+        measures: tuple[str, str],
+        systems: list[str],
+        digits: int = 1,
+        group_title: str = "Test",
+        column_titles: list[str] | None = None,
+        row_titles: list[str] | None = None,
+    ) -> Markdown:
+        """One row per group, one column per system; each cell shows the first measure with the second in parentheses below.
+
+        The best value of each measure in a row is bold. `column_titles` and `row_titles` replace the system and group names.
+        """
+        first, second = measures
+        rows = self._select(groups, [first, second], systems)
+        lines = ["| " + " | ".join([group_title] + (column_titles or systems)) + " |", "|---|" + "---:|" * len(systems)]
+        for group, row_title in zip(groups, row_titles or groups):
+            by_measure = {m: rows[(rows["group"] == group) & (rows["measure"] == m)].set_index("system")["value"] for m in measures}
+            cells = []
+            for system in systems:
+                parts = []
+                for measure in measures:
+                    values = by_measure[measure]
+                    text = f"{values[system]:.{digits}f}" if system in values.index else "—"
+                    parts.append(f"**{text}**" if system in values.index and values[system] == values.max() else text)
+                cells.append(f"{parts[0]}<br>({parts[1]})")
+            lines.append("| " + " | ".join([row_title] + cells) + " |")
+        return Markdown("\n".join(lines))
+
     def pooled_table(
         self,
         measures: list[str],
@@ -228,6 +258,63 @@ class Study:
         rows = wide.reset_index().rename(columns={"mean": "value", "min": "lower", "max": "upper"})
         rows, systems, line = self._chart_rows(mean, groups, None, reference, rows.assign(measure=mean))
         self._show("dot", rows, systems, x_title or mean, x_range, line, interval=f"range across {across}")
+
+    def line_chart(
+        self,
+        measure: str,
+        groups: list[str],
+        systems: list[str],
+        x_title: str,
+        y_title: str | None = None,
+        relative: bool = True,
+    ) -> None:
+        """A line per group across numbered systems such as "Shift 10", the number setting the x position.
+
+        With `relative`, each line is a percentage of its group's value at the first system. A group ending
+        in " (NT)" shares its color with the group without the suffix and is dashed. Displays a light and a
+        dark rendering.
+        """
+        rows = self._select(groups, [measure], systems)
+        stems = list(dict.fromkeys(g.removesuffix(" (NT)") for g in groups))
+        for theme in (Theme("light"), Theme("dark")):
+            figure = go.Figure()
+            for group in groups:
+                points = rows[rows["group"] == group].set_index("system").reindex(systems)
+                values = points["value"] / points["value"].iloc[0] * 100 if relative else points["value"]
+                color = theme.series[stems.index(group.removesuffix(" (NT)")) % len(theme.series)]
+                figure.add_trace(
+                    go.Scatter(
+                        x=[int(re.search(r"(\d+)$", s).group(1)) for s in systems],
+                        y=values,
+                        name=group,
+                        mode="lines+markers",
+                        line=dict(color=color, width=2, dash="dash" if group.endswith(" (NT)") else "solid"),
+                        marker=dict(size=7, color=color),
+                        hovertemplate=f"<b>{group}</b><br>%{{x}}<br>%{{y:.1f}}<extra></extra>",
+                    )
+                )
+            figure.update_layout(
+                template="none",
+                paper_bgcolor=theme.surface,
+                plot_bgcolor=theme.surface,
+                font=dict(color=theme.text, size=13, family="Source Sans 3, sans-serif"),
+                height=380,
+                margin=dict(l=10, r=10, t=10, b=50),
+                legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0, font=dict(color=theme.muted)),
+                hoverlabel=dict(bgcolor=theme.surface, font=dict(color=theme.text)),
+            )
+            figure.update_xaxes(
+                title=dict(text=x_title, font=dict(color=theme.muted)),
+                gridcolor=theme.grid,
+                tickfont=dict(color=theme.muted),
+            )
+            figure.update_yaxes(
+                title=dict(text=y_title or measure, font=dict(color=theme.muted)),
+                gridcolor=theme.grid,
+                tickfont=dict(color=theme.muted),
+                automargin=True,
+            )
+            figure.show()
 
     def _chart_rows(self, measure, groups, systems, reference, metrics=None):
         rows = self._select(groups, [measure], systems, metrics)

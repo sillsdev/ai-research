@@ -1,0 +1,10 @@
+system	setting	BLEU	chrF3
+Language D	Noise 0	23.64	66.69
+Language D	Noise 1	22.24	65.83
+Language D	Noise 2	21.78	65.22
+Language D	Noise 3	21.01	64.43
+Language D	Noise 4	20.1	62.52
+Language D	Noise 5	18.59	63.17
+Language D	Noise 10	17.88	62.05
+Language D	Noise 20	17.01	59.97
+Language D	Noise 30	14.56	59.98

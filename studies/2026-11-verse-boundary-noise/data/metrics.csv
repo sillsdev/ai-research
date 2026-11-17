@@ -1,0 +1,235 @@
+system,group,measure,value,lower,upper,n,source,file
+Shift 0,Language A,chrF3,42.46,,,,results,shift.tsv
+Shift 1,Language A,chrF3,42.29,,,,results,shift.tsv
+Shift 2,Language A,chrF3,42.15,,,,results,shift.tsv
+Shift 3,Language A,chrF3,42.19,,,,results,shift.tsv
+Shift 4,Language A,chrF3,41.84,,,,results,shift.tsv
+Shift 5,Language A,chrF3,42.19,,,,results,shift.tsv
+Shift 10,Language A,chrF3,41.48,,,,results,shift.tsv
+Shift 20,Language A,chrF3,40.5,,,,results,shift.tsv
+Shift 30,Language A,chrF3,38.57,,,,results,shift.tsv
+Shift 0,Language A (NT),chrF3,45.97,,,,results,shift.tsv
+Shift 1,Language A (NT),chrF3,45.76,,,,results,shift.tsv
+Shift 2,Language A (NT),chrF3,45.74,,,,results,shift.tsv
+Shift 3,Language A (NT),chrF3,45.63,,,,results,shift.tsv
+Shift 4,Language A (NT),chrF3,46.29,,,,results,shift.tsv
+Shift 5,Language A (NT),chrF3,45.19,,,,results,shift.tsv
+Shift 10,Language A (NT),chrF3,44.54,,,,results,shift.tsv
+Shift 20,Language A (NT),chrF3,44.13,,,,results,shift.tsv
+Shift 30,Language A (NT),chrF3,42.99,,,,results,shift.tsv
+Shift 0,Language B,chrF3,45.7,,,,results,shift.tsv
+Shift 1,Language B,chrF3,45.34,,,,results,shift.tsv
+Shift 2,Language B,chrF3,44.38,,,,results,shift.tsv
+Shift 3,Language B,chrF3,43.84,,,,results,shift.tsv
+Shift 4,Language B,chrF3,42.5,,,,results,shift.tsv
+Shift 5,Language B,chrF3,42.79,,,,results,shift.tsv
+Shift 10,Language B,chrF3,38.86,,,,results,shift.tsv
+Shift 20,Language B,chrF3,33.55,,,,results,shift.tsv
+Shift 30,Language B,chrF3,29.97,,,,results,shift.tsv
+Shift 0,Language B (NT),chrF3,59.38,,,,results,shift.tsv
+Shift 1,Language B (NT),chrF3,59.05,,,,results,shift.tsv
+Shift 2,Language B (NT),chrF3,57.89,,,,results,shift.tsv
+Shift 3,Language B (NT),chrF3,57.66,,,,results,shift.tsv
+Shift 4,Language B (NT),chrF3,56.87,,,,results,shift.tsv
+Shift 5,Language B (NT),chrF3,55.46,,,,results,shift.tsv
+Shift 10,Language B (NT),chrF3,51.86,,,,results,shift.tsv
+Shift 20,Language B (NT),chrF3,48.53,,,,results,shift.tsv
+Shift 30,Language B (NT),chrF3,46.77,,,,results,shift.tsv
+Shift 0,Language C,chrF3,47.57,,,,results,shift.tsv
+Shift 1,Language C,chrF3,46.95,,,,results,shift.tsv
+Shift 2,Language C,chrF3,46.24,,,,results,shift.tsv
+Shift 3,Language C,chrF3,45.99,,,,results,shift.tsv
+Shift 4,Language C,chrF3,44.67,,,,results,shift.tsv
+Shift 5,Language C,chrF3,44.76,,,,results,shift.tsv
+Shift 10,Language C,chrF3,42.19,,,,results,shift.tsv
+Shift 20,Language C,chrF3,36.55,,,,results,shift.tsv
+Shift 30,Language C,chrF3,34.91,,,,results,shift.tsv
+Shift 0,Language C (NT),chrF3,57.05,,,,results,shift.tsv
+Shift 1,Language C (NT),chrF3,56.76,,,,results,shift.tsv
+Shift 2,Language C (NT),chrF3,55.75,,,,results,shift.tsv
+Shift 3,Language C (NT),chrF3,54.77,,,,results,shift.tsv
+Shift 4,Language C (NT),chrF3,54.02,,,,results,shift.tsv
+Shift 5,Language C (NT),chrF3,54.19,,,,results,shift.tsv
+Shift 10,Language C (NT),chrF3,51.99,,,,results,shift.tsv
+Shift 20,Language C (NT),chrF3,48.93,,,,results,shift.tsv
+Shift 30,Language C (NT),chrF3,45.1,,,,results,shift.tsv
+Shift 0,Language A,BLEU,14.45,,,,results,shift.tsv
+Shift 1,Language A,BLEU,14.21,,,,results,shift.tsv
+Shift 2,Language A,BLEU,14.09,,,,results,shift.tsv
+Shift 3,Language A,BLEU,13.61,,,,results,shift.tsv
+Shift 4,Language A,BLEU,13.43,,,,results,shift.tsv
+Shift 5,Language A,BLEU,13.18,,,,results,shift.tsv
+Shift 10,Language A,BLEU,12.29,,,,results,shift.tsv
+Shift 20,Language A,BLEU,10.1,,,,results,shift.tsv
+Shift 30,Language A,BLEU,8.68,,,,results,shift.tsv
+Shift 0,Language A (NT),BLEU,15.98,,,,results,shift.tsv
+Shift 1,Language A (NT),BLEU,15.85,,,,results,shift.tsv
+Shift 2,Language A (NT),BLEU,15.57,,,,results,shift.tsv
+Shift 3,Language A (NT),BLEU,15.67,,,,results,shift.tsv
+Shift 4,Language A (NT),BLEU,16.0,,,,results,shift.tsv
+Shift 5,Language A (NT),BLEU,15.24,,,,results,shift.tsv
+Shift 10,Language A (NT),BLEU,14.91,,,,results,shift.tsv
+Shift 20,Language A (NT),BLEU,13.68,,,,results,shift.tsv
+Shift 30,Language A (NT),BLEU,12.18,,,,results,shift.tsv
+Shift 0,Language B,BLEU,16.61,,,,results,shift.tsv
+Shift 1,Language B,BLEU,15.7,,,,results,shift.tsv
+Shift 2,Language B,BLEU,15.39,,,,results,shift.tsv
+Shift 3,Language B,BLEU,14.87,,,,results,shift.tsv
+Shift 4,Language B,BLEU,14.19,,,,results,shift.tsv
+Shift 5,Language B,BLEU,14.07,,,,results,shift.tsv
+Shift 10,Language B,BLEU,10.8,,,,results,shift.tsv
+Shift 20,Language B,BLEU,7.28,,,,results,shift.tsv
+Shift 30,Language B,BLEU,6.51,,,,results,shift.tsv
+Shift 0,Language B (NT),BLEU,32.95,,,,results,shift.tsv
+Shift 1,Language B (NT),BLEU,31.24,,,,results,shift.tsv
+Shift 2,Language B (NT),BLEU,29.99,,,,results,shift.tsv
+Shift 3,Language B (NT),BLEU,29.9,,,,results,shift.tsv
+Shift 4,Language B (NT),BLEU,29.63,,,,results,shift.tsv
+Shift 5,Language B (NT),BLEU,28.34,,,,results,shift.tsv
+Shift 10,Language B (NT),BLEU,25.4,,,,results,shift.tsv
+Shift 20,Language B (NT),BLEU,20.36,,,,results,shift.tsv
+Shift 30,Language B (NT),BLEU,18.92,,,,results,shift.tsv
+Shift 0,Language C,BLEU,13.99,,,,results,shift.tsv
+Shift 1,Language C,BLEU,13.55,,,,results,shift.tsv
+Shift 2,Language C,BLEU,13.32,,,,results,shift.tsv
+Shift 3,Language C,BLEU,12.73,,,,results,shift.tsv
+Shift 4,Language C,BLEU,12.43,,,,results,shift.tsv
+Shift 5,Language C,BLEU,12.08,,,,results,shift.tsv
+Shift 10,Language C,BLEU,10.64,,,,results,shift.tsv
+Shift 20,Language C,BLEU,8.03,,,,results,shift.tsv
+Shift 30,Language C,BLEU,6.54,,,,results,shift.tsv
+Shift 0,Language C (NT),BLEU,19.99,,,,results,shift.tsv
+Shift 1,Language C (NT),BLEU,20.2,,,,results,shift.tsv
+Shift 2,Language C (NT),BLEU,18.7,,,,results,shift.tsv
+Shift 3,Language C (NT),BLEU,18.39,,,,results,shift.tsv
+Shift 4,Language C (NT),BLEU,17.86,,,,results,shift.tsv
+Shift 5,Language C (NT),BLEU,17.92,,,,results,shift.tsv
+Shift 10,Language C (NT),BLEU,15.69,,,,results,shift.tsv
+Shift 20,Language C (NT),BLEU,14.0,,,,results,shift.tsv
+Shift 30,Language C (NT),BLEU,12.15,,,,results,shift.tsv
+SD 0,Language A,chrF3,42.46,,,,results,normal.tsv
+SD 1,Language A,chrF3,42.68,,,,results,normal.tsv
+SD 2,Language A,chrF3,42.3,,,,results,normal.tsv
+SD 3,Language A,chrF3,41.83,,,,results,normal.tsv
+SD 4,Language A,chrF3,41.86,,,,results,normal.tsv
+SD 5,Language A,chrF3,42.04,,,,results,normal.tsv
+SD 10,Language A,chrF3,40.8,,,,results,normal.tsv
+SD 20,Language A,chrF3,38.88,,,,results,normal.tsv
+SD 30,Language A,chrF3,39.19,,,,results,normal.tsv
+SD 0,Language A (NT),chrF3,45.97,,,,results,normal.tsv
+SD 1,Language A (NT),chrF3,45.91,,,,results,normal.tsv
+SD 2,Language A (NT),chrF3,45.82,,,,results,normal.tsv
+SD 3,Language A (NT),chrF3,45.6,,,,results,normal.tsv
+SD 4,Language A (NT),chrF3,45.41,,,,results,normal.tsv
+SD 5,Language A (NT),chrF3,44.99,,,,results,normal.tsv
+SD 10,Language A (NT),chrF3,44.9,,,,results,normal.tsv
+SD 20,Language A (NT),chrF3,44.4,,,,results,normal.tsv
+SD 30,Language A (NT),chrF3,42.11,,,,results,normal.tsv
+SD 0,Language B,chrF3,45.7,,,,results,normal.tsv
+SD 1,Language B,chrF3,45.06,,,,results,normal.tsv
+SD 2,Language B,chrF3,43.67,,,,results,normal.tsv
+SD 3,Language B,chrF3,42.82,,,,results,normal.tsv
+SD 4,Language B,chrF3,41.57,,,,results,normal.tsv
+SD 5,Language B,chrF3,40.13,,,,results,normal.tsv
+SD 10,Language B,chrF3,35.35,,,,results,normal.tsv
+SD 20,Language B,chrF3,33.24,,,,results,normal.tsv
+SD 30,Language B,chrF3,31.14,,,,results,normal.tsv
+SD 0,Language B (NT),chrF3,59.38,,,,results,normal.tsv
+SD 1,Language B (NT),chrF3,59.26,,,,results,normal.tsv
+SD 2,Language B (NT),chrF3,57.54,,,,results,normal.tsv
+SD 3,Language B (NT),chrF3,57.1,,,,results,normal.tsv
+SD 4,Language B (NT),chrF3,55.31,,,,results,normal.tsv
+SD 5,Language B (NT),chrF3,54.57,,,,results,normal.tsv
+SD 10,Language B (NT),chrF3,51.24,,,,results,normal.tsv
+SD 20,Language B (NT),chrF3,48.95,,,,results,normal.tsv
+SD 30,Language B (NT),chrF3,47.19,,,,results,normal.tsv
+SD 0,Language C,chrF3,47.57,,,,results,normal.tsv
+SD 1,Language C,chrF3,46.38,,,,results,normal.tsv
+SD 2,Language C,chrF3,45.46,,,,results,normal.tsv
+SD 3,Language C,chrF3,45.13,,,,results,normal.tsv
+SD 4,Language C,chrF3,43.38,,,,results,normal.tsv
+SD 5,Language C,chrF3,43.69,,,,results,normal.tsv
+SD 10,Language C,chrF3,41.68,,,,results,normal.tsv
+SD 20,Language C,chrF3,36.31,,,,results,normal.tsv
+SD 30,Language C,chrF3,34.34,,,,results,normal.tsv
+SD 0,Language C (NT),chrF3,57.05,,,,results,normal.tsv
+SD 1,Language C (NT),chrF3,56.02,,,,results,normal.tsv
+SD 2,Language C (NT),chrF3,55.09,,,,results,normal.tsv
+SD 3,Language C (NT),chrF3,54.25,,,,results,normal.tsv
+SD 4,Language C (NT),chrF3,53.73,,,,results,normal.tsv
+SD 5,Language C (NT),chrF3,53.08,,,,results,normal.tsv
+SD 10,Language C (NT),chrF3,51.71,,,,results,normal.tsv
+SD 20,Language C (NT),chrF3,47.25,,,,results,normal.tsv
+SD 30,Language C (NT),chrF3,47.86,,,,results,normal.tsv
+SD 0,Language A,BLEU,14.45,,,,results,normal.tsv
+SD 1,Language A,BLEU,14.24,,,,results,normal.tsv
+SD 2,Language A,BLEU,14.0,,,,results,normal.tsv
+SD 3,Language A,BLEU,13.81,,,,results,normal.tsv
+SD 4,Language A,BLEU,12.91,,,,results,normal.tsv
+SD 5,Language A,BLEU,12.8,,,,results,normal.tsv
+SD 10,Language A,BLEU,11.18,,,,results,normal.tsv
+SD 20,Language A,BLEU,9.01,,,,results,normal.tsv
+SD 30,Language A,BLEU,7.39,,,,results,normal.tsv
+SD 0,Language A (NT),BLEU,15.98,,,,results,normal.tsv
+SD 1,Language A (NT),BLEU,16.24,,,,results,normal.tsv
+SD 2,Language A (NT),BLEU,15.62,,,,results,normal.tsv
+SD 3,Language A (NT),BLEU,15.61,,,,results,normal.tsv
+SD 4,Language A (NT),BLEU,15.83,,,,results,normal.tsv
+SD 5,Language A (NT),BLEU,14.88,,,,results,normal.tsv
+SD 10,Language A (NT),BLEU,14.62,,,,results,normal.tsv
+SD 20,Language A (NT),BLEU,12.66,,,,results,normal.tsv
+SD 30,Language A (NT),BLEU,11.83,,,,results,normal.tsv
+SD 0,Language B,BLEU,16.61,,,,results,normal.tsv
+SD 1,Language B,BLEU,15.57,,,,results,normal.tsv
+SD 2,Language B,BLEU,14.83,,,,results,normal.tsv
+SD 3,Language B,BLEU,14.07,,,,results,normal.tsv
+SD 4,Language B,BLEU,13.31,,,,results,normal.tsv
+SD 5,Language B,BLEU,12.59,,,,results,normal.tsv
+SD 10,Language B,BLEU,9.74,,,,results,normal.tsv
+SD 20,Language B,BLEU,7.25,,,,results,normal.tsv
+SD 30,Language B,BLEU,5.68,,,,results,normal.tsv
+SD 0,Language B (NT),BLEU,32.95,,,,results,normal.tsv
+SD 1,Language B (NT),BLEU,31.38,,,,results,normal.tsv
+SD 2,Language B (NT),BLEU,30.09,,,,results,normal.tsv
+SD 3,Language B (NT),BLEU,29.59,,,,results,normal.tsv
+SD 4,Language B (NT),BLEU,27.83,,,,results,normal.tsv
+SD 5,Language B (NT),BLEU,27.43,,,,results,normal.tsv
+SD 10,Language B (NT),BLEU,23.53,,,,results,normal.tsv
+SD 20,Language B (NT),BLEU,19.68,,,,results,normal.tsv
+SD 30,Language B (NT),BLEU,19.29,,,,results,normal.tsv
+SD 0,Language C,BLEU,13.99,,,,results,normal.tsv
+SD 1,Language C,BLEU,13.26,,,,results,normal.tsv
+SD 2,Language C,BLEU,12.79,,,,results,normal.tsv
+SD 3,Language C,BLEU,12.58,,,,results,normal.tsv
+SD 4,Language C,BLEU,12.07,,,,results,normal.tsv
+SD 5,Language C,BLEU,11.67,,,,results,normal.tsv
+SD 10,Language C,BLEU,9.23,,,,results,normal.tsv
+SD 20,Language C,BLEU,7.66,,,,results,normal.tsv
+SD 30,Language C,BLEU,7.46,,,,results,normal.tsv
+SD 0,Language C (NT),BLEU,19.99,,,,results,normal.tsv
+SD 1,Language C (NT),BLEU,19.81,,,,results,normal.tsv
+SD 2,Language C (NT),BLEU,18.6,,,,results,normal.tsv
+SD 3,Language C (NT),BLEU,19.01,,,,results,normal.tsv
+SD 4,Language C (NT),BLEU,17.51,,,,results,normal.tsv
+SD 5,Language C (NT),BLEU,17.87,,,,results,normal.tsv
+SD 10,Language C (NT),BLEU,15.32,,,,results,normal.tsv
+SD 20,Language C (NT),BLEU,12.88,,,,results,normal.tsv
+SD 30,Language C (NT),BLEU,12.52,,,,results,normal.tsv
+Noise 0,Language D,chrF3,66.69,,,,results,added_noise.tsv
+Noise 1,Language D,chrF3,65.83,,,,results,added_noise.tsv
+Noise 2,Language D,chrF3,65.22,,,,results,added_noise.tsv
+Noise 3,Language D,chrF3,64.43,,,,results,added_noise.tsv
+Noise 4,Language D,chrF3,62.52,,,,results,added_noise.tsv
+Noise 5,Language D,chrF3,63.17,,,,results,added_noise.tsv
+Noise 10,Language D,chrF3,62.05,,,,results,added_noise.tsv
+Noise 20,Language D,chrF3,59.97,,,,results,added_noise.tsv
+Noise 30,Language D,chrF3,59.98,,,,results,added_noise.tsv
+Noise 0,Language D,BLEU,23.64,,,,results,added_noise.tsv
+Noise 1,Language D,BLEU,22.24,,,,results,added_noise.tsv
+Noise 2,Language D,BLEU,21.78,,,,results,added_noise.tsv
+Noise 3,Language D,BLEU,21.01,,,,results,added_noise.tsv
+Noise 4,Language D,BLEU,20.1,,,,results,added_noise.tsv
+Noise 5,Language D,BLEU,18.59,,,,results,added_noise.tsv
+Noise 10,Language D,BLEU,17.88,,,,results,added_noise.tsv
+Noise 20,Language D,BLEU,17.01,,,,results,added_noise.tsv
+Noise 30,Language D,BLEU,14.56,,,,results,added_noise.tsv

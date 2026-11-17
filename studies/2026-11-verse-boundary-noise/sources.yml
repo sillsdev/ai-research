@@ -1,0 +1,8 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick in December 2025, who fine-tuned NLLB with silnlp on training text whose verse boundaries had been perturbed with scripts in SIL's research-code repository, and scored the drafts with sacrebleu (BLEU and chrF3)
+tables:
+  - {source: results, file: shift.tsv, system: {column: setting}, group: {column: system}, measures: [{column: chrF3}, {column: BLEU}]}
+  - {source: results, file: normal.tsv, system: {column: setting}, group: {column: system}, measures: [{column: chrF3}, {column: BLEU}]}
+  - {source: results, file: added_noise.tsv, system: {column: setting}, group: {column: system}, measures: [{column: chrF3}, {column: BLEU}]}
