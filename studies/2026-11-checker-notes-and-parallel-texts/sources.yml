@@ -1,6 +1,6 @@
 sources:
   bt-checking-eval-data:
     repo: https://github.com/sillsdev/bt-checking-eval-data
-    commit: dd7c1eb5df1a475307889a37324b064e8b4396ea
+    commit: 455f495fb58bdd12f6dad65434632afc2126aef2
     visibility: private
     recipe: published/2026-11-checker-notes-and-parallel-texts.yml
