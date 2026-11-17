@@ -1,0 +1,112 @@
+---
+title: "How speech-recognition errors affect translation scores"
+description: "Fine-tuning NLLB on transcripts from ten speech-recognition models: how character error rate relates to BLEU and chrF3."
+date: 2026-11-17
+author: Laura Burdick
+harness: none
+categories: [machine translation, speech recognition, noise]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+ROMANS = "Test on Romans"
+MATTHEW = "Test on Matthew 11–16"
+MEASURES = ["chrF3", "BLEU", "CER (%)", "Alignment score"]
+DIGITS = {"chrF3": 1, "BLEU": 1, "CER (%)": 2, "Alignment score": 3}
+```
+
+## Summary
+
+- We fine-tuned NLLB on text transcribed by ten speech-recognition (ASR) models, plus one combined transcript, and measured how the transcript's character error rate (CER) relates to BLEU and chrF3.
+- The combined transcript has the lowest CER and the highest scores on both test sets.
+- On Matthew 11–16, a lower CER goes with higher scores. On Romans, CER is a weak predictor of the scores, and the alignment score with the source text tracks them more closely.
+- Each transcript is a single training run, so the study shows a pattern across eleven transcripts, not precise effects.
+
+## The question
+
+Speech recognition lets a team draft text from audio, but its transcripts contain errors. This study asks how the amount of noise in an ASR transcript, measured by CER, affects the translation scores of a model fine-tuned on it.
+
+## How it was tested
+
+Ten ASR models were fine-tuned on the audio of chapters 1–10 of one gospel and used to transcribe the audio of a whole New Testament. A combined transcript was made from the ten transcripts with an LLM. <!-- REVIEW: "with an LLM" is inferred from the transcript's name in the experiment folder; confirm how it was combined. -->
+
+NLLB was fine-tuned with silnlp for each of the eleven transcripts, with the transcript as the target text and a Bible in another language as the source. There is one training run per transcript, with the same random seed.
+
+Four measures are reported for each transcript:
+
+- **chrF3** and **BLEU**: scores of the fine-tuned model's drafts on the test set, from sacrebleu.
+- **CER (%)**: the overall character error rate of the ASR model that produced the transcript, on held-out audio. <!-- REVIEW: CER is taken from the researcher's spreadsheet, which lists 35 samples per model; confirm what it was measured against. -->
+- **Alignment score**: how regularly the transcript's words align with the source text, from word alignment with eflomal. Higher is better. <!-- REVIEW: the sheet's alignment scores for the Matthew 11–16 tab come from fast_align (0.27–0.31); this study uses the eflomal scores from the Romans tab for both tables, since the training text is the same. Confirm. -->
+
+## Results
+
+### Training and test data
+
+| Experiment | Training data | Test data |
+|---|---|---|
+| Test on Romans | The New Testament without Romans | Romans |
+| Test on Matthew 11–16 | The New Testament without Matthew 11–16 | Matthew 11–16, 240 verses |
+
+<!-- REVIEW: for both tests, the test text is a transcript from the same ASR source as the training text, not a written reference. For Romans it is the combined transcript; confirm what the reference is in each test. -->
+
+```{=html}
+<style>table { margin-top: 1.5rem; }</style>
+```
+
+### Test on Matthew 11–16
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(MATTHEW, "CER (%)", "chrF3")
+```
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(MATTHEW, "Alignment score", "chrF3")
+```
+
+```{python}
+study.results_table(MATTHEW, MEASURES, digits=DIGITS)
+```
+
+### Test on Romans
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(ROMANS, "CER (%)", "chrF3")
+```
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(ROMANS, "Alignment score", "chrF3")
+```
+
+```{python}
+study.results_table(ROMANS, MEASURES, digits=DIGITS)
+```
+
+### What the results show
+
+- **The combined transcript is best.** It has the lowest CER (5.48%) and the highest chrF3 on both tests (66.5 on Matthew 11–16, 48.7 on Romans). On Romans this is partly expected, because the Romans test text is the combined transcript itself.
+- **On Matthew 11–16, less noise means better scores.** chrF3 ranges from 61.0 to 66.5 across the transcripts, and the rank correlation between CER and chrF3 is −0.74 (−0.67 for BLEU). <!-- REVIEW: rank (Spearman) correlations over the 11 transcripts, computed from the tables by the author of this page; not in metrics.csv. -->
+- **On Romans, CER predicts little.** chrF3 ranges from 32.2 to 48.7 and BLEU from 3.4 to 11.9, and the rank correlation with CER is only −0.26 (−0.14 for BLEU). For example, ASR models 2 and 4 have similar CERs (6.63% and 6.81%), but chrF3 of 33.6 and 47.1. <!-- REVIEW: same computation as above. -->
+- **Alignment with the source tracks the Romans scores better.** The rank correlation between alignment score and chrF3 is 0.82 on Romans (0.63 on Matthew 11–16). This suggests that a transcript's CER alone does not capture what matters for translation. <!-- REVIEW: same computation as above. -->
+
+## Limitations
+
+- **One run per transcript and no intervals.** Differences of a point or two are within noise.
+- **Eleven transcripts, one language, one model.** The correlations come from eleven points.
+- **CER is measured on a small set of held-out samples**, so it is itself uncertain.
+- **The test text is not an independent human reference** in these experiments, so the scores measure agreement with a transcript, not necessarily with correct text.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).
