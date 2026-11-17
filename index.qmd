@@ -4,7 +4,7 @@ listing:
   contents: studies
   type: table
   sort: "date desc"
-  fields: [date, title, description, categories]
+  fields: [date, title, author, description, categories]
   categories: true
   filter-ui: true
   sort-ui: true
