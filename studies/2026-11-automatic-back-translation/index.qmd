@@ -1,6 +1,6 @@
 ---
-title: "Automatic back translations for OBT projects"
-description: "AI back translations of OBT translations in four languages reach chrF3 of 49 to 74 against human back translations, but only on 4 to 66 passages per language, so the evidence is early."
+title: "Weakly supervised back translation for oral Bible translation projects"
+description: "Weakly supervised back translations for four OBT projects had chrF3 scores between 49 and 74 against transcribed human back translations."
 date: 2026-11-03
 author: Laura Burdick
 harness: none
@@ -15,63 +15,76 @@ study = Study()
 
 ## Summary
 
-- **Question:** is automatic back translation effective for oral Bible translation (OBT) projects?
-- In four OBT projects, a two-stage pipeline (training a speech recognition model using a sister-language orthography, then drafting using an LLM) produced passage-level written back translations.
-- Against a human back translation, the best draft in each language scores **chrF3 54.3, 65.5, 49.1 and 73.8** (Languages A to D).
-- Each language was scored on **4 to 66 passages**.
-- **Conclusion:** the scores indicate that the drafts could be a useful starting point for a consultant to review in Paratext, but human feedback would be needed to validate this.
+- This research study looks at whether weakly supervised back translations are good enough to be helpful to oral Bible translation (OBT) consultants.
+- In four OBT projects, a two-stage pipeline produced passage-level written back translations. To produce these drafts, first we train an automatic speech recognition (ASR) model using an orthography from a related language. Using the ASR model, we transcribe the translation team's audio and translate it into a language of wider communication (LWC) using a large language model (LLM) with in-context learning.
+- The back translation drafts have **chrF3 scores between 49.1 and 73.8**, scored on between **4 and 66 passages**.
+- The scores indicate that the drafts could be a useful starting point for a consultant to check in Paratext, but human feedback is needed to validate this.
 
 ## The problem
 
-OBT projects record a translation as audio, often in a language with no orthography. A consultant who doesn't speak the language needs a back translation in a language of wider communication (LWC) to check the draft. Many consultants like to work in Paratext, and a written back translation in an LWC lets them use the checking tools available there. This study asks whether an automatic back translation is helpful for a consultant.
+OBT translation teams record audio translations, often in a low-resource language with no developed orthography. A translation consultant who doesn't speak the language uses a back translation in an LWC to check the Scripture draft. Many consultants like to work in Paratext, and a written back translation allows them to use the checking tools available there. This study asks whether a weakly supervised back translation is good enough to be helpful for a consultant.
 
 ## The method
 
-1. **Sister-language orthography.** To train a speech recognition model for a language with no orthography, this method uses a *donor* language: a related language with a developed orthography. The model initially transcribes the audio in that donor's orthography and then does a self-training step to further adapt to the target language (during the self-training step, the ASR model is fine-tuned on its initial output).
-    - **Starting point.** Each donor is a language with an existing speech recognition adapter on Meta's multilingual MMS model. The adapter hears the target language's audio and writes whatever the donor's spelling would make of those sounds, so the output is a phonetic approximation, not a transcription of the target language.
-    - **Chunking.** The recordings are cut at silences into chunks of about 12 seconds, and the adapter transcribes each chunk.
-    - **Self-training.** The adapter is then trained further on the chunks paired with its own transcripts, so that it spells recurring sounds and words consistently. The final transcripts come from this retrained adapter, and they are what the drafting step uses as source text.
-    - **Donor choice.** Several donors were tried per language. A donor orthography that captures the language's sounds well should survive a text-to-speech *round trip*, so the donors were compared that way, with no ground-truth transcript needed:
-        - **One text-to-speech model per donor.** For each donor, a text-to-speech model (SpeechT5) is trained on pairs of a chunk's audio and its transcript in that donor's orthography.
-        - **Held-out audio.** Whole recordings are held out, so no test chunk shares a recording with training audio. The held-out transcripts are synthesized with each donor's model.
-        - **Scoring.** An ASR model (Whisper large-v3) in an LWC transcribes both the original chunk and its synthesized copy. The score is the character error rate (CER) between those two transcripts.
-2. **Drafting.** A large language model (gpt-6.1-sol) is shown 10 examples of transcribed source passages, paired with an existing human back translation, then drafts the back translation of each remaining passage. Ten examples of paired passages is around 25,000 tokens. Passages used as references are kept out of the examples.
-    - **Audio human back translations.** Where a human back translation existed only as a recording, it was first transcribed with a speech recognition model.
-    - **Published Bible passages as extra examples.** One language had only 12 recorded passages with a human back translation, too few to fill the examples. We augmented the human back translations with passages from a published Bible in the LWC.
-    - **Recitation check.** A model that knows the Bible might recall a published verse instead of translating the transcript. Each draft was therefore compared with published Bibles in the LWC.
+When producing back translations, we are going from audio in a source language (a low-resource language) to text in a target language (an LWC). Our pipeline has two main stages - training an ASR model and drafting.
+
+1. **Training an ASR model using a sister-language orthography.** To train an ASR model for a language with no orthography, we use a *donor* language: a related language with a developed orthography. First, a **donor ASR model** (an existing ASR model for the donor language) transcribes the source language's audio in the donor language's orthography. Then, a **self-trained ASR model** is created by fine-tuning the donor ASR model on the source audio paired with the transcripts created by the donor ASR model. This self-training step allows the donor ASR model to better adapt to the source language.
+    - **Starting point.** Each donor ASR model is an existing adapter on Meta's [MMS](https://arxiv.org/abs/2305.13516) model. The donor ASR model creates a transcription of the source language audio in the donor language's orthography.
+    - **Chunking.** The source audio recordings are cut at silences into chunks of about 12 seconds, and the donor ASR model transcribes each chunk.
+    - **Self-training.** The donor ASR model is then fine-tuned on each chunk paired with the transcript from the donor ASR model. This produces the self-trained ASR model, which spells recurring sounds and words more consistently. The final transcripts come from the self-trained ASR model.
+    - **Donor choice.** Several donors were tried for each source language. We measure the quality of a donor orthography using a text-to-speech (TTS) *round trip*. A TTS model is trained for each donor, and the transcribed text from the self-trained ASR model is converted into audio. Then, an additional ASR model in an LWC transcribes this audio back into text. After this round-trip, if a donor orthography captures the source language's sounds well, the final transcript should match the transcript from the original source audio closely. The donor with the best round-trip score is chosen, and its self-trained ASR model produces the final transcripts used for drafting. We use this evaluation method because it doesn't depend on ground-truth transcription, which we don't usually have. 
+        - **One TTS model per donor.** For each donor, a TTS model ([SpeechT5](https://github.com/microsoft/speecht5)) is trained on the source audio, paired with the transcripts from the self-trained ASR model.
+        - **Held-out audio.** A set of recordings is held out of TTS training, to be used for evaluation. This test set is synthesized into audio with each donor's TTS model.
+        - **Scoring.** An ASR model ([Whisper large-v3](https://huggingface.co/openai/whisper-large-v3)) in an LWC transcribes both the original audio and its synthesized copy. The score is the character error rate (CER) between those two transcripts.
+2. **Drafting.** After choosing a donor language, all of the source audio is transcribed into text using the self-trained ASR model. Next, an LLM (gpt-6.1-sol) drafts a back translation in an LWC using in-context learning. For each passage, the LLM's prompt contains ten example pairs, followed by the passage to translate. Each example pair is a transcribed source passage and its back translation. To allow for fair evaluation, a passage's own human back translation is never one of its examples.
+    - **Audio human back translations.** Where a human back translation exists only as a recording, it is first transcribed.
+    - **Published Bible passages as extra examples.** Language A has only twelve recorded passages with a human back translation. If we only used these human back translations, the LLM would use the same examples for each prompt. To give the LLM more examples to choose from, we augment the human back translations with passages from a published Bible in the LWC, French. This allows the LLM to choose related passages to the passage it is trying to translate.
+    - **Recitation check.** A model that knows the Bible might recall a published verse in its training data instead of translating the source language passage. To check for this, each draft was compared with published Bibles in the LWC.
 
 ## How it was tested
 
-We measured **chrF3** against existing human back translations of the same passages.
+We compared our draft translations against transcripts of the existing human back translations, using **chrF3**.
+
 ## Results
 
 ```{python}
-#| tbl-colwidths: [14, 22, 21, 21, 22]
+#| tbl-colwidths: [20, 20, 20, 20, 20]
 import pandas as pd
 from IPython.display import Markdown
 
 scores = pd.read_csv("data/metrics.csv")
-donors = list(dict.fromkeys(scores["system"]))
+lwc = {"Language A": "French", "Language B": "Spanish", "Language C": "English", "Language D": "Swahili"}
 lines = [
-    "| Language | Passages evaluated | " + " | ".join(donors) + " |",
-    "|---|---:|" + "---:|" * len(donors),
+    "| Language | LWC | Passages evaluated | Donor | chrF3 |",
+    "|---|---|---|---|---:|",
 ]
 for language, rows in scores.groupby("group", sort=False):
-    by_donor = rows.set_index("system")["value"].reindex(donors)
-    cells = [
-        "—" if pd.isna(v) else (f"**{v:.1f}**" if by_donor.count() > 1 and v == by_donor.max() else f"{v:.1f}")
-        for v in by_donor
-    ]
-    lines.append(f"| {language} | {int(rows['n'].iloc[0])} | " + " | ".join(cells) + " |")
+    label = f"{language}†" if language == "Language A" else language
+    best = rows["value"].max()
+    for i, row in enumerate(rows.itertuples()):
+        score = f"{row.value:.1f}"
+        if len(rows) > 1 and row.value == best:
+            score = f"**{score}**"
+        first = (label, lwc[language], int(row.n)) if i == 0 else ("", "", "")
+        lines.append(f"| {first[0]} | {first[1]} | {first[2]} | {row.system} | {score} |")
 Markdown("\n".join(lines))
 ```
 
-Donors are numbered within each language, not comparable across languages. With 4 to 5 passages each, the differences between donors are not distinguishable from noise.
+† For Language A, the human back translations were augmented with published Bible passages in French.
+
+Donors are labelled by language (for example, C1 to C3 are the donors for Language C) and are different for each source language. With only four or five passages for Languages C and D, we can't tell whether the differences between donors are real.
+
+From user feedback on other drafts, our team has seen that chrF3 scores in the 50s generally indicate a usable draft and scores in the 60s generally indicate a good draft. Based on this rule-of-thumb, we have some confidence that these back translation drafts would be helpful to a translation consultant.
+
+## Additional Considerations
+
+Using the sister-language orthography method of training an ASR method, we can produce a transcript for a language without a developed orthography. We don't recommend showing this transcript to the translation team, because we don't want to discourage the orthography development process. An orthography from a related language may not accurately capture all the nuances of the source language. It's important for a translation team to do the work of orthography development for their own language, rather than borrowing an orthography from another language.
 
 ## Limitations
 
-- **Small samples.** 4-66 passages.
-- **Not human-checked.**
+- If we are augmenting the existing human back translations with a published Bible in an LWC, we must have the appropriate permissions from the copyright holder of the published Bible to send the Bible to an LLM. This could be through an open-source license or through an agreement with the copyright holder.
+- **Small samples.** For some of these languages, we only evaluate on a small number of passages (in one language, only four passages).
+- **Not human-checked.** chrF3 scores give us some indication of how useful a draft will be, but this will need to be verified with human feedback.
 
 ## Reproducing this
 
