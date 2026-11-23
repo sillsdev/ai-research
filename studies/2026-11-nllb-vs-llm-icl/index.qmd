@@ -1,0 +1,126 @@
+---
+title: "Fine-tuned NLLB versus LLM in-context learning for oral Bible translation passages"
+description: "Across eight low-resource test sets, an LLM shown 30 similar translated passages averaged 56.0 chrF3 against 48.0 for fine-tuned NLLB, but where NLLB was already strong the methods were within about one point."
+date: 2026-11-23
+author: Laura Burdick
+harness: none
+categories: [machine translation, in-context learning, oral Bible translation]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+METHODS = ["NLLB", "Passage-level ICL", "Verse-level ICL", "Hybrid ICL"]
+```
+
+## Summary
+
+- This study compares four ways to draft **passage-level** translations into low-resource languages for oral Bible translation (OBT) projects: fine-tuned NLLB, and three variants of an LLM with in-context learning (ICL).
+- The test sets are **seven languages, eight rows**, because one language is tested with two different transcripts. Each is scored on 11 to 75 held-out passages.
+- **Passage-level ICL has the best mean chrF3 (56.0)**, ahead of verse-level ICL (53.2), hybrid ICL (52.6) and NLLB (48.0). Each row counts equally, and there are no intervals, so the means are descriptive.
+- **Where NLLB is already strong, there is little to gain.** For the three languages with NLLB chrF3 above 54, the best LLM method is within 1.3 points of NLLB.
+- **Where NLLB is weak, LLMs help a lot.** In two languages the LLM methods beat NLLB by 16 to 31 points. For one of them, NLLB retrained with real verse alignment scores far higher (75.4), so the baseline's weakness there is mostly verse segmentation.
+- **Hybrid ICL is never the best method**, and verse-level ICL is unreliable: it falls 14.7 points below NLLB on one transcript variant.
+- **For passage-level ICL, k=30 examples is enough.** Going from 10 to 30 examples adds 0.8 to 3.1 points, and 50 examples adds nothing reliable.
+
+## The problem
+
+OBT teams record Scripture orally and often have little written text. A draft translation into the written form of the language can help a team and its consultants, but the available written text is small. We ask whether an LLM that is only shown translated examples in its prompt can match a model fine-tuned on that same text, and which way of showing the examples works best.
+
+## The methods
+
+All four methods translate a passage from a language of wider communication (or, in two languages, from a transcript) into the target language, using the same already-translated text of each project as training data or as examples.
+
+```{python}
+#| echo: false
+from IPython.display import Markdown
+Markdown("""
+| Method | What it does |
+|---|---|
+| NLLB | NLLB-200 is fine-tuned on the project's existing translated text and translates the whole passage. |
+| Passage-level ICL | An LLM sees the 30 most similar already-translated passages as examples and translates the new passage in one pass. |
+| Verse-level ICL | An LLM sees the 100 most similar already-translated verses as examples and translates the new passage one verse at a time. |
+| Hybrid ICL | The examples are the same 100 verses, but the LLM translates the whole passage in one pass. |
+""")
+```
+
+Examples are retrieved by text similarity (TF-IDF) with a coverage-aware step that favors examples covering the passage's words. The LLM is not retrained. Language G differs from the rest: its LLM arms use a different model (Claude Haiku 5.5, through a router) with a published English Bible as the source, because the source texts used for the other languages could not be sent to that model. The other LLM arms use Gemini 3.7 Flash. NLLB for Language G uses the same English source.
+
+Two languages need a note on the text the methods work from. Language F has no developed orthography, so its text comes from speech recognition, and two variants are compared: transcripts spelled with a related language's orthography ("sister-language orthography"), and transcripts cleaned by a separate algorithm.
+
+## How it was tested
+
+Each method's draft of every held-out passage is scored against the human translation with **chrF3** and **BLEU**, computed over the whole test set. The test passages are held out of both fine-tuning and the example pool. The test sets are small, between 11 and 75 passages, and each has a single run. We report no intervals.
+
+## Results
+
+### All methods compared
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart("chrF3", systems=METHODS, x_title="chrF3 (higher is better)", x_range=(20, 75))
+```
+
+```{python}
+study.table(measures=["chrF3"], systems=METHODS, digits=1, intervals=False, measure_column=False, average=True, group_title="Language")
+```
+
+BLEU shows the same ordering of methods in most languages, but its values are low for the weakest ones, below 1 for Language G.
+
+```{python}
+study.table(measures=["BLEU"], systems=METHODS, digits=1, intervals=False, measure_column=False, average=True, group_title="Language")
+```
+
+Test passages: Language A 11, B 11, C 12, D 12, E 75, F 18 (each variant), G 34.
+
+### Where NLLB is strong
+
+For Languages A, B and C, NLLB scores 69.3, 59.3 and 54.8. The best LLM method is within 1.3 points of NLLB in every case: verse-level ICL is best for Language A (+0.2) and B (+1.3), passage-level ICL for Language C (+0.7). Passage-level ICL is 3.2 points below NLLB for Language A, and hybrid ICL is below NLLB for all three. With 11 or 12 passages each, differences this small are not distinguishable from noise.
+
+### Where NLLB is weak
+
+For Languages D and E, NLLB scores 39.0 and 25.4, and every LLM method beats it. Passage-level ICL is best, at +26.2 and +30.7, and even verse-level ICL gains 21.4 and 26.9.
+
+The researchers attribute NLLB's weakness to poor verse segmentation of the training text, which the passage-level methods are less sensitive to. Only Language D has a run that tests this:
+
+```{python}
+study.table(systems=["NLLB retrained with real verse alignment"], groups=["Language D"], digits=1, intervals=False, measure_column=True, group_title="Language")
+```
+
+That run is not part of the comparison above, because it uses cleaner training data than the other methods have in practice.
+
+### One language, two transcripts
+
+For Language F, cleaning the transcript helps NLLB (+8.3), passage-level ICL (+10.2) and hybrid ICL (+10.8) over the sister-language orthography, but verse-level ICL falls from 53.6 (the best method) to 39.1, 14.7 below NLLB. We don't know why verse-level ICL breaks on the cleaned transcript.
+
+### Language G
+
+Language G is poor with every method (chrF3 29.0 to 36.6, BLEU below 1). NLLB is best, and passage-level ICL is 4.9 points below it. The results notes list likely contributors: the human references (the test text and part of the training text) still contain spelling mistakes and typos, and NLLB is trained on only two books. These factors were not tested individually. Because Language G's LLM arms also use a different model from the other languages, we make no comparison across languages.
+
+### How many examples passage-level ICL needs
+
+```{python}
+#| renderings: [light, dark]
+study.dot_chart("chrF3", groups=["Language A", "Language B", "Language C", "Language D"], systems=["k=10", "k=20", "k=30", "k=50"], x_title="chrF3 (higher is better)", x_range=(50, 70))
+```
+
+Going from 10 to 30 examples gains 0.8 (Language A), 1.7 (B), 1.7 (C) and 3.1 (D). From 30 to 50 the change is +0.3, +0.1, −0.3 and −1.0. We used k=30 for passage-level ICL throughout. The sweep covers four languages, and each difference is small relative to the test-set size.
+
+## Limitations
+
+- **Small test sets, single runs, no intervals.** Most test sets are 11 or 12 passages. Means are over eight rows that count equally, with one language appearing as two.
+- **Not one controlled comparison.** Language G's LLM arms use a different model, and the languages differ in test sets, training data and text quality.
+- **Reference text quality varies.** Unfinalized references understate quality in at least one language.
+- **chrF3 is not human judgment.** Whether the drafts help OBT teams has not been tested with them.
+- **Open licensing.** Only texts that may be sent to an LLM were used as examples.
+
+## Reproducing this
+
+The numbers in this study come from:
+
+```{python}
+study.provenance()
+```
+
+The in-context learning code is part of [SILNLP](https://github.com/sillsdev/silnlp), and NLLB was fine-tuned with SILNLP.

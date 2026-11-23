@@ -1,0 +1,33 @@
+language	method	chrF3	BLEU	passages
+Language A	NLLB	69.33	28.52	11
+Language A	Passage-level ICL	66.17	21.94	11
+Language A	Verse-level ICL	69.55	28.78	11
+Language A	Hybrid ICL	67.03	24.33	11
+Language B	NLLB	59.3	11.61	11
+Language B	Passage-level ICL	60.49	13.36	11
+Language B	Verse-level ICL	60.59	14.49	11
+Language B	Hybrid ICL	58.36	12.3	11
+Language C	NLLB	54.79	15.04	12
+Language C	Passage-level ICL	55.53	15.54	12
+Language C	Verse-level ICL	54.27	13.73	12
+Language C	Hybrid ICL	51.89	11.99	12
+Language D	NLLB	39.02	7.75	12
+Language D	Passage-level ICL	65.2	19.92	12
+Language D	Verse-level ICL	60.42	15.99	12
+Language D	Hybrid ICL	55.04	10.92	12
+Language E	NLLB	25.41	3.22	75
+Language E	Passage-level ICL	56.06	19.92	75
+Language E	Verse-level ICL	52.31	16.11	75
+Language E	Hybrid ICL	52.97	16.58	75
+Language F (sister-language orthography)	NLLB	45.54	3.02	18
+Language F (sister-language orthography)	Passage-level ICL	51.16	5.7	18
+Language F (sister-language orthography)	Verse-level ICL	53.57	9.46	18
+Language F (sister-language orthography)	Hybrid ICL	47.8	4.99	18
+Language F (cleaned transcript)	NLLB	53.79	12.87	18
+Language F (cleaned transcript)	Passage-level ICL	61.38	19.73	18
+Language F (cleaned transcript)	Verse-level ICL	39.08	2.96	18
+Language F (cleaned transcript)	Hybrid ICL	58.62	17.46	18
+Language G	NLLB	36.57	0.46	34
+Language G	Passage-level ICL	31.67	0.29	34
+Language G	Verse-level ICL	36.05	0.75	34
+Language G	Hybrid ICL	28.98	0.23	34

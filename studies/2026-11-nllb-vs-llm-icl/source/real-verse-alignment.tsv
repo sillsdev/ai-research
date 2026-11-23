@@ -1,0 +1,2 @@
+language	system	chrF3	BLEU
+Language D	NLLB retrained with real verse alignment	75.42	33.94
