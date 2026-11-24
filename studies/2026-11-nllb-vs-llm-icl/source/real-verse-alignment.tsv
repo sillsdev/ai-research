@@ -1,2 +1,5 @@
 language	system	chrF3	BLEU
-Language D	NLLB retrained with real verse alignment	75.42	33.94
+Language D	NLLB, noisy verse segmentation	39.02	7.75
+Language D	NLLB, real verse segmentation	75.42	33.94
+Language E	NLLB, noisy verse segmentation	25.41	3.22
+Language E	NLLB, real verse segmentation	55.22	19.87

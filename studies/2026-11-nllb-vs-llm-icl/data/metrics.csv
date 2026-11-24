@@ -95,5 +95,11 @@ k=10,Language D,BLEU,16.99,,,12,results,k-sweep.tsv
 k=20,Language D,BLEU,18.29,,,12,results,k-sweep.tsv
 k=30,Language D,BLEU,19.92,,,12,results,k-sweep.tsv
 k=50,Language D,BLEU,19.0,,,12,results,k-sweep.tsv
-NLLB retrained with real verse alignment,Language D,chrF3,75.42,,,,results,real-verse-alignment.tsv
-NLLB retrained with real verse alignment,Language D,BLEU,33.94,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language D,chrF3,39.02,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language D,chrF3,75.42,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language E,chrF3,25.41,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language E,chrF3,55.22,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language D,BLEU,7.75,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language D,BLEU,33.94,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language E,BLEU,3.22,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language E,BLEU,19.87,,,,results,real-verse-alignment.tsv
