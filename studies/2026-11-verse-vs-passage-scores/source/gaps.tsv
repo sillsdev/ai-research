@@ -1,0 +1,16 @@
+language	level	chrF3	BLEU
+Language A	Gap (passage minus verse)	10.03	1.59
+Language B	Gap (passage minus verse)	16.07	6.75
+Language C	Gap (passage minus verse)	9.31	2.07
+Language D	Gap (passage minus verse)	15.39	2.71
+Language E	Gap (passage minus verse)	5.59	0.93
+Language F	Gap (passage minus verse)	11.68	2.56
+Language G	Gap (passage minus verse)	14.83	7.17
+Language H	Gap (passage minus verse)	8.66	4.81
+Language I	Gap (passage minus verse)	9.56	3.01
+Language J	Gap (passage minus verse)	7.26	1.53
+Language K	Gap (passage minus verse)	13.91	3.39
+Language L	Gap (passage minus verse)	12.31	2.83
+Language M	Gap (passage minus verse)	9.82	3.00
+Language N	Gap (passage minus verse)	6.93	1.94
+Language O	Gap (passage minus verse)	22.31	9.82
