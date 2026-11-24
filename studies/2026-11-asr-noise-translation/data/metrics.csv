@@ -1,89 +1,45 @@
 system,group,measure,value,lower,upper,n,source,file
-ASR model 1,Test on Romans,chrF3,46.18,,,,results,test_romans.tsv
-ASR model 2,Test on Romans,chrF3,33.58,,,,results,test_romans.tsv
-ASR model 3,Test on Romans,chrF3,32.59,,,,results,test_romans.tsv
-ASR model 4,Test on Romans,chrF3,47.06,,,,results,test_romans.tsv
-ASR model 5,Test on Romans,chrF3,32.17,,,,results,test_romans.tsv
-ASR model 6,Test on Romans,chrF3,39.89,,,,results,test_romans.tsv
-ASR model 7,Test on Romans,chrF3,46.58,,,,results,test_romans.tsv
-ASR model 8,Test on Romans,chrF3,33.08,,,,results,test_romans.tsv
-ASR model 9,Test on Romans,chrF3,32.67,,,,results,test_romans.tsv
-ASR model 10,Test on Romans,chrF3,45.0,,,,results,test_romans.tsv
-Combined transcript,Test on Romans,chrF3,48.74,,,,results,test_romans.tsv
-ASR model 1,Test on Romans,BLEU,8.21,,,,results,test_romans.tsv
-ASR model 2,Test on Romans,BLEU,4.88,,,,results,test_romans.tsv
-ASR model 3,Test on Romans,BLEU,4.24,,,,results,test_romans.tsv
-ASR model 4,Test on Romans,BLEU,9.81,,,,results,test_romans.tsv
-ASR model 5,Test on Romans,BLEU,3.36,,,,results,test_romans.tsv
-ASR model 6,Test on Romans,BLEU,6.85,,,,results,test_romans.tsv
-ASR model 7,Test on Romans,BLEU,8.98,,,,results,test_romans.tsv
-ASR model 8,Test on Romans,BLEU,4.14,,,,results,test_romans.tsv
-ASR model 9,Test on Romans,BLEU,3.94,,,,results,test_romans.tsv
-ASR model 10,Test on Romans,BLEU,7.97,,,,results,test_romans.tsv
-Combined transcript,Test on Romans,BLEU,11.88,,,,results,test_romans.tsv
-ASR model 1,Test on Romans,CER (%),7.91,,,,results,test_romans.tsv
-ASR model 2,Test on Romans,CER (%),6.63,,,,results,test_romans.tsv
-ASR model 3,Test on Romans,CER (%),7.44,,,,results,test_romans.tsv
-ASR model 4,Test on Romans,CER (%),6.81,,,,results,test_romans.tsv
-ASR model 5,Test on Romans,CER (%),8.06,,,,results,test_romans.tsv
-ASR model 6,Test on Romans,CER (%),6.34,,,,results,test_romans.tsv
-ASR model 7,Test on Romans,CER (%),7.02,,,,results,test_romans.tsv
-ASR model 8,Test on Romans,CER (%),6.34,,,,results,test_romans.tsv
-ASR model 9,Test on Romans,CER (%),6.18,,,,results,test_romans.tsv
-ASR model 10,Test on Romans,CER (%),6.52,,,,results,test_romans.tsv
-Combined transcript,Test on Romans,CER (%),5.48,,,,results,test_romans.tsv
-ASR model 1,Test on Romans,Alignment score,0.243,,,,results,test_romans.tsv
-ASR model 2,Test on Romans,Alignment score,0.2476,,,,results,test_romans.tsv
-ASR model 3,Test on Romans,Alignment score,0.2268,,,,results,test_romans.tsv
-ASR model 4,Test on Romans,Alignment score,0.2479,,,,results,test_romans.tsv
-ASR model 5,Test on Romans,Alignment score,0.2094,,,,results,test_romans.tsv
-ASR model 6,Test on Romans,Alignment score,0.252,,,,results,test_romans.tsv
-ASR model 7,Test on Romans,Alignment score,0.2431,,,,results,test_romans.tsv
-ASR model 8,Test on Romans,Alignment score,0.2329,,,,results,test_romans.tsv
-ASR model 9,Test on Romans,Alignment score,0.2334,,,,results,test_romans.tsv
-ASR model 10,Test on Romans,Alignment score,0.2388,,,,results,test_romans.tsv
-Combined transcript,Test on Romans,Alignment score,0.2913,,,,results,test_romans.tsv
-ASR model 1,Test on Matthew 11–16,chrF3,63.48,,,,results,test_matthew_11_16.tsv
-ASR model 2,Test on Matthew 11–16,chrF3,63.31,,,,results,test_matthew_11_16.tsv
-ASR model 3,Test on Matthew 11–16,chrF3,62.33,,,,results,test_matthew_11_16.tsv
-ASR model 4,Test on Matthew 11–16,chrF3,64.2,,,,results,test_matthew_11_16.tsv
-ASR model 5,Test on Matthew 11–16,chrF3,61.04,,,,results,test_matthew_11_16.tsv
-ASR model 6,Test on Matthew 11–16,chrF3,64.2,,,,results,test_matthew_11_16.tsv
-ASR model 7,Test on Matthew 11–16,chrF3,64.38,,,,results,test_matthew_11_16.tsv
-ASR model 8,Test on Matthew 11–16,chrF3,63.73,,,,results,test_matthew_11_16.tsv
-ASR model 9,Test on Matthew 11–16,chrF3,64.4,,,,results,test_matthew_11_16.tsv
-ASR model 10,Test on Matthew 11–16,chrF3,64.08,,,,results,test_matthew_11_16.tsv
+ASR - 10 epochs,Test on Matthew 11–16,chrF3,63.48,,,,results,test_matthew_11_16.tsv
+ASR - 12 epochs,Test on Matthew 11–16,chrF3,63.31,,,,results,test_matthew_11_16.tsv
+ASR - 15 epochs,Test on Matthew 11–16,chrF3,62.33,,,,results,test_matthew_11_16.tsv
+ASR - 18 epochs,Test on Matthew 11–16,chrF3,64.2,,,,results,test_matthew_11_16.tsv
+ASR - 21 epochs,Test on Matthew 11–16,chrF3,61.04,,,,results,test_matthew_11_16.tsv
+ASR - 25 epochs,Test on Matthew 11–16,chrF3,64.2,,,,results,test_matthew_11_16.tsv
+ASR - 30 epochs,Test on Matthew 11–16,chrF3,64.38,,,,results,test_matthew_11_16.tsv
+ASR - 35 epochs,Test on Matthew 11–16,chrF3,63.73,,,,results,test_matthew_11_16.tsv
+ASR - 40 epochs,Test on Matthew 11–16,chrF3,64.4,,,,results,test_matthew_11_16.tsv
+ASR - 50 epochs,Test on Matthew 11–16,chrF3,64.08,,,,results,test_matthew_11_16.tsv
 Combined transcript,Test on Matthew 11–16,chrF3,66.48,,,,results,test_matthew_11_16.tsv
-ASR model 1,Test on Matthew 11–16,BLEU,16.8,,,,results,test_matthew_11_16.tsv
-ASR model 2,Test on Matthew 11–16,BLEU,17.1,,,,results,test_matthew_11_16.tsv
-ASR model 3,Test on Matthew 11–16,BLEU,15.33,,,,results,test_matthew_11_16.tsv
-ASR model 4,Test on Matthew 11–16,BLEU,18.44,,,,results,test_matthew_11_16.tsv
-ASR model 5,Test on Matthew 11–16,BLEU,13.05,,,,results,test_matthew_11_16.tsv
-ASR model 6,Test on Matthew 11–16,BLEU,16.7,,,,results,test_matthew_11_16.tsv
-ASR model 7,Test on Matthew 11–16,BLEU,18.93,,,,results,test_matthew_11_16.tsv
-ASR model 8,Test on Matthew 11–16,BLEU,17.6,,,,results,test_matthew_11_16.tsv
-ASR model 9,Test on Matthew 11–16,BLEU,19.0,,,,results,test_matthew_11_16.tsv
-ASR model 10,Test on Matthew 11–16,BLEU,19.83,,,,results,test_matthew_11_16.tsv
+ASR - 10 epochs,Test on Matthew 11–16,BLEU,16.8,,,,results,test_matthew_11_16.tsv
+ASR - 12 epochs,Test on Matthew 11–16,BLEU,17.1,,,,results,test_matthew_11_16.tsv
+ASR - 15 epochs,Test on Matthew 11–16,BLEU,15.33,,,,results,test_matthew_11_16.tsv
+ASR - 18 epochs,Test on Matthew 11–16,BLEU,18.44,,,,results,test_matthew_11_16.tsv
+ASR - 21 epochs,Test on Matthew 11–16,BLEU,13.05,,,,results,test_matthew_11_16.tsv
+ASR - 25 epochs,Test on Matthew 11–16,BLEU,16.7,,,,results,test_matthew_11_16.tsv
+ASR - 30 epochs,Test on Matthew 11–16,BLEU,18.93,,,,results,test_matthew_11_16.tsv
+ASR - 35 epochs,Test on Matthew 11–16,BLEU,17.6,,,,results,test_matthew_11_16.tsv
+ASR - 40 epochs,Test on Matthew 11–16,BLEU,19.0,,,,results,test_matthew_11_16.tsv
+ASR - 50 epochs,Test on Matthew 11–16,BLEU,19.83,,,,results,test_matthew_11_16.tsv
 Combined transcript,Test on Matthew 11–16,BLEU,21.27,,,,results,test_matthew_11_16.tsv
-ASR model 1,Test on Matthew 11–16,CER (%),7.91,,,,results,test_matthew_11_16.tsv
-ASR model 2,Test on Matthew 11–16,CER (%),6.63,,,,results,test_matthew_11_16.tsv
-ASR model 3,Test on Matthew 11–16,CER (%),7.44,,,,results,test_matthew_11_16.tsv
-ASR model 4,Test on Matthew 11–16,CER (%),6.81,,,,results,test_matthew_11_16.tsv
-ASR model 5,Test on Matthew 11–16,CER (%),8.06,,,,results,test_matthew_11_16.tsv
-ASR model 6,Test on Matthew 11–16,CER (%),6.34,,,,results,test_matthew_11_16.tsv
-ASR model 7,Test on Matthew 11–16,CER (%),7.02,,,,results,test_matthew_11_16.tsv
-ASR model 8,Test on Matthew 11–16,CER (%),6.34,,,,results,test_matthew_11_16.tsv
-ASR model 9,Test on Matthew 11–16,CER (%),6.18,,,,results,test_matthew_11_16.tsv
-ASR model 10,Test on Matthew 11–16,CER (%),6.52,,,,results,test_matthew_11_16.tsv
+ASR - 10 epochs,Test on Matthew 11–16,CER (%),7.91,,,,results,test_matthew_11_16.tsv
+ASR - 12 epochs,Test on Matthew 11–16,CER (%),6.63,,,,results,test_matthew_11_16.tsv
+ASR - 15 epochs,Test on Matthew 11–16,CER (%),7.44,,,,results,test_matthew_11_16.tsv
+ASR - 18 epochs,Test on Matthew 11–16,CER (%),6.81,,,,results,test_matthew_11_16.tsv
+ASR - 21 epochs,Test on Matthew 11–16,CER (%),8.06,,,,results,test_matthew_11_16.tsv
+ASR - 25 epochs,Test on Matthew 11–16,CER (%),6.34,,,,results,test_matthew_11_16.tsv
+ASR - 30 epochs,Test on Matthew 11–16,CER (%),7.02,,,,results,test_matthew_11_16.tsv
+ASR - 35 epochs,Test on Matthew 11–16,CER (%),6.34,,,,results,test_matthew_11_16.tsv
+ASR - 40 epochs,Test on Matthew 11–16,CER (%),6.18,,,,results,test_matthew_11_16.tsv
+ASR - 50 epochs,Test on Matthew 11–16,CER (%),6.52,,,,results,test_matthew_11_16.tsv
 Combined transcript,Test on Matthew 11–16,CER (%),5.48,,,,results,test_matthew_11_16.tsv
-ASR model 1,Test on Matthew 11–16,Alignment score,0.243,,,,results,test_matthew_11_16.tsv
-ASR model 2,Test on Matthew 11–16,Alignment score,0.2476,,,,results,test_matthew_11_16.tsv
-ASR model 3,Test on Matthew 11–16,Alignment score,0.2268,,,,results,test_matthew_11_16.tsv
-ASR model 4,Test on Matthew 11–16,Alignment score,0.2479,,,,results,test_matthew_11_16.tsv
-ASR model 5,Test on Matthew 11–16,Alignment score,0.2094,,,,results,test_matthew_11_16.tsv
-ASR model 6,Test on Matthew 11–16,Alignment score,0.252,,,,results,test_matthew_11_16.tsv
-ASR model 7,Test on Matthew 11–16,Alignment score,0.2431,,,,results,test_matthew_11_16.tsv
-ASR model 8,Test on Matthew 11–16,Alignment score,0.2329,,,,results,test_matthew_11_16.tsv
-ASR model 9,Test on Matthew 11–16,Alignment score,0.2334,,,,results,test_matthew_11_16.tsv
-ASR model 10,Test on Matthew 11–16,Alignment score,0.2388,,,,results,test_matthew_11_16.tsv
+ASR - 10 epochs,Test on Matthew 11–16,Alignment score,0.243,,,,results,test_matthew_11_16.tsv
+ASR - 12 epochs,Test on Matthew 11–16,Alignment score,0.2476,,,,results,test_matthew_11_16.tsv
+ASR - 15 epochs,Test on Matthew 11–16,Alignment score,0.2268,,,,results,test_matthew_11_16.tsv
+ASR - 18 epochs,Test on Matthew 11–16,Alignment score,0.2479,,,,results,test_matthew_11_16.tsv
+ASR - 21 epochs,Test on Matthew 11–16,Alignment score,0.2094,,,,results,test_matthew_11_16.tsv
+ASR - 25 epochs,Test on Matthew 11–16,Alignment score,0.252,,,,results,test_matthew_11_16.tsv
+ASR - 30 epochs,Test on Matthew 11–16,Alignment score,0.2431,,,,results,test_matthew_11_16.tsv
+ASR - 35 epochs,Test on Matthew 11–16,Alignment score,0.2329,,,,results,test_matthew_11_16.tsv
+ASR - 40 epochs,Test on Matthew 11–16,Alignment score,0.2334,,,,results,test_matthew_11_16.tsv
+ASR - 50 epochs,Test on Matthew 11–16,Alignment score,0.2388,,,,results,test_matthew_11_16.tsv
 Combined transcript,Test on Matthew 11–16,Alignment score,0.2913,,,,results,test_matthew_11_16.tsv

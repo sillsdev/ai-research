@@ -14,6 +14,7 @@ A chart cell needs `#| renderings: [light, dark]`, since each chart outputs one 
 import re
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import yaml
@@ -356,10 +357,13 @@ class Study:
     def scatter_chart(self, group: str, x_measure: str, y_measure: str, systems: list[str] | None = None) -> None:
         """A point per system, at its `x_measure` and `y_measure` values for one group.
 
-        Displays a light and a dark rendering.
+        A dashed least-squares line shows the trend. Displays a light and a dark rendering.
         """
         rows = self._select([group], [x_measure, y_measure], systems)
         wide = rows.pivot_table(index="system", columns="measure", values="value", sort=False)
+        slope, intercept = np.polyfit(wide[x_measure], wide[y_measure], 1)
+        line_x = [wide[x_measure].min(), wide[x_measure].max()]
+        line_y = [slope * x + intercept for x in line_x]
         for theme in (Theme("light"), Theme("dark")):
             figure = go.Figure(
                 go.Scatter(
@@ -369,6 +373,15 @@ class Study:
                     marker=dict(size=11, color=theme.series[0], line=dict(width=2, color=theme.surface)),
                     text=wide.index,
                     hovertemplate=f"<b>%{{text}}</b><br>{x_measure} %{{x}}<br>{y_measure} %{{y}}<extra></extra>",
+                )
+            )
+            figure.add_trace(
+                go.Scatter(
+                    x=line_x,
+                    y=line_y,
+                    mode="lines",
+                    line=dict(color=theme.muted, width=1.5, dash="dash"),
+                    hoverinfo="skip",
                 )
             )
             figure.update_layout(
