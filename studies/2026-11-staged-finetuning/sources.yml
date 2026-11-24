@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick with SILNLP fine-tuning runs, scoring chrF3 on each language's held-out test set, January to February 2025
+
+tables:
+  - source: results
+    file: scores.tsv
+    system: {column: stages}
+    group: {column: language}
+    measures:
+      - {column: chrF3}
