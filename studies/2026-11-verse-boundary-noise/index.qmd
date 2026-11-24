@@ -1,0 +1,143 @@
+---
+title: "How verse boundary errors affect translation scores"
+description: "Small verse boundary errors do not affect translation scores much, while large boundary errors do."
+date: 2026-11-13
+author: Laura Burdick
+harness: none
+categories: [machine translation, verse segmentation, noise]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+LANGS = ["Language A", "Language A (NT)", "Language B", "Language B (NT)", "Language C", "Language C (NT)"]
+AMOUNTS = [0, 1, 2, 3, 4, 5, 10, 20, 30]
+SHIFT = [f"Shift {a}" for a in AMOUNTS]
+SD = [f"SD {a}" for a in AMOUNTS]
+NOISE = [f"Noise {a}" for a in AMOUNTS]
+N_TITLES = [f"N={a}" for a in AMOUNTS]
+ROW_TITLES = [g.removeprefix("Language ") for g in LANGS]
+```
+
+## Summary
+
+- We fine-tuned NLLB on Bible text whose verse boundaries were deliberately perturbed, to see how much misaligned verses hurt translation quality.
+- Small boundary errors (e.g., up to five words) do not affect translation scores much. Large boundary errors do have a significant affect on translation scores.
+
+## The question
+
+In oral Bible translation (OBT) projects, we are working with passage-level data. In order to run them through NLLB, we need to segment the passages into verses. The verse segmentation boundary introduces some noise to the verse boundaries. This study asks: how much does verse boundary noise affect translation results? How much noise in the verse boundaries is acceptable?
+
+## How it was tested
+
+### Training and test data
+
+| Experiment | Training data | Test data |
+|---|---|---|
+| Languages A, B, C | Matthew | Acts |
+| Languages A, B, C (NT) | NT minus Romans | Romans |
+| Language D (OBT project) | NT minus Matthew 11-16 | Matthew 11–16 |
+
+NLLB was fine-tuned with silnlp on three languages (A, B and C), each with two settings:
+
+- Train on Matthew, inference on Acts
+- Train on NT minus Romans, inference on Romans.
+
+In the training text for the target language, we introduce noise into the verse boundaries to determine how this noise affected the translation results. We experiment with two types of noise: uniformly distributed noise and normally distributed noise.
+
+- For uniformly distributed noise, we shift the verse boundary by a random (uniform) amount of up to N words, in either direction.
+- For normally distributed noise, we shift the verse boundary by an amount drawn from a normal distribution centred on zero with standard deviation N words.
+
+Languages A, B, and C are not OBT projects - they are written translation projects with real verse boundaries.
+
+We run a separate experiment on a fourth language, Language D. This is an OBT project, but we have human-annotated verse boundaries for the book of Matthew. We train on the NT minus Matthew 11-16 and inference on Matthew 11-16. The verse boundaries are shifted with uniform noise.
+
+For each experiment, we measure the translation score with no verse boundary errors, and we see what percentage of this translation score is retained as boundary errors are introduced. In every experiment, the perturbation is applied to the target-language training text only. The source side and the test set are unperturbed.
+
+## Results
+
+```{=html}
+<style>table caption { caption-side: bottom; } table { margin-top: 1.5rem; }</style>
+```
+
+### Uniform noise distribution (verse boundaries moved up to N words)
+
+#### chrf3 score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("chrF3", groups=LANGS, systems=SHIFT, x_title="Perturbation amount N (number of words)", y_title="Percent of base chrF3 score")
+```
+
+#### BLEU score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("BLEU", groups=LANGS, systems=SHIFT, x_title="Perturbation amount N (number of words)", y_title="Percent of base BLEU score")
+```
+
+#### Raw numbers
+```{python}
+#| tbl-cap: "chrF3 scores are on top; BLEU scores are in parentheses below."
+study.stacked_table(groups=LANGS, measures=("chrF3", "BLEU"), systems=SHIFT, group_title="Language", column_titles=N_TITLES, row_titles=ROW_TITLES)
+```
+
+### Normal noise distribution (standard deviation of N words)
+
+#### chrf3 score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("chrF3", groups=LANGS, systems=SD, x_title="Perturbation amount N (standard deviation, in words)", y_title="Percent of base chrF3 score")
+```
+
+#### BLEU score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("BLEU", groups=LANGS, systems=SD, x_title="Perturbation amount N (standard deviation, in words)", y_title="Percent of base BLEU score")
+```
+
+#### Raw numbers
+```{python}
+#| tbl-cap: "chrF3 scores are on top; BLEU scores are in parentheses below."
+study.stacked_table(groups=LANGS, measures=("chrF3", "BLEU"), systems=SD, group_title="Language", column_titles=N_TITLES, row_titles=ROW_TITLES)
+```
+
+### Language D: uniform noise distribution (verse boundaries moved up to N words)
+
+#### chrf3 score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("chrF3", groups=["Language D"], systems=NOISE, x_title="Perturbation amount N (number of words)", y_title="Percent of base chrF3 score")
+```
+
+#### BLEU score
+```{python}
+#| renderings: [light, dark]
+study.line_chart("BLEU", groups=["Language D"], systems=NOISE, x_title="Perturbation amount N (number of words)", y_title="Percent of base BLEU score")
+```
+
+#### Raw numbers
+```{python}
+#| tbl-cap: "chrF3 scores are on top; BLEU scores are in parentheses below."
+study.stacked_table(groups=["Language D"], measures=("chrF3", "BLEU"), systems=NOISE, group_title="Language", column_titles=N_TITLES, row_titles=["D"])
+```
+
+### Conclusions
+
+- **Small boundary errors don't affect translation scores much.** With shifts of up to 5 words, chrF3 stays at 93–99% of baseline for all six settings. BLEU is more sensitive: it falls to 85–95%.
+- **Large boundary errors hurt translation scores.** At a shift of 30 words, chrF3 keeps only 66–94% of baseline and BLEU keeps only 39–76%.
+- **Languages differ in how sensitive they are to boundary errors.** Language A is the least sensitive (chrF3 91% at a shift of 30 words). Language B is the most (chrF3 66%, BLEU 39%).
+
+## Limitations
+
+- **One run per setting and no intervals.** Small differences are within noise.
+- This is **simulated noise.** We haven't studied how actual noise from the verse segmentation algorithm affects translation scores. We also don't have a clear idea of what kind of noise is introduced by the verse segmentation algorithm - is it closer to uniform noise? Normally distributed noise? Or does it follow another pattern?
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

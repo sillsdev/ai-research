@@ -1,0 +1,55 @@
+system	setting	BLEU	chrF3
+Language A	SD 0	14.45	42.46
+Language A	SD 1	14.24	42.68
+Language A	SD 2	14.0	42.3
+Language A	SD 3	13.81	41.83
+Language A	SD 4	12.91	41.86
+Language A	SD 5	12.8	42.04
+Language A	SD 10	11.18	40.8
+Language A	SD 20	9.01	38.88
+Language A	SD 30	7.39	39.19
+Language A (NT)	SD 0	15.98	45.97
+Language A (NT)	SD 1	16.24	45.91
+Language A (NT)	SD 2	15.62	45.82
+Language A (NT)	SD 3	15.61	45.6
+Language A (NT)	SD 4	15.83	45.41
+Language A (NT)	SD 5	14.88	44.99
+Language A (NT)	SD 10	14.62	44.9
+Language A (NT)	SD 20	12.66	44.4
+Language A (NT)	SD 30	11.83	42.11
+Language B	SD 0	16.61	45.7
+Language B	SD 1	15.57	45.06
+Language B	SD 2	14.83	43.67
+Language B	SD 3	14.07	42.82
+Language B	SD 4	13.31	41.57
+Language B	SD 5	12.59	40.13
+Language B	SD 10	9.74	35.35
+Language B	SD 20	7.25	33.24
+Language B	SD 30	5.68	31.14
+Language B (NT)	SD 0	32.95	59.38
+Language B (NT)	SD 1	31.38	59.26
+Language B (NT)	SD 2	30.09	57.54
+Language B (NT)	SD 3	29.59	57.1
+Language B (NT)	SD 4	27.83	55.31
+Language B (NT)	SD 5	27.43	54.57
+Language B (NT)	SD 10	23.53	51.24
+Language B (NT)	SD 20	19.68	48.95
+Language B (NT)	SD 30	19.29	47.19
+Language C	SD 0	13.99	47.57
+Language C	SD 1	13.26	46.38
+Language C	SD 2	12.79	45.46
+Language C	SD 3	12.58	45.13
+Language C	SD 4	12.07	43.38
+Language C	SD 5	11.67	43.69
+Language C	SD 10	9.23	41.68
+Language C	SD 20	7.66	36.31
+Language C	SD 30	7.46	34.34
+Language C (NT)	SD 0	19.99	57.05
+Language C (NT)	SD 1	19.81	56.02
+Language C (NT)	SD 2	18.6	55.09
+Language C (NT)	SD 3	19.01	54.25
+Language C (NT)	SD 4	17.51	53.73
+Language C (NT)	SD 5	17.87	53.08
+Language C (NT)	SD 10	15.32	51.71
+Language C (NT)	SD 20	12.88	47.25
+Language C (NT)	SD 30	12.52	47.86
