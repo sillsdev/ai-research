@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick, who fine-tuned NLLB with silnlp and scored passages with sacrebleu (chrF3 and BLEU). The figures were taken from an internal slide deck of progress updates
+tables:
+  - source: results
+    file: combining.tsv
+    system: {column: method}
+    group: {column: training_data}
+    measures:
+      - {column: chrF3, name: Passage-level chrF3}
+      - {column: BLEU, name: Passage-level BLEU}

@@ -1,0 +1,65 @@
+---
+title: "Combining verses by punctuation or length for machine translation"
+description: "For OBT projects, after running verse segmentation, combining multiple verses during training and inference time for NLLB doesn't help performance."
+date: 2026-11-10
+author: Laura Burdick
+harness: none
+categories: [machine translation, context window]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+SMALL = "Matthew only"
+FULL = "Whole New Testament"
+```
+
+## Summary
+
+- In oral Bible translation (OBT) projects, the data is passage-level, and verse segmentation then splits it into verses, imperfectly. We tried joining verses into longer segments for NLLB, by punctuation or up to a token limit, during training and inference.
+- None of our combination strategies improved performance.
+
+## The question
+
+For OBT projects, we are working with passage-level data. In order to translate using NLLB, we must segment the passages into verses. Verse segmentation is noisy: it doesn't always split at exactly the right place, so a segment can end mid-sentence, or carry words that belong to the neighboring verse.
+
+Joining verses into longer segments could make training and translating less sensitive to those boundary errors. This study asks whether joining verses, by punctuation or by length, improves drafts compared with one verse at a time.
+
+## How it was tested
+
+NLLB was fine-tuned with silnlp. Language O is the same label as in [verse-level vs. passage-level scores](../2026-11-verse-vs-passage-scores/index.html). We experimented with two settings for training data:
+- **Matthew only**: NLLB was trained on Matthew 1-10 and 17-28
+- **Whole NT**: NLLB was trained on the entire NT, except for Matthew 11-16
+Both settings used Matthew 11-16 as a test set.
+
+All scores are passage-level. We tested the following variants for combining verses:
+
+- **Combined on punctuation, training only:** During training, a verse is joined to the next if it doesn't end in a full stop, question mark, or exclamation mark. (No more than two verses are combined.) No verses are combined at inference time.
+- **Combined on punctuation in training, two verses in test:** Training is the same as the previous strategy. At inference, we inference two verses at a time, rather than a single verse at a time.
+- **Combined on punctuation in training, then up to X tokens:** Training is the same as the previous strategies. At inference, we include as many verses as fit under the X token limit. We try X = 100, 150, and 200.
+
+For all of the variants, we never combine verses across passage boundaries.
+
+## Results
+
+```{python}
+study.table(groups=[SMALL, FULL], group_title="Training data")
+```
+- None of the combination methods help consistently.
+- **Combining only the training data hurt most**, by 7.1 chrF3 points with part of Matthew and 5.5 with the New Testament. Our hypothesis is that this happens because the training data is consistently longer than the inference data. NLLB performs better when the training data and the inference data are approximately the same length. Combining the test data to match recovers most of the loss.
+
+## Limitations
+
+- **One run per setting and no intervals.** Differences within about a point of chrF3 are not established.
+- **One language and one model**, tested on six chapters of Matthew.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

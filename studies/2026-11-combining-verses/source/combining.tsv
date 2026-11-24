@@ -1,0 +1,13 @@
+method	training_data	chrF3	BLEU
+One verse at a time (baseline)	Matthew only	61.13	21.58
+Combined on punctuation, training only	Matthew only	54.05	19.13
+Combined on punctuation in training, two verses in test	Matthew only	62.03	19.99
+Combined on punctuation, then up to 100 tokens	Matthew only	61.76	19.67
+Combined on punctuation, then up to 150 tokens	Matthew only	62.47	18.9
+Combined on punctuation, then up to 200 tokens	Matthew only	60.93	19.41
+One verse at a time (baseline)	Whole New Testament	66.69	23.64
+Combined on punctuation, training only	Whole New Testament	61.15	19.16
+Combined on punctuation in training, two verses in test	Whole New Testament	66.3	22.21
+Combined on punctuation, then up to 100 tokens	Whole New Testament	66.2	23.45
+Combined on punctuation, then up to 150 tokens	Whole New Testament	65.91	23.03
+Combined on punctuation, then up to 200 tokens	Whole New Testament	65.41	23.01

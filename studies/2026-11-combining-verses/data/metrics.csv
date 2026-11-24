@@ -1,0 +1,25 @@
+system,group,measure,value,lower,upper,n,source,file
+One verse at a time (baseline),Matthew only,Passage-level chrF3,61.13,,,,results,combining.tsv
+"Combined on punctuation, training only",Matthew only,Passage-level chrF3,54.05,,,,results,combining.tsv
+"Combined on punctuation in training, two verses in test",Matthew only,Passage-level chrF3,62.03,,,,results,combining.tsv
+"Combined on punctuation, then up to 100 tokens",Matthew only,Passage-level chrF3,61.76,,,,results,combining.tsv
+"Combined on punctuation, then up to 150 tokens",Matthew only,Passage-level chrF3,62.47,,,,results,combining.tsv
+"Combined on punctuation, then up to 200 tokens",Matthew only,Passage-level chrF3,60.93,,,,results,combining.tsv
+One verse at a time (baseline),Whole New Testament,Passage-level chrF3,66.69,,,,results,combining.tsv
+"Combined on punctuation, training only",Whole New Testament,Passage-level chrF3,61.15,,,,results,combining.tsv
+"Combined on punctuation in training, two verses in test",Whole New Testament,Passage-level chrF3,66.3,,,,results,combining.tsv
+"Combined on punctuation, then up to 100 tokens",Whole New Testament,Passage-level chrF3,66.2,,,,results,combining.tsv
+"Combined on punctuation, then up to 150 tokens",Whole New Testament,Passage-level chrF3,65.91,,,,results,combining.tsv
+"Combined on punctuation, then up to 200 tokens",Whole New Testament,Passage-level chrF3,65.41,,,,results,combining.tsv
+One verse at a time (baseline),Matthew only,Passage-level BLEU,21.58,,,,results,combining.tsv
+"Combined on punctuation, training only",Matthew only,Passage-level BLEU,19.13,,,,results,combining.tsv
+"Combined on punctuation in training, two verses in test",Matthew only,Passage-level BLEU,19.99,,,,results,combining.tsv
+"Combined on punctuation, then up to 100 tokens",Matthew only,Passage-level BLEU,19.67,,,,results,combining.tsv
+"Combined on punctuation, then up to 150 tokens",Matthew only,Passage-level BLEU,18.9,,,,results,combining.tsv
+"Combined on punctuation, then up to 200 tokens",Matthew only,Passage-level BLEU,19.41,,,,results,combining.tsv
+One verse at a time (baseline),Whole New Testament,Passage-level BLEU,23.64,,,,results,combining.tsv
+"Combined on punctuation, training only",Whole New Testament,Passage-level BLEU,19.16,,,,results,combining.tsv
+"Combined on punctuation in training, two verses in test",Whole New Testament,Passage-level BLEU,22.21,,,,results,combining.tsv
+"Combined on punctuation, then up to 100 tokens",Whole New Testament,Passage-level BLEU,23.45,,,,results,combining.tsv
+"Combined on punctuation, then up to 150 tokens",Whole New Testament,Passage-level BLEU,23.03,,,,results,combining.tsv
+"Combined on punctuation, then up to 200 tokens",Whole New Testament,Passage-level BLEU,23.01,,,,results,combining.tsv
