@@ -1,0 +1,9 @@
+training_data	chrF3	passages
+Matthew only	63.99	17
+Mark only	63.57	17
+Acts only	60.62	17
+Romans only	56.29	17
+Matthew, Acts	64.56	17
+Matthew, Mark, Acts	65.61	17
+Matthew, Mark, Acts, Romans	65.32	17
+New Testament except Luke	66.69	17

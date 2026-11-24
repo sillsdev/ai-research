@@ -1,0 +1,9 @@
+system,group,measure,value,lower,upper,n,source,file
+Fine-tuned NLLB,Matthew only,chrF3,63.99,,,17,results,scores.tsv
+Fine-tuned NLLB,Mark only,chrF3,63.57,,,17,results,scores.tsv
+Fine-tuned NLLB,Acts only,chrF3,60.62,,,17,results,scores.tsv
+Fine-tuned NLLB,Romans only,chrF3,56.29,,,17,results,scores.tsv
+Fine-tuned NLLB,"Matthew, Acts",chrF3,64.56,,,17,results,scores.tsv
+Fine-tuned NLLB,"Matthew, Mark, Acts",chrF3,65.61,,,17,results,scores.tsv
+Fine-tuned NLLB,"Matthew, Mark, Acts, Romans",chrF3,65.32,,,17,results,scores.tsv
+Fine-tuned NLLB,New Testament except Luke,chrF3,66.69,,,17,results,scores.tsv

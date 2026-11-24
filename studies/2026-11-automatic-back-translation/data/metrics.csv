@@ -1,0 +1,9 @@
+system,group,measure,value,lower,upper,n,source,file
+Donor 1,Language A,chrF3,54.3,,,12,results,scores.tsv
+Donor 1,Language B,chrF3,65.5,,,66,results,scores.tsv
+Donor 1,Language C,chrF3,47.2,,,5,results,scores.tsv
+Donor 2,Language C,chrF3,49.1,,,5,results,scores.tsv
+Donor 3,Language C,chrF3,47.8,,,5,results,scores.tsv
+Donor 1,Language D,chrF3,73.6,,,4,results,scores.tsv
+Donor 2,Language D,chrF3,73.8,,,4,results,scores.tsv
+Donor 3,Language D,chrF3,70.3,,,4,results,scores.tsv
