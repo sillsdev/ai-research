@@ -16,3 +16,9 @@ tables:
     group: {column: stages}
     measures:
       - {column: BLEU}
+  - source: results
+    file: second-set.tsv
+    system: {column: system}
+    group: {column: step}
+    measures:
+      - {column: BLEU}

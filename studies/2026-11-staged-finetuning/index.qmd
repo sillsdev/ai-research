@@ -12,6 +12,14 @@ from research_site import Study
 
 study = Study()
 LANGUAGES = ["Language X", "Language Y", "Language Z"]
+STEPS = [
+    "Baseline",
+    "After related-language stage 1",
+    "Final fine-tune, 1 related language",
+    "After related-language stage 2",
+    "Final fine-tune, 2 related languages",
+    "After related-language stage 3",
+]
 STAGES = ["No related language"] + [f"{n} related language{'s' if n > 1 else ''}" for n in range(1, 7)]
 ```
 
@@ -20,6 +28,7 @@ STAGES = ["No related language"] + [f"{n} related language{'s' if n > 1 else ''}
 - We tested whether fine-tuning a model on related languages first, then on the target language, improves translation of low-resource languages.
 - **It did not help for any of the three languages tested.** In every case, BLEU after the final fine-tuning on the target language was below the baseline with no related language.
 - BLEU tended to fall further as more related languages were added: by 2.4 points for Language X with six related languages, 1.9 for Language Y with three, and 3.0 for Language Z with five.
+- A second set of runs for Language X shows the same pattern: BLEU after the final fine-tune is 20.25 with one related language and 18.94 with two, against 21.04 for its baseline.
 - These are single runs without intervals, so small differences may be noise.
 
 ## The question
@@ -45,12 +54,31 @@ study.table(measures=["BLEU"], groups=LANGUAGES, systems=STAGES, digits=2, inter
 
 Every staged run scores below its language's baseline. The gap grows as related languages are added, though not at every step: for Language Z, six related languages (13.44) score slightly above five (13.10). Language X scores identically (18.68) with two and three related languages, and we have not determined why.
 
+### A second set of runs for Language X
+
+<!-- REVIEW: the source sheet says the final fine-tune and the baseline use default settings with no early stopping, and that the earlier stages use early stopping; a later sheet says those stages used LoRA. Please confirm the settings and why this baseline (21.04) differs from the first set's (19.81). -->
+
+We ran Language X a second time, recording BLEU after each stage as well as after the final fine-tune. After each related-language stage, BLEU on the target language falls to nearly zero, since the model is now working in the related language.
+
+```{python}
+study.table(measures=["BLEU"], groups=STEPS, systems=["Target language"], digits=2, intervals=False, measure_column=False, group_title="Step")
+```
+
+The final fine-tune restores the target language, but to 20.25 after one related language and 18.94 after two, below this run's baseline of 21.04. This baseline differs from the 19.81 in the first set, and we have not determined why. BLEU on the related language each stage trains on is low:
+
+```{python}
+study.table(measures=["BLEU"], groups=[s for s in STEPS if s.startswith("After")], systems=["Language just trained on"], digits=2, intervals=False, measure_column=False, group_title="Step")
+```
+
+The final fine-tune after three related languages was not run in this set.
+
 ## Limitations
 
 - **Single runs, no intervals.** Differences of one to three BLEU points could be within the noise between runs.
 - **Three languages, one metric.** Only BLEU was recorded, and Language Y was tested with up to three related languages.
 - **Unexplained result.** The identical Language X scores for two and three related languages have not been investigated.
-- **Scope.** A parallel set of experiments that used LoRA is not part of this study.
+- **Second set.** It covers one language and only up to two completed related-language stages.
+- **Scope.** Other experiments that used LoRA, including a hyperparameter sweep, are not part of this study.
 
 ## Reproducing this
 

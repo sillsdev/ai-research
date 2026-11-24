@@ -35,3 +35,12 @@ Language Z,3 related languages,BLEU,14.69,,,,results,scores.tsv
 Language Z,4 related languages,BLEU,14.14,,,,results,scores.tsv
 Language Z,5 related languages,BLEU,13.1,,,,results,scores.tsv
 Language Z,6 related languages,BLEU,13.44,,,,results,scores.tsv
+Target language,Baseline,BLEU,21.04,,,,results,second-set.tsv
+Target language,After related-language stage 1,BLEU,0.01,,,,results,second-set.tsv
+Target language,"Final fine-tune, 1 related language",BLEU,20.25,,,,results,second-set.tsv
+Target language,After related-language stage 2,BLEU,0.01,,,,results,second-set.tsv
+Target language,"Final fine-tune, 2 related languages",BLEU,18.94,,,,results,second-set.tsv
+Target language,After related-language stage 3,BLEU,0.01,,,,results,second-set.tsv
+Language just trained on,After related-language stage 1,BLEU,1.96,,,,results,second-set.tsv
+Language just trained on,After related-language stage 2,BLEU,1.91,,,,results,second-set.tsv
+Language just trained on,After related-language stage 3,BLEU,0.42,,,,results,second-set.tsv
