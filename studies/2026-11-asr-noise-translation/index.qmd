@@ -1,0 +1,87 @@
+---
+title: "How speech-recognition noise affects translation"
+description: "Less transcription noise loosely correlates with better alignment scores and better translation scores."
+date: 2026-11-17
+author: Laura Burdick
+harness: none
+categories: [machine translation, speech recognition, noise]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+MATTHEW = "Test on Matthew 11–16"
+MEASURES = ["chrF3", "BLEU", "CER (%)", "Alignment score"]
+DIGITS = {"chrF3": 1, "BLEU": 1, "CER (%)": 2, "Alignment score": 3}
+```
+
+## Summary
+
+- We fine-tune NLLB on text transcribed by ten versions of one ASR model, trained for different numbers of epochs, plus one combined transcript, and measure how the transcript's character error rate (CER) relates to chrF3 and alignment scores.
+- The combined transcript has the lowest CER and the highest translation scores.
+- Less transcription noise loosely correlates with better alignment scores and better translation scores.
+
+## The question
+
+Oral Bible translation (OBT) teams record translations as audio. To create an AI draft for an OBT project, this audio must be transcribed into text and then translated. Because this is a cascaded pipeline, noise from one step of the pipeline can affect the results of later parts of the pipeline. This study asks how the amount of noise in an ASR transcript, measured by character error rate (CER), affects the translation scores of an NLLB model fine-tuned on it.
+
+## How it was tested
+
+The ASR model is [Wav2Vec2-BERT 2.0](https://huggingface.co/facebook/w2v-bert-2.0). It was fine-tuned on the audio of Matthew 1–10 ten separate times, each a complete training run with a different number of epochs (10, 12, 15, 18, 21, 25, 30, 35, 40 and 50), and each version was used to transcribe the audio of a whole NT.
+
+A combined transcript was made by prompting an LLM, [OpenAI gpt-4o-mini](https://platform.openai.com/docs/models/gpt-4o-mini), with the ten transcripts of each audio file and asking it to choose the most likely correct text.
+
+NLLB was fine-tuned for each of the eleven transcripts.
+
+Four measures are reported for each transcript:
+
+- **chrF3** and **BLEU**: scores of the fine-tuned model's drafts on the test set.
+- **CER (%)**: the overall character error rate of the ASR model that produced the transcript.
+- **Alignment score**: how well the transcript's words align with the source Bible, using word alignments from eflomal. Higher is better.
+
+We trained on the NT without Matthew 11–16, as transcribed by that run's ASR model, and tested on Matthew 11–16. The model's drafts are scored at passage level, against 17 passages of human transcriptions of the audio.
+
+## Results
+
+In each scatterplot, a point is one transcript, and the dashed line is the least-squares line of best fit through the eleven points. It shows the direction of the trend, not a precise effect: it has no interval, and each point is a single run.
+
+```{=html}
+<style>table { margin-top: 1.5rem; }</style>
+```
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(MATTHEW, "CER (%)", "chrF3")
+```
+
+```{python}
+#| renderings: [light, dark]
+study.scatter_chart(MATTHEW, "CER (%)", "Alignment score")
+```
+
+```{python}
+study.results_table(MATTHEW, MEASURES, digits=DIGITS)
+```
+
+### What the results show
+
+- **The combined transcript is best.** The best single ASR version (ASR - 40 epochs) is 2.1 chrF3 points lower and 0.7 CER points higher.
+- **Less transcription noise loosely correlates with better translation scores.** The rank correlation between CER and chrF3 is −0.74 (−0.67 for BLEU).
+- **Less transcription noise loosely correlates with better alignment scores.** Transcripts with a higher alignment score tend to have a lower CER; the rank correlation is −0.46. This is not as strong a correlation as between CER and chrF3.
+
+## Limitations
+
+- **One run per transcript and no intervals.** Differences of a point or two are within noise.
+- **Eleven transcripts, one language, one model.** The correlations only come from eleven points.
+- **Ten versions of one ASR model.** They share a model and training data and differ in training length, so they are less independent than ten different models would be.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).

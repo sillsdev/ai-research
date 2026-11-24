@@ -1,0 +1,6 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick in July 2025 with silnlp, from the output of speech-recognition models fine-tuned with the asr-finetuning repository. NLLB was fine-tuned on transcripts of a New Testament, scored with sacrebleu (BLEU and chrF3), and the transcripts were scored for character error rate against a reference and for word alignment with the source text.
+tables:
+  - {source: results, file: test_matthew_11_16.tsv, system: {column: model}, group: {column: test}, measures: [{column: chrF3}, {column: BLEU}, {column: CER (%)}, {column: Alignment score}]}
