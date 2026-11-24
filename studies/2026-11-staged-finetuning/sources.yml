@@ -1,7 +1,7 @@
 sources:
   results:
     in-study: true
-    origin: Computed by Laura Burdick with SILNLP fine-tuning runs, scoring BLEU on each language's held-out test set, February to March 2025
+    origin: Computed by Laura Burdick with SILNLP fine-tuning runs, scoring chrF3 on each language's held-out test set, January to February 2025
 
 tables:
   - source: results
@@ -9,16 +9,4 @@ tables:
     system: {column: stages}
     group: {column: language}
     measures:
-      - {column: BLEU}
-  - source: results
-    file: scores.tsv
-    system: {column: language}
-    group: {column: stages}
-    measures:
-      - {column: BLEU}
-  - source: results
-    file: second-set.tsv
-    system: {column: system}
-    group: {column: step}
-    measures:
-      - {column: BLEU}
+      - {column: chrF3}

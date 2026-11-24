@@ -1,46 +1,18 @@
 system,group,measure,value,lower,upper,n,source,file
-No related language,Language X,BLEU,19.81,,,,results,scores.tsv
-1 related language,Language X,BLEU,18.44,,,,results,scores.tsv
-2 related languages,Language X,BLEU,18.68,,,,results,scores.tsv
-3 related languages,Language X,BLEU,18.68,,,,results,scores.tsv
-4 related languages,Language X,BLEU,18.24,,,,results,scores.tsv
-5 related languages,Language X,BLEU,17.78,,,,results,scores.tsv
-6 related languages,Language X,BLEU,17.43,,,,results,scores.tsv
-No related language,Language Y,BLEU,20.43,,,,results,scores.tsv
-1 related language,Language Y,BLEU,19.88,,,,results,scores.tsv
-2 related languages,Language Y,BLEU,18.8,,,,results,scores.tsv
-3 related languages,Language Y,BLEU,18.58,,,,results,scores.tsv
-No related language,Language Z,BLEU,16.07,,,,results,scores.tsv
-1 related language,Language Z,BLEU,15.14,,,,results,scores.tsv
-2 related languages,Language Z,BLEU,14.93,,,,results,scores.tsv
-3 related languages,Language Z,BLEU,14.69,,,,results,scores.tsv
-4 related languages,Language Z,BLEU,14.14,,,,results,scores.tsv
-5 related languages,Language Z,BLEU,13.1,,,,results,scores.tsv
-6 related languages,Language Z,BLEU,13.44,,,,results,scores.tsv
-Language X,No related language,BLEU,19.81,,,,results,scores.tsv
-Language X,1 related language,BLEU,18.44,,,,results,scores.tsv
-Language X,2 related languages,BLEU,18.68,,,,results,scores.tsv
-Language X,3 related languages,BLEU,18.68,,,,results,scores.tsv
-Language X,4 related languages,BLEU,18.24,,,,results,scores.tsv
-Language X,5 related languages,BLEU,17.78,,,,results,scores.tsv
-Language X,6 related languages,BLEU,17.43,,,,results,scores.tsv
-Language Y,No related language,BLEU,20.43,,,,results,scores.tsv
-Language Y,1 related language,BLEU,19.88,,,,results,scores.tsv
-Language Y,2 related languages,BLEU,18.8,,,,results,scores.tsv
-Language Y,3 related languages,BLEU,18.58,,,,results,scores.tsv
-Language Z,No related language,BLEU,16.07,,,,results,scores.tsv
-Language Z,1 related language,BLEU,15.14,,,,results,scores.tsv
-Language Z,2 related languages,BLEU,14.93,,,,results,scores.tsv
-Language Z,3 related languages,BLEU,14.69,,,,results,scores.tsv
-Language Z,4 related languages,BLEU,14.14,,,,results,scores.tsv
-Language Z,5 related languages,BLEU,13.1,,,,results,scores.tsv
-Language Z,6 related languages,BLEU,13.44,,,,results,scores.tsv
-Target language,Baseline,BLEU,21.04,,,,results,second-set.tsv
-Target language,After related-language stage 1,BLEU,0.01,,,,results,second-set.tsv
-Target language,"Final fine-tune, 1 related language",BLEU,20.25,,,,results,second-set.tsv
-Target language,After related-language stage 2,BLEU,0.01,,,,results,second-set.tsv
-Target language,"Final fine-tune, 2 related languages",BLEU,18.94,,,,results,second-set.tsv
-Target language,After related-language stage 3,BLEU,0.01,,,,results,second-set.tsv
-Language just trained on,After related-language stage 1,BLEU,1.96,,,,results,second-set.tsv
-Language just trained on,After related-language stage 2,BLEU,1.91,,,,results,second-set.tsv
-Language just trained on,After related-language stage 3,BLEU,0.42,,,,results,second-set.tsv
+No related languages,Language X,chrF3,55.33,,,,results,scores.tsv
+1 related language,Language X,chrF3,54.09,,,,results,scores.tsv
+2 related languages,Language X,chrF3,54.2,,,,results,scores.tsv
+4 related languages,Language X,chrF3,53.59,,,,results,scores.tsv
+5 related languages,Language X,chrF3,53.24,,,,results,scores.tsv
+6 related languages,Language X,chrF3,52.8,,,,results,scores.tsv
+No related languages,Language Y,chrF3,49.46,,,,results,scores.tsv
+1 related language,Language Y,chrF3,49.32,,,,results,scores.tsv
+2 related languages,Language Y,chrF3,48.06,,,,results,scores.tsv
+3 related languages,Language Y,chrF3,47.69,,,,results,scores.tsv
+No related languages,Language Z,chrF3,44.31,,,,results,scores.tsv
+1 related language,Language Z,chrF3,43.77,,,,results,scores.tsv
+2 related languages,Language Z,chrF3,43.64,,,,results,scores.tsv
+3 related languages,Language Z,chrF3,43.11,,,,results,scores.tsv
+4 related languages,Language Z,chrF3,42.65,,,,results,scores.tsv
+5 related languages,Language Z,chrF3,41.81,,,,results,scores.tsv
+6 related languages,Language Z,chrF3,42.27,,,,results,scores.tsv

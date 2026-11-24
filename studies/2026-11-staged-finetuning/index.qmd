@@ -1,10 +1,10 @@
 ---
-title: "Fine-tuning on related languages in stages before the target language"
-description: "Fine-tuning a translation model on up to six related languages, one stage at a time, before fine-tuning on the target language did not improve BLEU for any of three languages."
+title: "Multi-stage fine-tuning on related languages"
+description: "Multi-stage fine-tuning on related languages does not improve translation results."
 date: 2026-11-24
 author: Laura Burdick
 harness: none
-categories: [machine translation, related languages, fine-tuning]
+categories: [machine translation, related languages, multi-stage fine-tuning]
 ---
 
 ```{python}
@@ -12,73 +12,49 @@ from research_site import Study
 
 study = Study()
 LANGUAGES = ["Language X", "Language Y", "Language Z"]
-STEPS = [
-    "Baseline",
-    "After related-language stage 1",
-    "Final fine-tune, 1 related language",
-    "After related-language stage 2",
-    "Final fine-tune, 2 related languages",
-    "After related-language stage 3",
-]
-STAGES = ["No related language"] + [f"{n} related language{'s' if n > 1 else ''}" for n in range(1, 7)]
+STAGES = ["No related languages"] + [f"{n} related language{'s' if n > 1 else ''}" for n in range(1, 7)]
 ```
 
 ## Summary
 
-- We tested whether fine-tuning a model on related languages first, then on the target language, improves translation of low-resource languages.
-- **It did not help for any of the three languages tested.** In every case, BLEU after the final fine-tuning on the target language was below the baseline with no related language.
-- BLEU tended to fall further as more related languages were added: by 2.4 points for Language X with six related languages, 1.9 for Language Y with three, and 3.0 for Language Z with five.
-- A second set of runs for Language X shows the same pattern: BLEU after the final fine-tune is 20.25 with one related language and 18.94 with two, against 21.04 for its baseline.
-- These are single runs without intervals, so small differences may be noise.
+- We test multi-stage fine-tuning of NLLB: fine-tuning a model on related languages first, one stage per language, then on the target language, to see whether it improves translation of low-resource languages.
+- **It does not help for any of the three languages tested.** In every case, chrF3 after the final fine-tuning on the target language is below the baseline.
+- chrF3 tends to fall further as more related languages are added.
 
 ## The question
 
-Low-resource languages have little training text. Related languages may share vocabulary and grammar with the target, so training on them first could give the model a better starting point. We asked whether this staged approach improves the target language's translations, and whether adding more related languages helps more.
+Low-resource languages have little training text. Related languages may share vocabulary and grammar with the target, so training on them first could give the model a better starting point.
+
+In this study, we investigate multi-stage fine-tuning of NLLB. We begin by fine-tuning NLLB on languages related to the target language, before finally fine-tuning on the target language itself. We ask whether this staged approach improves the target language's translations, and whether adding more related languages helps more.
+
+One danger of multi-stage fine-tuning is catastrophic forgetting. Because we're fine-tuning NLLB multiple times, later stages of fine-tuning may "overwrite" any knowledge from earlier stages.
 
 ## How it was tested
 
-<!-- REVIEW: the base model, the test set and its size, and the staging details are not stated in the source spreadsheet. Please add them (which model; which languages and how much text per stage; how many verses are in each test set). -->
+We begin by fine-tuning NLLB up to six times on languages related to the target language. Each stage of fine-tuning starts from the fine-tuned model from the previous stage. At the very last stage, we fine-tune on the target language itself. The training data is the NT, minus Romans and Revelation, and the test set is Romans and Revelation.
 
-A model is fine-tuned on one related language, then on a second, and so on, one stage per related language. After the last stage it is fine-tuned on the target language (the final fine-tune), using default training settings with no early stopping. The baseline skips the related-language stages. We repeated this for one to six related languages for Languages X and Z, and one to three for Language Y, and scored the model after the final fine-tune with BLEU on the target language's test set.
+We choose the related languages using alignment. Within the target language's language family, we choose the languages that align best with the target language. (There are other ways to choose these languages that may be worth investigating in the future. For example, we could choose the geographically closest languages to the target language, or we could use something like [URIEL+](https://arxiv.org/abs/2409.18472) to determine the closest related languages.)
 
 ## Results
 
-```{python}
-#| renderings: [light, dark]
-study.bar_chart("BLEU", groups=STAGES, systems=LANGUAGES, x_title="BLEU after final fine-tune (higher is better)", x_range=(0, 25))
+```{=html}
+<style>.wide-first-column col:first-child { width: 16% !important; }</style>
 ```
 
+::: {.wide-first-column}
 ```{python}
-study.table(measures=["BLEU"], groups=LANGUAGES, systems=STAGES, digits=2, intervals=False, measure_column=False, group_title="Language")
+study.table(measures=["chrF3"], groups=LANGUAGES, systems=STAGES, digits=2, intervals=False, measure_column=False, group_title="Language")
 ```
+:::
 
-Every staged run scores below its language's baseline. The gap grows as related languages are added, though not at every step: for Language Z, six related languages (13.44) score slightly above five (13.10). Language X scores identically (18.68) with two and three related languages, and we have not determined why.
+Every staged run scores below its language's baseline. The gap tends to grow as related languages are added, though not at every step.
 
-### A second set of runs for Language X
-
-<!-- REVIEW: the source sheet says the final fine-tune and the baseline use default settings with no early stopping, and that the earlier stages use early stopping. Please confirm the settings and why this baseline (21.04) differs from the first set's (19.81). -->
-
-We ran Language X a second time, recording BLEU after each stage as well as after the final fine-tune. After each related-language stage, BLEU on the target language falls to nearly zero, since the model is now working in the related language.
-
-```{python}
-study.table(measures=["BLEU"], groups=STEPS, systems=["Target language"], digits=2, intervals=False, measure_column=False, group_title="Step")
-```
-
-The final fine-tune restores the target language, but to 20.25 after one related language and 18.94 after two, below this run's baseline of 21.04. This baseline differs from the 19.81 in the first set, and we have not determined why. BLEU on the related language each stage trains on is low:
-
-```{python}
-study.table(measures=["BLEU"], groups=[s for s in STEPS if s.startswith("After")], systems=["Language just trained on"], digits=2, intervals=False, measure_column=False, group_title="Step")
-```
-
-The final fine-tune after three related languages was not run in this set.
+It is possible that using [LoRA](https://arxiv.org/abs/2106.09685) or layer freezing would help with catastrophic forgetting in multi-stage fine-tuning. This is something that may be worth investigating in the future.
 
 ## Limitations
 
-- **Single runs, no intervals.** Differences of one to three BLEU points could be within the noise between runs.
-- **Three languages, one metric.** Only BLEU was recorded, and Language Y was tested with up to three related languages.
-- **Unexplained result.** The identical Language X scores for two and three related languages have not been investigated.
-- **Second set.** It covers one language and only up to two completed related-language stages.
-- **Scope.** Other experiments that used LoRA are not part of this study.
+- **Single runs, no intervals.** Differences of one to two chrF3 points could be within the noise between runs.
+- **Language X's later runs.** The runs for four to six related languages build on the omitted three-language step, so they may include one fewer related language than they are labeled with.
 
 ## Reproducing this
 
