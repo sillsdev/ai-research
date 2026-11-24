@@ -1,0 +1,31 @@
+system,group,measure,value,lower,upper,n,source,file
+Combined in training and inference,1 verse,chrF3,55.42,,,836,results,verses.tsv
+Combined in training and inference,2 verses,chrF3,57.5,,,836,results,verses.tsv
+Combined in training and inference,3 verses,chrF3,58.42,,,836,results,verses.tsv
+Combined in training and inference,4 verses,chrF3,55.13,,,836,results,verses.tsv
+Combined in training and inference,5 verses,chrF3,48.65,,,836,results,verses.tsv
+Combined in training and inference,6 verses,chrF3,42.38,,,836,results,verses.tsv
+Combined in training and inference,7 verses,chrF3,37.46,,,836,results,verses.tsv
+Combined in training and inference,8 verses,chrF3,33.27,,,836,results,verses.tsv
+Joined after inference,2 verses,chrF3,57.89,,,836,results,verses.tsv
+Joined after inference,3 verses,chrF3,59.59,,,836,results,verses.tsv
+Joined after inference,4 verses,chrF3,60.85,,,836,results,verses.tsv
+Joined after inference,5 verses,chrF3,61.82,,,836,results,verses.tsv
+Joined after inference,6 verses,chrF3,62.53,,,836,results,verses.tsv
+Joined after inference,7 verses,chrF3,63.25,,,836,results,verses.tsv
+Joined after inference,8 verses,chrF3,63.84,,,836,results,verses.tsv
+Combined in training and inference,1 verse,BLEU,19.69,,,836,results,verses.tsv
+Combined in training and inference,2 verses,BLEU,20.04,,,836,results,verses.tsv
+Combined in training and inference,3 verses,BLEU,19.74,,,836,results,verses.tsv
+Combined in training and inference,4 verses,BLEU,17.61,,,836,results,verses.tsv
+Combined in training and inference,5 verses,BLEU,14.3,,,836,results,verses.tsv
+Combined in training and inference,6 verses,BLEU,10.59,,,836,results,verses.tsv
+Combined in training and inference,7 verses,BLEU,8.37,,,836,results,verses.tsv
+Combined in training and inference,8 verses,BLEU,6.02,,,836,results,verses.tsv
+Joined after inference,2 verses,BLEU,20.11,,,836,results,verses.tsv
+Joined after inference,3 verses,BLEU,20.38,,,836,results,verses.tsv
+Joined after inference,4 verses,BLEU,20.71,,,836,results,verses.tsv
+Joined after inference,5 verses,BLEU,20.82,,,836,results,verses.tsv
+Joined after inference,6 verses,BLEU,21.0,,,836,results,verses.tsv
+Joined after inference,7 verses,BLEU,21.16,,,836,results,verses.tsv
+Joined after inference,8 verses,BLEU,21.33,,,836,results,verses.tsv

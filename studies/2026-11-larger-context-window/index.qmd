@@ -1,0 +1,77 @@
+---
+title: "A larger context window for NLLB: translating several verses at once"
+description: "Giving NLLB several verses at once, in training and inference, does not help. At every size from 2-8 verses, translating verse by verse and joining the output afterwards scored at least as well, and the loss grew with size."
+date: 2026-11-10
+author: Laura Burdick
+harness: none
+categories: [machine translation, context window]
+---
+
+```{python}
+import pandas as pd
+from IPython.display import Markdown
+from research_site import Study
+
+study = Study()
+JOINT = "Combined in training and inference"
+AFTER = "Joined after inference"
+```
+
+## Summary
+
+- By default, NLLB sees one verse at a time. We experimented with giving NLLB several verses at once, in training and inference.
+- **Translating several verses at once does not help.** At every size from 2-8 verses, translating verse by verse and joining the output afterwards scored at least as well as combining verses in training and inference.
+- The loss grew with size: 0.4 chrF3 points at two verses, 1.2 at three, 5.7 at four and 30.6 at eight.
+
+## The question
+
+A verse is a short segment, and by default, NLLB translates it without seeing its neighbors. Giving NLLB more than one verse in its context window might let it use the surrounding verses, handle a sentence that runs across a verse boundary, or learn from longer examples. It could also hurt: longer sequences are harder to learn from a small corpus, and a sequence that is too long gets truncated.
+
+NLLB-200's positional embeddings allow sequences of up to 1,024 tokens. silnlp truncates longer training sequences at a maximum length of 512 tokens.
+
+Our hypothesis is that quality will drop for long segments even inside that limit, because NLLB was trained on sentences, not passages. A very long training example for the base model is probably malformed, a run-on or an odd web sentence, so the model has seen little text that looks like a passage.
+
+This study asks whether translating several verses at once improves drafts compared with translating one verse at a time.
+
+## How it was tested
+
+NLLB-200 was fine-tuned with silnlp. The language is anonymized as Language L, the same label as in [verse-level vs. passage-level scores](../2026-11-verse-vs-passage-scores/index.html).
+
+The model was trained on the New Testament except Romans and Revelation and tested on those two books. For each size from one to eight verses, consecutive verses were combined into one segment, in two ways:
+
+- **Combined in training and inference:** verses were combined during training and during inference.
+- **Joined after inference:** NLLB was trained on single verses. To get a comparable score, verses were combined after inference.
+
+Training sequences were capped at 512 tokens. At five verses, the longest sequence was 429 tokens. From six verses on, the longest were cut at 512. Each score is one run.
+
+## Results
+
+```{python}
+metrics = pd.read_csv("data/metrics.csv")
+methods = {JOINT: "combined", AFTER: "joined after"}
+wide = metrics.pivot(index="group", columns=["measure", "system"], values="value")
+wide = wide.loc[list(dict.fromkeys(metrics["group"]))]
+wide = wide[[(m, s) for m in ["chrF3", "BLEU"] for s in methods]]
+wide.columns = [f"{m} {methods[s]}" for m, s in wide.columns]
+wide.index.name = "Verses per segment"
+wide = wide.apply(lambda column: column.map(lambda v: "—" if pd.isna(v) else f"{v:.1f}"))
+Markdown(wide.reset_index().to_markdown(index=False, disable_numparse=True, colalign=["left"] + ["right"] * 4))
+```
+
+- **Combining verses never helped.** At each setting, joining after inference scored at least as well as combining in training and inference. The difference in chrF3 was 0.4 points at two verses, 1.2 at three, 5.7 at four and 30.6 at eight.The two- and three-verse differences are small enough to be noise, so at those sizes combining is no better and no clearly worse.
+- **Scores of different sizes can't be compared.** Compare the two methods only within a row.
+
+## Limitations
+
+- **One run per setting and no intervals.** Differences of about a point are not established.
+- **One language and one model**, tested on two books.
+
+## Reproducing this
+
+The results come from:
+
+```{python}
+study.provenance()
+```
+
+This page's data is in [`data/metrics.csv`](data/metrics.csv).
