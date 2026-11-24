@@ -1,0 +1,12 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by Laura Burdick with SILNLP fine-tuning runs, scoring chrF3 on a held-out test set, December 2024
+
+tables:
+  - source: results
+    file: scores.tsv
+    system: {column: chosen}
+    group: {column: sources}
+    measures:
+      - {column: chrF3}

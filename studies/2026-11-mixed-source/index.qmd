@@ -1,0 +1,60 @@
+---
+title: "Mixed-source training of NLLB with related languages"
+description: "Adding related languages as extra source languages does not improve drafts."
+date: 2026-11-24
+author: Laura Burdick
+harness: none
+categories: [machine translation, related languages, mixed-source training]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+GROUPS = ["English only", "English + 1 related language"] + [f"English + {n} related languages" for n in range(2, 7)]
+CHOSEN = ["By geography", "By alignment"]
+```
+
+## Summary
+
+- We test mixed-source training: adding related languages as extra source languages when we fine-tune NLLB.
+- **It does not improve translation.** We experiment with two ways to choose related languages. Neither helps.
+
+## The question
+
+A low-resource language has little training text, but related languages may share vocabulary and grammar with it. If the model also sees those related languages, it might translate into the target language better. We ask whether adding related languages as extra source languages improves the target language's translations, and whether the way we choose the related languages matters.
+
+## How it was tested
+
+We fine-tune NLLB on a single language. The training data is the NT minus Romans and Revelation, and the test set is Romans and Revelation. We experiment with mixed-source training, where there are multiple source languages during fine-tuning. In addition to English, we add languages that are related to the target language, chosen two different ways. We add the most closely related languages first.
+
+We choose the related languages in two ways. Both pick from languages in the same language family as the target language.
+
+- **By geography:** the geographically closest languages to the target.
+- **By alignment:** the languages whose text aligns best with the target's.
+
+We measure chrF3 on the test set.
+
+## Results
+
+```{python}
+study.table(measures=["chrF3"], groups=GROUPS, systems=CHOSEN, digits=2, intervals=False, measure_column=False, group_title="Source languages")
+```
+
+**Languages chosen by alignment leave chrF3 unchanged.**
+
+**Languages chosen by geography hurt performance.** In general, as more related languages are added, the score gets worse.
+
+## Limitations
+
+- **One target language, single runs, no intervals.** The changes from alignment are small enough to be noise, and we can't say whether the fall with geography holds for other languages.
+
+## Reproducing this
+
+The numbers in this study come from:
+
+```{python}
+study.provenance()
+```
+
+The fine-tuning code is part of [SILNLP](https://github.com/sillsdev/silnlp).

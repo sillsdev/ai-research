@@ -1,0 +1,14 @@
+system,group,measure,value,lower,upper,n,source,file
+By geography,English only,chrF3,55.33,,,,results,scores.tsv
+By geography,English + 1 related language,chrF3,54.89,,,,results,scores.tsv
+By geography,English + 2 related languages,chrF3,54.45,,,,results,scores.tsv
+By geography,English + 3 related languages,chrF3,53.56,,,,results,scores.tsv
+By geography,English + 4 related languages,chrF3,53.87,,,,results,scores.tsv
+By geography,English + 5 related languages,chrF3,53.29,,,,results,scores.tsv
+By alignment,English only,chrF3,55.33,,,,results,scores.tsv
+By alignment,English + 1 related language,chrF3,55.33,,,,results,scores.tsv
+By alignment,English + 2 related languages,chrF3,55.5,,,,results,scores.tsv
+By alignment,English + 3 related languages,chrF3,55.38,,,,results,scores.tsv
+By alignment,English + 4 related languages,chrF3,55.13,,,,results,scores.tsv
+By alignment,English + 5 related languages,chrF3,55.67,,,,results,scores.tsv
+By alignment,English + 6 related languages,chrF3,55.34,,,,results,scores.tsv
