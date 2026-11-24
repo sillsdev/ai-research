@@ -1,0 +1,105 @@
+system,group,measure,value,lower,upper,n,source,file
+NLLB,Language A,chrF3,69.33,,,11,results,scores.tsv
+Passage-level ICL,Language A,chrF3,66.17,,,11,results,scores.tsv
+Verse-level ICL,Language A,chrF3,69.55,,,11,results,scores.tsv
+Hybrid ICL,Language A,chrF3,67.03,,,11,results,scores.tsv
+NLLB,Language B,chrF3,59.3,,,11,results,scores.tsv
+Passage-level ICL,Language B,chrF3,60.49,,,11,results,scores.tsv
+Verse-level ICL,Language B,chrF3,60.59,,,11,results,scores.tsv
+Hybrid ICL,Language B,chrF3,58.36,,,11,results,scores.tsv
+NLLB,Language C,chrF3,54.79,,,12,results,scores.tsv
+Passage-level ICL,Language C,chrF3,55.53,,,12,results,scores.tsv
+Verse-level ICL,Language C,chrF3,54.27,,,12,results,scores.tsv
+Hybrid ICL,Language C,chrF3,51.89,,,12,results,scores.tsv
+NLLB,Language D,chrF3,39.02,,,12,results,scores.tsv
+Passage-level ICL,Language D,chrF3,65.2,,,12,results,scores.tsv
+Verse-level ICL,Language D,chrF3,60.42,,,12,results,scores.tsv
+Hybrid ICL,Language D,chrF3,55.04,,,12,results,scores.tsv
+NLLB,Language E,chrF3,25.41,,,75,results,scores.tsv
+Passage-level ICL,Language E,chrF3,56.06,,,75,results,scores.tsv
+Verse-level ICL,Language E,chrF3,52.31,,,75,results,scores.tsv
+Hybrid ICL,Language E,chrF3,52.97,,,75,results,scores.tsv
+NLLB,Language F (sister-language orthography),chrF3,45.54,,,18,results,scores.tsv
+Passage-level ICL,Language F (sister-language orthography),chrF3,51.16,,,18,results,scores.tsv
+Verse-level ICL,Language F (sister-language orthography),chrF3,53.57,,,18,results,scores.tsv
+Hybrid ICL,Language F (sister-language orthography),chrF3,47.8,,,18,results,scores.tsv
+NLLB,Language F (cleaned transcript),chrF3,53.79,,,18,results,scores.tsv
+Passage-level ICL,Language F (cleaned transcript),chrF3,61.38,,,18,results,scores.tsv
+Verse-level ICL,Language F (cleaned transcript),chrF3,39.08,,,18,results,scores.tsv
+Hybrid ICL,Language F (cleaned transcript),chrF3,58.62,,,18,results,scores.tsv
+NLLB,Language G,chrF3,36.57,,,34,results,scores.tsv
+Passage-level ICL,Language G,chrF3,31.67,,,34,results,scores.tsv
+Verse-level ICL,Language G,chrF3,36.05,,,34,results,scores.tsv
+Hybrid ICL,Language G,chrF3,28.98,,,34,results,scores.tsv
+NLLB,Language A,BLEU,28.52,,,11,results,scores.tsv
+Passage-level ICL,Language A,BLEU,21.94,,,11,results,scores.tsv
+Verse-level ICL,Language A,BLEU,28.78,,,11,results,scores.tsv
+Hybrid ICL,Language A,BLEU,24.33,,,11,results,scores.tsv
+NLLB,Language B,BLEU,11.61,,,11,results,scores.tsv
+Passage-level ICL,Language B,BLEU,13.36,,,11,results,scores.tsv
+Verse-level ICL,Language B,BLEU,14.49,,,11,results,scores.tsv
+Hybrid ICL,Language B,BLEU,12.3,,,11,results,scores.tsv
+NLLB,Language C,BLEU,15.04,,,12,results,scores.tsv
+Passage-level ICL,Language C,BLEU,15.54,,,12,results,scores.tsv
+Verse-level ICL,Language C,BLEU,13.73,,,12,results,scores.tsv
+Hybrid ICL,Language C,BLEU,11.99,,,12,results,scores.tsv
+NLLB,Language D,BLEU,7.75,,,12,results,scores.tsv
+Passage-level ICL,Language D,BLEU,19.92,,,12,results,scores.tsv
+Verse-level ICL,Language D,BLEU,15.99,,,12,results,scores.tsv
+Hybrid ICL,Language D,BLEU,10.92,,,12,results,scores.tsv
+NLLB,Language E,BLEU,3.22,,,75,results,scores.tsv
+Passage-level ICL,Language E,BLEU,19.92,,,75,results,scores.tsv
+Verse-level ICL,Language E,BLEU,16.11,,,75,results,scores.tsv
+Hybrid ICL,Language E,BLEU,16.58,,,75,results,scores.tsv
+NLLB,Language F (sister-language orthography),BLEU,3.02,,,18,results,scores.tsv
+Passage-level ICL,Language F (sister-language orthography),BLEU,5.7,,,18,results,scores.tsv
+Verse-level ICL,Language F (sister-language orthography),BLEU,9.46,,,18,results,scores.tsv
+Hybrid ICL,Language F (sister-language orthography),BLEU,4.99,,,18,results,scores.tsv
+NLLB,Language F (cleaned transcript),BLEU,12.87,,,18,results,scores.tsv
+Passage-level ICL,Language F (cleaned transcript),BLEU,19.73,,,18,results,scores.tsv
+Verse-level ICL,Language F (cleaned transcript),BLEU,2.96,,,18,results,scores.tsv
+Hybrid ICL,Language F (cleaned transcript),BLEU,17.46,,,18,results,scores.tsv
+NLLB,Language G,BLEU,0.46,,,34,results,scores.tsv
+Passage-level ICL,Language G,BLEU,0.29,,,34,results,scores.tsv
+Verse-level ICL,Language G,BLEU,0.75,,,34,results,scores.tsv
+Hybrid ICL,Language G,BLEU,0.23,,,34,results,scores.tsv
+k=10,Language A,chrF3,65.4,,,11,results,k-sweep.tsv
+k=20,Language A,chrF3,66.07,,,11,results,k-sweep.tsv
+k=30,Language A,chrF3,66.17,,,11,results,k-sweep.tsv
+k=50,Language A,chrF3,66.45,,,11,results,k-sweep.tsv
+k=10,Language B,chrF3,58.79,,,11,results,k-sweep.tsv
+k=20,Language B,chrF3,59.66,,,11,results,k-sweep.tsv
+k=30,Language B,chrF3,60.49,,,11,results,k-sweep.tsv
+k=50,Language B,chrF3,60.61,,,11,results,k-sweep.tsv
+k=10,Language C,chrF3,53.8,,,12,results,k-sweep.tsv
+k=20,Language C,chrF3,54.97,,,12,results,k-sweep.tsv
+k=30,Language C,chrF3,55.53,,,12,results,k-sweep.tsv
+k=50,Language C,chrF3,55.27,,,12,results,k-sweep.tsv
+k=10,Language D,chrF3,62.15,,,12,results,k-sweep.tsv
+k=20,Language D,chrF3,63.73,,,12,results,k-sweep.tsv
+k=30,Language D,chrF3,65.2,,,12,results,k-sweep.tsv
+k=50,Language D,chrF3,64.18,,,12,results,k-sweep.tsv
+k=10,Language A,BLEU,21.05,,,11,results,k-sweep.tsv
+k=20,Language A,BLEU,21.55,,,11,results,k-sweep.tsv
+k=30,Language A,BLEU,21.94,,,11,results,k-sweep.tsv
+k=50,Language A,BLEU,21.47,,,11,results,k-sweep.tsv
+k=10,Language B,BLEU,11.31,,,11,results,k-sweep.tsv
+k=20,Language B,BLEU,12.28,,,11,results,k-sweep.tsv
+k=30,Language B,BLEU,13.36,,,11,results,k-sweep.tsv
+k=50,Language B,BLEU,13.22,,,11,results,k-sweep.tsv
+k=10,Language C,BLEU,12.65,,,12,results,k-sweep.tsv
+k=20,Language C,BLEU,13.55,,,12,results,k-sweep.tsv
+k=30,Language C,BLEU,15.54,,,12,results,k-sweep.tsv
+k=50,Language C,BLEU,14.82,,,12,results,k-sweep.tsv
+k=10,Language D,BLEU,16.99,,,12,results,k-sweep.tsv
+k=20,Language D,BLEU,18.29,,,12,results,k-sweep.tsv
+k=30,Language D,BLEU,19.92,,,12,results,k-sweep.tsv
+k=50,Language D,BLEU,19.0,,,12,results,k-sweep.tsv
+"NLLB, noisy verse segmentation",Language D,chrF3,39.02,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language D,chrF3,75.42,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language E,chrF3,25.41,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language E,chrF3,55.22,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language D,BLEU,7.75,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language D,BLEU,33.94,,,,results,real-verse-alignment.tsv
+"NLLB, noisy verse segmentation",Language E,BLEU,3.22,,,,results,real-verse-alignment.tsv
+"NLLB, real verse segmentation",Language E,BLEU,19.87,,,,results,real-verse-alignment.tsv

@@ -1,0 +1,27 @@
+sources:
+  results:
+    in-study: true
+    origin: Computed by the AI Engineering Research Team with in-house NLLB fine-tuning and in-context learning scripts, scoring each draft against held-out human translations (chrF3 and BLEU, passage level), September to November 2026
+
+tables:
+  - source: results
+    file: scores.tsv
+    system: {column: method}
+    group: {column: language}
+    measures:
+      - {column: chrF3, n: passages}
+      - {column: BLEU, n: passages}
+  - source: results
+    file: k-sweep.tsv
+    system: {column: k}
+    group: {column: language}
+    measures:
+      - {column: chrF3, n: passages}
+      - {column: BLEU, n: passages}
+  - source: results
+    file: real-verse-alignment.tsv
+    system: {column: system}
+    group: {column: language}
+    measures:
+      - {column: chrF3}
+      - {column: BLEU}

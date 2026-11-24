@@ -88,19 +88,23 @@ class Study:
         measure_column: bool = True,
         average: bool = False,
         group_title: str = "Test",
+        count_column: bool = False,
     ) -> Markdown:
         """One row per (group, measure), one column per system; the best value in each row is bold.
 
         Set `measure_column=False` when the measure is named nearby, such as in the chart above.
         `average=True` adds a last row per measure with each system's mean over the groups, each
-        group counting equally. `group_title` heads the first column.
+        group counting equally. `group_title` heads the first column. `count_column=True` adds a column
+        with each group's number of test items (the `n` in metrics.csv).
         """
         rows = self._select(groups, measures, systems)
         systems = systems or list(dict.fromkeys(rows["system"]))
         lead = [group_title, "Measure"] if measure_column else [group_title]
+        counts = rows.groupby("group")["n"].first()
+        header = lead + systems + (["Test passages"] if count_column else [])
         lines = [
-            "| " + " | ".join(lead + systems) + " |",
-            "|" + "---|" * len(lead) + "---:|" * len(systems),
+            "| " + " | ".join(header) + " |",
+            "|" + "---|" * len(lead) + "---:|" * (len(header) - len(lead)),
         ]
 
         def add_row(group, measure, by_system, with_intervals, summary=False):
@@ -120,7 +124,8 @@ class Study:
             # A summary row's label is bold, so the row stands apart while its values still mark the best.
             if summary:
                 lead = [f"**{c}**" for c in lead]
-            lines.append("| " + " | ".join(lead + formatted) + " |")
+            count = [f"{int(counts[group])}" if group in counts.index and pd.notna(counts[group]) else "—"]
+            lines.append("| " + " | ".join(lead + formatted + (count if count_column else [])) + " |")
 
         for (group, measure), cells in rows.groupby(["group", "measure"], sort=False):
             add_row(group, measure, cells.set_index("system"), intervals)
