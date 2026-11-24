@@ -56,7 +56,7 @@ Every staged run scores below its language's baseline. The gap grows as related 
 
 ### A second set of runs for Language X
 
-<!-- REVIEW: the source sheet says the final fine-tune and the baseline use default settings with no early stopping, and that the earlier stages use early stopping; a later sheet says those stages used LoRA. Please confirm the settings and why this baseline (21.04) differs from the first set's (19.81). -->
+<!-- REVIEW: the source sheet says the final fine-tune and the baseline use default settings with no early stopping, and that the earlier stages use early stopping. Please confirm the settings and why this baseline (21.04) differs from the first set's (19.81). -->
 
 We ran Language X a second time, recording BLEU after each stage as well as after the final fine-tune. After each related-language stage, BLEU on the target language falls to nearly zero, since the model is now working in the related language.
 
@@ -78,7 +78,7 @@ The final fine-tune after three related languages was not run in this set.
 - **Three languages, one metric.** Only BLEU was recorded, and Language Y was tested with up to three related languages.
 - **Unexplained result.** The identical Language X scores for two and three related languages have not been investigated.
 - **Second set.** It covers one language and only up to two completed related-language stages.
-- **Scope.** Other experiments that used LoRA, including a hyperparameter sweep, are not part of this study.
+- **Scope.** Other experiments that used LoRA are not part of this study.
 
 ## Reproducing this
 
