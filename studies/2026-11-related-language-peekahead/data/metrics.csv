@@ -1,0 +1,33 @@
+system,group,measure,value,lower,upper,n,source,file
+No related language (baseline),chrF3,Score,48.74,,,,results,peekahead.tsv
+No related language (baseline),BLEU,Score,11.88,,,,results,peekahead.tsv
+Related language A,chrF3,Score,49.05,,,,results,peekahead.tsv
+Related language A,BLEU,Score,12.25,,,,results,peekahead.tsv
+Related language B,chrF3,Score,49.39,,,,results,peekahead.tsv
+Related language B,BLEU,Score,11.7,,,,results,peekahead.tsv
+Related language C,chrF3,Score,49.28,,,,results,peekahead.tsv
+Related language C,BLEU,Score,11.27,,,,results,peekahead.tsv
+Related language D,chrF3,Score,47.94,,,,results,peekahead.tsv
+Related language D,BLEU,Score,11.15,,,,results,peekahead.tsv
+Related language E,chrF3,Score,47.13,,,,results,peekahead.tsv
+Related language E,BLEU,Score,11.02,,,,results,peekahead.tsv
+A,chrF3,Score,49.05,,,,results,peekahead.tsv
+A,BLEU,Score,12.25,,,,results,peekahead.tsv
+"A, B",chrF3,Score,48.86,,,,results,peekahead.tsv
+"A, B",BLEU,Score,11.9,,,,results,peekahead.tsv
+"A, B, C",chrF3,Score,48.92,,,,results,peekahead.tsv
+"A, B, C",BLEU,Score,11.87,,,,results,peekahead.tsv
+"A, B, C, D",chrF3,Score,49.15,,,,results,peekahead.tsv
+"A, B, C, D",BLEU,Score,11.49,,,,results,peekahead.tsv
+"A, B, C, D, E",chrF3,Score,48.79,,,,results,peekahead.tsv
+"A, B, C, D, E",BLEU,Score,11.59,,,,results,peekahead.tsv
+B,chrF3,Score,49.39,,,,results,peekahead.tsv
+B,BLEU,Score,11.7,,,,results,peekahead.tsv
+"B, E",chrF3,Score,48.08,,,,results,peekahead.tsv
+"B, E",BLEU,Score,11.46,,,,results,peekahead.tsv
+"B, E, D",chrF3,Score,48.32,,,,results,peekahead.tsv
+"B, E, D",BLEU,Score,11.5,,,,results,peekahead.tsv
+"B, E, D, C",chrF3,Score,48.48,,,,results,peekahead.tsv
+"B, E, D, C",BLEU,Score,11.5,,,,results,peekahead.tsv
+"B, E, D, C, A",chrF3,Score,48.85,,,,results,peekahead.tsv
+"B, E, D, C, A",BLEU,Score,11.63,,,,results,peekahead.tsv
