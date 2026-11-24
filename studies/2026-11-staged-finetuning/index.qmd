@@ -1,0 +1,63 @@
+---
+title: "Fine-tuning on related languages in stages before the target language"
+description: "Fine-tuning a translation model on up to six related languages, one stage at a time, before fine-tuning on the target language did not improve BLEU for any of three languages."
+date: 2026-11-24
+author: Laura Burdick
+harness: none
+categories: [machine translation, related languages, fine-tuning]
+---
+
+```{python}
+from research_site import Study
+
+study = Study()
+LANGUAGES = ["Language X", "Language Y", "Language Z"]
+STAGES = ["No related language"] + [f"{n} related language{'s' if n > 1 else ''}" for n in range(1, 7)]
+```
+
+## Summary
+
+- We tested whether fine-tuning a model on related languages first, then on the target language, improves translation of low-resource languages.
+- **It did not help for any of the three languages tested.** In every case, BLEU after the final fine-tuning on the target language was below the baseline with no related language.
+- BLEU tended to fall further as more related languages were added: by 2.4 points for Language X with six related languages, 1.9 for Language Y with three, and 3.0 for Language Z with five.
+- These are single runs without intervals, so small differences may be noise.
+
+## The question
+
+Low-resource languages have little training text. Related languages may share vocabulary and grammar with the target, so training on them first could give the model a better starting point. We asked whether this staged approach improves the target language's translations, and whether adding more related languages helps more.
+
+## How it was tested
+
+<!-- REVIEW: the base model, the test set and its size, and the staging details are not stated in the source spreadsheet. Please add them (which model; which languages and how much text per stage; how many verses are in each test set). -->
+
+A model is fine-tuned on one related language, then on a second, and so on, one stage per related language. After the last stage it is fine-tuned on the target language (the final fine-tune), using default training settings with no early stopping. The baseline skips the related-language stages. We repeated this for one to six related languages for Languages X and Z, and one to three for Language Y, and scored the model after the final fine-tune with BLEU on the target language's test set.
+
+## Results
+
+```{python}
+#| renderings: [light, dark]
+study.bar_chart("BLEU", groups=STAGES, systems=LANGUAGES, x_title="BLEU after final fine-tune (higher is better)", x_range=(0, 25))
+```
+
+```{python}
+study.table(measures=["BLEU"], groups=LANGUAGES, systems=STAGES, digits=2, intervals=False, measure_column=False, group_title="Language")
+```
+
+Every staged run scores below its language's baseline. The gap grows as related languages are added, though not at every step: for Language Z, six related languages (13.44) score slightly above five (13.10). Language X scores identically (18.68) with two and three related languages, and we have not determined why.
+
+## Limitations
+
+- **Single runs, no intervals.** Differences of one to three BLEU points could be within the noise between runs.
+- **Three languages, one metric.** Only BLEU was recorded, and Language Y was tested with up to three related languages.
+- **Unexplained result.** The identical Language X scores for two and three related languages have not been investigated.
+- **Scope.** A parallel set of experiments that used LoRA is not part of this study.
+
+## Reproducing this
+
+The numbers in this study come from:
+
+```{python}
+study.provenance()
+```
+
+The fine-tuning code is part of [SILNLP](https://github.com/sillsdev/silnlp).
